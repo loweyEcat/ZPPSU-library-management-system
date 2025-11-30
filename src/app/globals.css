@@ -1,0 +1,146 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 210 40% 98%;
+  --foreground: 0 0% 3.9%;
+
+  --muted: 210 20% 96%;
+  --muted-foreground: 0 0% 45%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 0 0% 3.9%;
+
+  --card: 0 0% 100%;
+  --card-foreground: 0 0% 3.9%;
+
+  --border: 45 100% 50%;
+  --input: 210 30% 92%;
+
+  --primary: 45 100% 50%;
+  --primary-foreground: 0 0% 0%;
+
+  --secondary: 210 40% 95%;
+  --secondary-foreground: 0 0% 10%;
+
+  --accent: 45 100% 50%;
+  --accent-foreground: 0 0% 0%;
+
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 0 0% 98%;
+
+  --ring: 45 100% 50%;
+  --radius: 0.5rem;
+  
+  --eagle-gold: 45 100% 50%;
+  --eagle-black: 0 0% 0%;
+  --eagle-blue: 210 60% 70%;
+}
+
+* {
+  @apply border-border;
+}
+
+body {
+  @apply bg-background text-foreground antialiased;
+}
+
+
+
+@layer base {
+  :root {
+    /* Maroon, Gold, Yellow Theme - Light and Stunning */
+    --sidebar-background: 340 55% 20%;
+    --sidebar-foreground: 45 100% 95%;
+    --sidebar-primary: 45 100% 55%;
+    --sidebar-primary-foreground: 340 60% 15%;
+    --sidebar-accent: 340 50% 28%;
+    --sidebar-accent-foreground: 45 100% 90%;
+    --sidebar-border: 45 100% 50%;
+    --sidebar-ring: 45 100% 60%;
+  }
+  .dark {
+    /* Maroon, Gold, Yellow Theme - Dark Mode */
+    --sidebar-background: 340 60% 18%;
+    --sidebar-foreground: 45 100% 95%;
+    --sidebar-primary: 45 100% 55%;
+    --sidebar-primary-foreground: 340 60% 15%;
+    --sidebar-accent: 340 50% 25%;
+    --sidebar-accent-foreground: 45 100% 90%;
+    --sidebar-border: 45 100% 50%;
+    --sidebar-ring: 45 100% 60%;
+  }
+}
+
+
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .eagle-gradient {
+    background: linear-gradient(135deg, hsl(210, 60%, 70%) 0%, hsl(45, 100%, 50%) 100%);
+  }
+  
+  .eagle-border-gold {
+    border-color: hsl(45, 100%, 50%);
+  }
+  
+  .eagle-text-gold {
+    color: hsl(45, 100%, 50%);
+  }
+  
+  .eagle-bg-blue {
+    background-color: hsl(210, 40%, 98%);
+  }
+  
+  /* Sidebar Maroon, Gold, Yellow Theme */
+  .sidebar-maroon-gradient {
+    background: linear-gradient(
+      180deg,
+      hsl(340, 55%, 20%) 0%,
+      hsl(340, 52%, 22%) 50%,
+      hsl(340, 55%, 20%) 100%
+    );
+  }
+  
+  .sidebar-gold-accent {
+    background: linear-gradient(135deg, hsl(45, 100%, 55%) 0%, hsl(45, 100%, 45%) 100%);
+  }
+  
+  .sidebar-gold-glow {
+    box-shadow: 0 0 10px hsl(45, 100%, 50% / 0.3);
+  }
+  
+  .sidebar-gold-border {
+    border-color: hsl(45, 100%, 50%);
+    border-opacity: 0.3;
+  }
+  
+  /* Enhanced sidebar menu button active state */
+  [data-sidebar="menu-button"][data-active="true"] {
+    background: linear-gradient(135deg, hsl(45, 100%, 55%) 0%, hsl(45, 100%, 50%) 100%);
+    color: hsl(340, 60%, 15%);
+    font-weight: 600;
+    box-shadow: 0 2px 8px hsl(45, 100%, 50% / 0.4);
+  }
+  
+  [data-sidebar="menu-button"]:hover:not([data-active="true"]) {
+    background: hsl(340, 50%, 28%);
+    color: hsl(45, 100%, 85%);
+  }
+  
+  [data-sidebar="group-label"] {
+    color: hsl(45, 100%, 75%);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+}

@@ -1,0 +1,258 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model lib_users {
+  id                                                                        Int                       @id @default(autoincrement())
+  full_name                                                                 String                    @db.VarChar(150)
+  password                                                                  String                    @db.VarChar(255)
+  email                                                                     String                    @unique(map: "email") @db.VarChar(150)
+  contact_number                                                            String?                   @db.VarChar(50)
+  profile_image                                                             String?                   @db.VarChar(255)
+  user_role                                                                 lib_users_user_role
+  year_level                                                                String?                   @db.VarChar(50)
+  student_id                                                                String?                   @db.VarChar(50)
+  staff_category                                                            lib_users_staff_category?
+  assigned_role                                                             String?                   @db.VarChar(100)
+  uploaded_school_id                                                        String?                   @db.VarChar(255)
+  status                                                                    lib_users_status          @default(Active)
+  date_registered                                                           DateTime                  @default(now()) @db.DateTime(0)
+  date_updated                                                              DateTime                  @updatedAt @db.DateTime(0)
+  department                                                                String?                   @db.VarChar(100)
+  section                                                                   String?                   @db.VarChar(50)
+  lib_book_fines_lib_book_fines_created_by_staff_idTolib_users              lib_book_fines[]          @relation("lib_book_fines_created_by_staff_idTolib_users")
+  lib_book_fines_lib_book_fines_student_idTolib_users                       lib_book_fines[]          @relation("lib_book_fines_student_idTolib_users")
+  borrow_requests_as_staff                                                  lib_book_requests[]       @relation("borrow_requests_staff")
+  borrow_requests_as_student                                                lib_book_requests[]       @relation("borrow_requests_student")
+  sessions                                                                  lib_sessions[]
+  lib_thesis_documents_lib_thesis_documents_reviewed_by_admin_idTolib_users lib_thesis_documents[]    @relation("lib_thesis_documents_reviewed_by_admin_idTolib_users")
+  lib_thesis_documents_lib_thesis_documents_reviewed_by_staff_idTolib_users lib_thesis_documents[]    @relation("lib_thesis_documents_reviewed_by_staff_idTolib_users")
+  lib_thesis_documents_lib_thesis_documents_student_idTolib_users           lib_thesis_documents[]    @relation("lib_thesis_documents_student_idTolib_users")
+
+  @@index([staff_category], map: "idx_staff_category")
+  @@index([status], map: "idx_status")
+  @@index([student_id], map: "idx_student_id")
+  @@index([user_role], map: "idx_user_role")
+}
+
+model lib_sessions {
+  id         Int       @id @default(autoincrement())
+  token_hash String    @unique @db.VarChar(64)
+  user_id    Int
+  expires_at DateTime  @db.DateTime(0)
+  created_at DateTime  @default(now()) @db.DateTime(0)
+  user       lib_users @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@index([token_hash])
+  @@index([expires_at])
+}
+
+model lib_thesis_documents {
+  id                                                             Int                                    @id @default(autoincrement())
+  student_id                                                     Int
+  title                                                          String                                 @db.VarChar(255)
+  researcher_name                                                String                                 @db.VarChar(500)
+  abstract                                                       String?                                @db.Text
+  keywords                                                       String?                                @db.VarChar(500)
+  department                                                     String?                                @db.VarChar(100)
+  year_level                                                     String?                                @db.VarChar(50)
+  academic_year                                                  String?                                @db.VarChar(20)
+  semester                                                       String?                                @db.VarChar(20)
+  file_url                                                       String                                 @db.VarChar(500)
+  file_name                                                      String                                 @db.VarChar(255)
+  file_size                                                      Int
+  file_type                                                      String                                 @db.VarChar(50)
+  file_path                                                      String                                 @db.VarChar(500)
+  status                                                         lib_thesis_documents_status            @default(Pending)
+  submission_status                                              lib_thesis_documents_submission_status @default(Under_Review)
+  reviewed_by_staff_id                                           Int?
+  reviewed_by_admin_id                                           Int?
+  staff_review_notes                                             String?                                @db.Text
+  admin_review_notes                                             String?                                @db.Text
+  rejection_reason                                               String?                                @db.Text
+  internal_notes                                                 String?                                @db.Text
+  submitted_at                                                   DateTime                               @default(now()) @db.DateTime(0)
+  staff_reviewed_at                                              DateTime?                              @db.DateTime(0)
+  admin_reviewed_at                                              DateTime?                              @db.DateTime(0)
+  approved_at                                                    DateTime?                              @db.DateTime(0)
+  published_at                                                   DateTime?                              @db.DateTime(0)
+  date_updated                                                   DateTime                               @default(now()) @db.DateTime(0)
+  lib_users_lib_thesis_documents_reviewed_by_admin_idTolib_users lib_users?                             @relation("lib_thesis_documents_reviewed_by_admin_idTolib_users", fields: [reviewed_by_admin_id], references: [id], onUpdate: Restrict, map: "fk_thesis_reviewed_by_admin")
+  lib_users_lib_thesis_documents_reviewed_by_staff_idTolib_users lib_users?                             @relation("lib_thesis_documents_reviewed_by_staff_idTolib_users", fields: [reviewed_by_staff_id], references: [id], onUpdate: Restrict, map: "fk_thesis_reviewed_by_staff")
+  lib_users_lib_thesis_documents_student_idTolib_users           lib_users                              @relation("lib_thesis_documents_student_idTolib_users", fields: [student_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_thesis_student")
+
+  @@index([academic_year], map: "idx_academic_year")
+  @@index([department], map: "idx_department")
+  @@index([researcher_name], map: "idx_researcher_name")
+  @@index([reviewed_by_admin_id], map: "idx_reviewed_by_admin_id")
+  @@index([reviewed_by_staff_id], map: "idx_reviewed_by_staff_id")
+  @@index([status], map: "idx_status")
+  @@index([student_id], map: "idx_student_id")
+  @@index([submission_status], map: "idx_submission_status")
+  @@index([submitted_at], map: "idx_submitted_at")
+}
+
+model lib_book_requests {
+  id              Int                       @id @default(autoincrement())
+  student_id      Int
+  staff_id        Int?
+  book_id         Int
+  tracking_number String                    @unique(map: "tracking_number") @db.VarChar(100)
+  quantity        Int?                      @default(1)
+  request_date    DateTime?                 @default(now()) @db.DateTime(0)
+  approved_date   DateTime?                 @db.DateTime(0)
+  borrow_date     DateTime?                 @db.DateTime(0)
+  due_date        DateTime?                 @db.DateTime(0)
+  return_date     DateTime?                 @db.DateTime(0)
+  status          lib_book_requests_status? @default(Pending)
+  created_at      DateTime?                 @default(now()) @db.DateTime(0)
+  updated_at      DateTime?                 @default(now()) @db.DateTime(0)
+  lib_book_fines  lib_book_fines[]
+  book            lib_books                 @relation(fields: [book_id], references: [id], onDelete: Cascade, map: "fk_book")
+  staff           lib_users?                @relation("borrow_requests_staff", fields: [staff_id], references: [id], map: "fk_staff")
+  student         lib_users                 @relation("borrow_requests_student", fields: [student_id], references: [id], onDelete: Cascade, map: "fk_student")
+
+  @@index([book_id], map: "idx_book_id")
+  @@index([staff_id], map: "idx_staff_id")
+  @@index([status], map: "idx_status")
+  @@index([student_id], map: "idx_student_id")
+  @@index([tracking_number], map: "idx_tracking_number")
+}
+
+model lib_books {
+  id                  Int                 @id @default(autoincrement())
+  books_name          String              @db.VarChar(255)
+  author_name         String              @db.VarChar(255)
+  isbn                String              @unique(map: "isbn") @db.VarChar(50)
+  publisher           String?             @db.VarChar(150)
+  publication_year    Int?                @db.Year
+  edition             String?             @db.VarChar(50)
+  subject             String?             @db.VarChar(100)
+  department          String?             @db.VarChar(100)
+  books_type          String?             @db.VarChar(50)
+  books_category      String?             @db.VarChar(50)
+  description         String?             @db.Text
+  language            String?             @db.VarChar(50)
+  classification_code String?             @db.VarChar(50)
+  shelf_location      String?             @db.VarChar(50)
+  format              String?             @db.VarChar(50)
+  total_copies        Int?                @default(1)
+  available_copies    Int?                @default(1)
+  status              lib_books_status?   @default(Available)
+  created_at          DateTime?           @default(now()) @db.DateTime(0)
+  updated_at          DateTime?           @default(now()) @db.DateTime(0)
+  lib_book_fines      lib_book_fines[]
+  borrow_requests     lib_book_requests[]
+
+  @@index([author_name], map: "idx_author_name")
+  @@index([books_name], map: "idx_books_name")
+  @@index([department], map: "idx_department")
+  @@index([isbn], map: "idx_isbn")
+  @@index([status], map: "idx_status")
+  @@index([subject], map: "idx_subject")
+}
+
+model lib_book_fines {
+  id                                                      Int                   @id @default(autoincrement())
+  student_id                                              Int
+  book_id                                                 Int
+  request_id                                              Int
+  fine_amount                                             Decimal               @db.Decimal(10, 2)
+  reason                                                  lib_book_fines_reason
+  status                                                  lib_book_fines_status @default(Unpaid)
+  description                                             String?               @db.Text
+  due_date                                                DateTime              @db.DateTime(0)
+  paid_date                                               DateTime?             @db.DateTime(0)
+  created_by_staff_id                                     Int
+  created_at                                              DateTime              @default(now()) @db.DateTime(0)
+  updated_at                                              DateTime              @default(now()) @db.DateTime(0)
+  lib_books                                               lib_books             @relation(fields: [book_id], references: [id], onUpdate: Restrict, map: "fk_fine_book")
+  lib_users_lib_book_fines_created_by_staff_idTolib_users lib_users             @relation("lib_book_fines_created_by_staff_idTolib_users", fields: [created_by_staff_id], references: [id], onUpdate: Restrict, map: "fk_fine_created_by_staff")
+  lib_book_requests                                       lib_book_requests     @relation(fields: [request_id], references: [id], onUpdate: Restrict, map: "fk_fine_request")
+  lib_users_lib_book_fines_student_idTolib_users          lib_users             @relation("lib_book_fines_student_idTolib_users", fields: [student_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_fine_student")
+
+  @@index([book_id], map: "idx_fine_book_id")
+  @@index([created_by_staff_id], map: "idx_fine_created_by_staff_id")
+  @@index([due_date], map: "idx_fine_due_date")
+  @@index([reason], map: "idx_fine_reason")
+  @@index([request_id], map: "idx_fine_request_id")
+  @@index([status], map: "idx_fine_status")
+  @@index([student_id], map: "idx_fine_student_id")
+}
+
+enum lib_users_user_role {
+  Super_Admin
+  Admin
+  Staff
+  Student
+}
+
+enum lib_users_status {
+  Active
+  Inactive
+  Suspended
+}
+
+enum lib_users_staff_category {
+  Student
+  Intern
+  Working_Student  @map("Working Student")
+  Regular_Employee @map("Regular Employee")
+  Contractor
+}
+
+enum lib_thesis_documents_status {
+  Pending
+  Under_Review
+  Approved
+  Rejected
+  Revision_Required
+  Archived
+}
+
+enum lib_thesis_documents_submission_status {
+  Under_Review
+  Staff_Approved
+  Staff_Rejected
+  Revision_Requested
+  Super_Admin_Approved
+  Super_Admin_Rejected
+  Published
+  Withdrawn
+}
+
+enum lib_books_status {
+  Available
+  Not_Available @map("Not Available")
+  Lost
+  Damaged
+}
+
+enum lib_book_fines_reason {
+  Damaged
+  Lost
+}
+
+enum lib_book_fines_status {
+  Unpaid
+  Paid
+  Waived
+  Partially_Paid @map("Partially Paid")
+}
+
+enum lib_book_requests_status {
+  Pending
+  Approved
+  Borrowed
+  Returned
+  Overdue
+  Rejected
+  Received
+  Under_Review
+}
