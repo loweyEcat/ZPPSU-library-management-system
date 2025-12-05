@@ -6,14 +6,17 @@ import { requireStaffOrAbove } from "@/lib/auth-library";
 export async function getThesisDocumentsForReview() {
   const session = await requireStaffOrAbove();
 
-  // Get all thesis documents that need staff review or are pending
+  // Get only thesis documents assigned to this staff member
   const documents = await prisma.lib_thesis_documents.findMany({
     where: {
+      assigned_staff_id: session.user.id,
       OR: [
         { submission_status: "Under_Review" },
         { submission_status: "Revision_Requested" },
+        { submission_status: "Super_Admin_Approved" }, // Keep reviewed documents visible
         { status: "Pending" },
         { status: "Under_Review" },
+        { status: "Approved" }, // Keep approved documents visible
       ],
     },
     select: {
@@ -34,6 +37,7 @@ export async function getThesisDocumentsForReview() {
       staff_reviewed_at: true,
       admin_reviewed_at: true,
       approved_at: true,
+      assigned_staff_id: true,
       lib_users_lib_thesis_documents_student_idTolib_users: {
         select: {
           id: true,
@@ -50,7 +54,8 @@ export async function getThesisDocumentsForReview() {
 
   // Serialize dates to strings for client components and map relation
   return documents.map((doc) => {
-    const { lib_users_lib_thesis_documents_student_idTolib_users, ...rest } = doc;
+    const { lib_users_lib_thesis_documents_student_idTolib_users, ...rest } =
+      doc;
     return {
       ...rest,
       student: lib_users_lib_thesis_documents_student_idTolib_users,
@@ -61,4 +66,3 @@ export async function getThesisDocumentsForReview() {
     };
   });
 }
-

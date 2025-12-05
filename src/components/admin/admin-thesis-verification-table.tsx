@@ -57,6 +57,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
 import { ViewThesisDialog } from "@/components/student/view-thesis-dialog";
+import { getStaffMembers } from "@/app/admin/books/actions";
 
 interface ThesisDocument {
   id: number;
@@ -87,6 +88,13 @@ interface ThesisDocument {
     id: number;
     full_name: string;
   } | null;
+  assigned_staff: {
+    id: number;
+    full_name: string;
+    email: string;
+  } | null;
+  assigned_staff_id: number | null;
+  document_type: string | null;
 }
 
 interface AdminThesisVerificationTableProps {
@@ -112,7 +120,9 @@ function formatFileSize(bytes: number): string {
   return (bytes / (1024 * 1024)).toFixed(2) + " MB";
 }
 
-function getStatusBadgeVariant(status: string): "default" | "secondary" | "destructive" | "outline" {
+function getStatusBadgeVariant(
+  status: string
+): "default" | "secondary" | "destructive" | "outline" {
   switch (status) {
     case "Approved":
     case "Super_Admin_Approved":
@@ -134,7 +144,7 @@ function getStatusBadgeVariant(status: string): "default" | "secondary" | "destr
 function getStatusLabel(status: string, submissionStatus: string): string {
   if (submissionStatus === "Staff_Approved") return "Staff Verified";
   if (submissionStatus === "Staff_Rejected") return "Staff Rejected";
-  if (submissionStatus === "Super_Admin_Approved") return "Approved";
+  if (submissionStatus === "Super_Admin_Approved") return "Reviewed";
   if (submissionStatus === "Super_Admin_Rejected") return "Rejected";
   if (submissionStatus === "Published") return "Published";
   if (submissionStatus === "Revision_Requested") return "Revision Required";
@@ -144,22 +154,35 @@ function getStatusLabel(status: string, submissionStatus: string): string {
 
 const ITEMS_PER_PAGE = 10;
 
+interface StaffMember {
+  id: number;
+  full_name: string;
+  email: string;
+}
+
 export function AdminThesisVerificationTable({
   documents,
 }: AdminThesisVerificationTableProps) {
   const router = useRouter();
   const [viewDialogOpen, setViewDialogOpen] = React.useState(false);
   const [reviewDialogOpen, setReviewDialogOpen] = React.useState(false);
-  const [selectedDocument, setSelectedDocument] = React.useState<ThesisDocument | null>(null);
-  const [reviewAction, setReviewAction] = React.useState<"approve" | "reject" | "publish" | null>(null);
+  const [selectedDocument, setSelectedDocument] =
+    React.useState<ThesisDocument | null>(null);
+  const [reviewAction, setReviewAction] = React.useState<
+    "approve" | "reject" | "publish" | null
+  >(null);
   const [reviewNotes, setReviewNotes] = React.useState("");
   const [rejectionReason, setRejectionReason] = React.useState("");
   const [isReviewing, setIsReviewing] = React.useState(false);
+  const [staffMembers, setStaffMembers] = React.useState<StaffMember[]>([]);
+  const [selectedStaffId, setSelectedStaffId] = React.useState<string>("");
+  const [isLoadingStaff, setIsLoadingStaff] = React.useState(false);
 
   // Filter states
   const [searchQuery, setSearchQuery] = React.useState("");
   const [statusFilter, setStatusFilter] = React.useState<string>("all");
-  const [academicYearFilter, setAcademicYearFilter] = React.useState<string>("all");
+  const [academicYearFilter, setAcademicYearFilter] =
+    React.useState<string>("all");
   const [semesterFilter, setSemesterFilter] = React.useState<string>("all");
   const [currentPage, setCurrentPage] = React.useState(1);
 
@@ -187,11 +210,23 @@ export function AdminThesisVerificationTable({
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter((doc) => {
         const titleMatch = doc.title.toLowerCase().includes(query);
-        const researcherMatch = doc.researcher_name.toLowerCase().includes(query);
-        const studentMatch = doc.student.full_name.toLowerCase().includes(query);
-        const academicYearMatch = doc.academic_year?.toLowerCase().includes(query);
+        const researcherMatch = doc.researcher_name
+          .toLowerCase()
+          .includes(query);
+        const studentMatch = doc.student.full_name
+          .toLowerCase()
+          .includes(query);
+        const academicYearMatch = doc.academic_year
+          ?.toLowerCase()
+          .includes(query);
         const semesterMatch = doc.semester?.toLowerCase().includes(query);
-        return titleMatch || researcherMatch || studentMatch || academicYearMatch || semesterMatch;
+        return (
+          titleMatch ||
+          researcherMatch ||
+          studentMatch ||
+          academicYearMatch ||
+          semesterMatch
+        );
       });
     }
 
@@ -220,13 +255,17 @@ export function AdminThesisVerificationTable({
             doc.submission_status === "Super_Admin_Rejected"
           );
         }
-        return doc.submission_status === statusFilter || doc.status === statusFilter;
+        return (
+          doc.submission_status === statusFilter || doc.status === statusFilter
+        );
       });
     }
 
     // Academic year filter
     if (academicYearFilter !== "all") {
-      filtered = filtered.filter((doc) => doc.academic_year === academicYearFilter);
+      filtered = filtered.filter(
+        (doc) => doc.academic_year === academicYearFilter
+      );
     }
 
     // Semester filter
@@ -235,7 +274,13 @@ export function AdminThesisVerificationTable({
     }
 
     return filtered;
-  }, [documents, searchQuery, statusFilter, academicYearFilter, semesterFilter]);
+  }, [
+    documents,
+    searchQuery,
+    statusFilter,
+    academicYearFilter,
+    semesterFilter,
+  ]);
 
   // Pagination
   const totalPages = Math.ceil(filteredDocuments.length / ITEMS_PER_PAGE);
@@ -279,11 +324,35 @@ export function AdminThesisVerificationTable({
     }
   };
 
-  const handleReview = (document: ThesisDocument, action: "approve" | "reject" | "publish") => {
+  // Load staff members when dialog opens
+  React.useEffect(() => {
+    if (reviewDialogOpen && reviewAction === "approve") {
+      loadStaffMembers();
+    }
+  }, [reviewDialogOpen, reviewAction]);
+
+  const loadStaffMembers = async () => {
+    setIsLoadingStaff(true);
+    try {
+      const staff = await getStaffMembers();
+      setStaffMembers(staff);
+    } catch (error) {
+      console.error("Error loading staff members:", error);
+      toast.error("Failed to load staff members.");
+    } finally {
+      setIsLoadingStaff(false);
+    }
+  };
+
+  const handleReview = (
+    document: ThesisDocument,
+    action: "approve" | "reject" | "publish"
+  ) => {
     setSelectedDocument(document);
     setReviewAction(action);
     setReviewNotes("");
     setRejectionReason("");
+    setSelectedStaffId("");
     setReviewDialogOpen(true);
   };
 
@@ -292,17 +361,24 @@ export function AdminThesisVerificationTable({
 
     setIsReviewing(true);
     try {
-      const response = await fetch(`/api/library/thesis/${selectedDocument.id}/admin-review`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          action: reviewAction,
-          review_notes: reviewNotes || null,
-          rejection_reason: rejectionReason || null,
-        }),
-      });
+      const response = await fetch(
+        `/api/library/thesis/${selectedDocument.id}/admin-review`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            action: reviewAction,
+            review_notes: reviewNotes || null,
+            rejection_reason: rejectionReason || null,
+            assigned_staff_id:
+              reviewAction === "approve" && selectedStaffId
+                ? parseInt(selectedStaffId)
+                : null,
+          }),
+        }
+      );
 
       const data = await response.json();
 
@@ -319,6 +395,7 @@ export function AdminThesisVerificationTable({
       setReviewAction(null);
       setReviewNotes("");
       setRejectionReason("");
+      setSelectedStaffId("");
       router.refresh();
     } catch (error) {
       console.error("Failed to review thesis:", error);
@@ -389,7 +466,9 @@ export function AdminThesisVerificationTable({
                 <SelectItem value="approved">Admin Approved</SelectItem>
                 <SelectItem value="published">Published</SelectItem>
                 <SelectItem value="rejected">Rejected</SelectItem>
-                <SelectItem value="Revision_Requested">Revision Required</SelectItem>
+                <SelectItem value="Revision_Requested">
+                  Revision Required
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -397,8 +476,13 @@ export function AdminThesisVerificationTable({
           {/* Academic Year Filter */}
           {uniqueAcademicYears.length > 0 && (
             <div className="flex-1 min-w-[150px]">
-              <label className="text-sm font-medium mb-2 block">Academic Year</label>
-              <Select value={academicYearFilter} onValueChange={setAcademicYearFilter}>
+              <label className="text-sm font-medium mb-2 block">
+                Academic Year
+              </label>
+              <Select
+                value={academicYearFilter}
+                onValueChange={setAcademicYearFilter}
+              >
                 <SelectTrigger className="h-10">
                   <SelectValue placeholder="All Years" />
                 </SelectTrigger>
@@ -446,7 +530,10 @@ export function AdminThesisVerificationTable({
         {/* Results Count */}
         <div className="flex items-center justify-between text-sm text-muted-foreground">
           <span>
-            Showing <span className="font-semibold text-foreground">{filteredDocuments.length}</span>{" "}
+            Showing{" "}
+            <span className="font-semibold text-foreground">
+              {filteredDocuments.length}
+            </span>{" "}
             {filteredDocuments.length === 1 ? "document" : "documents"}
             {hasActiveFilters && (
               <span className="ml-2">(of {documents.length} total)</span>
@@ -463,20 +550,25 @@ export function AdminThesisVerificationTable({
               <TableRow className="bg-muted/50 hover:bg-muted/50">
                 <TableHead className="font-semibold">Student Name</TableHead>
                 <TableHead className="font-semibold">Research Title</TableHead>
-                <TableHead className="font-semibold">Researchers</TableHead>
                 <TableHead className="font-semibold">Academic Year</TableHead>
                 <TableHead className="font-semibold">Semester</TableHead>
-                <TableHead className="font-semibold">Staff Reviewer</TableHead>
+                <TableHead className="font-semibold">Assigned Staff</TableHead>
                 <TableHead className="font-semibold">Document</TableHead>
+                <TableHead className="font-semibold">Document Type</TableHead>
                 <TableHead className="font-semibold">Date Submitted</TableHead>
                 <TableHead className="font-semibold">Status</TableHead>
-                <TableHead className="text-right font-semibold">Actions</TableHead>
+                <TableHead className="text-right font-semibold">
+                  Actions
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {paginatedDocuments.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={10} className="text-center py-8 text-muted-foreground">
+                  <TableCell
+                    colSpan={10}
+                    className="text-center py-8 text-muted-foreground"
+                  >
                     {documents.length === 0
                       ? "No thesis documents found."
                       : "No documents match your filters. Try adjusting your search criteria."}
@@ -487,7 +579,9 @@ export function AdminThesisVerificationTable({
                   <TableRow key={document.id}>
                     <TableCell>
                       <div>
-                        <div className="font-medium">{document.student.full_name}</div>
+                        <div className="font-medium">
+                          {document.student.full_name}
+                        </div>
                         {document.student.student_id && (
                           <div className="text-xs text-muted-foreground">
                             ID: {document.student.student_id}
@@ -496,31 +590,32 @@ export function AdminThesisVerificationTable({
                       </div>
                     </TableCell>
                     <TableCell>
-                      <div className="max-w-[300px] truncate" title={document.title}>
+                      <div
+                        className="max-w-[300px] truncate"
+                        title={document.title}
+                      >
                         {document.title}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex flex-wrap gap-1 max-w-[200px]">
-                        {document.researcher_name
-                          ? document.researcher_name.split(",").map((name, index) => (
-                              <span
-                                key={index}
-                                className="inline-flex items-center px-2 py-0.5 rounded text-xs bg-secondary text-secondary-foreground font-medium"
-                              >
-                                {name.trim()}
-                              </span>
-                            ))
-                          : "N/A"}
                       </div>
                     </TableCell>
                     <TableCell>{document.academic_year || "N/A"}</TableCell>
                     <TableCell>{document.semester || "N/A"}</TableCell>
                     <TableCell>
-                      {document.reviewed_by_staff ? (
-                        <span className="text-sm">{document.reviewed_by_staff.full_name}</span>
+                      {document.assigned_staff ? (
+                        <div className="flex flex-col">
+                          <span className="text-sm font-medium">
+                            {document.assigned_staff.full_name}
+                          </span>
+                          {document.staff_reviewed_at && (
+                            <span className="text-xs text-muted-foreground">
+                              Date Reviewed:{" "}
+                              {formatDate(document.staff_reviewed_at)}
+                            </span>
+                          )}
+                        </div>
                       ) : (
-                        <span className="text-sm text-muted-foreground">Not reviewed</span>
+                        <span className="text-sm text-muted-foreground">
+                          Not assigned
+                        </span>
                       )}
                     </TableCell>
                     <TableCell>
@@ -536,10 +631,22 @@ export function AdminThesisVerificationTable({
                         </div>
                       </div>
                     </TableCell>
+                    <TableCell>
+                      <Badge variant="outline">
+                        {document.document_type || "N/A"}
+                      </Badge>
+                    </TableCell>
                     <TableCell>{formatDate(document.submitted_at)}</TableCell>
                     <TableCell>
-                      <Badge variant={getStatusBadgeVariant(document.submission_status)}>
-                        {getStatusLabel(document.status, document.submission_status)}
+                      <Badge
+                        variant={getStatusBadgeVariant(
+                          document.submission_status
+                        )}
+                      >
+                        {getStatusLabel(
+                          document.status,
+                          document.submission_status
+                        )}
                       </Badge>
                     </TableCell>
                     <TableCell className="text-right">
@@ -551,25 +658,31 @@ export function AdminThesisVerificationTable({
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => handleView(document)}>
+                          <DropdownMenuItem
+                            onClick={() => handleView(document)}
+                          >
                             <Eye className="mr-2 h-4 w-4" />
                             View Details
                           </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleDownload(document)}>
+                          <DropdownMenuItem
+                            onClick={() => handleDownload(document)}
+                          >
                             <Download className="mr-2 h-4 w-4" />
                             Download
                           </DropdownMenuItem>
-                          {(document.submission_status === "Staff_Approved" ||
+                          {/* Show approve/reject for documents that haven't been assigned to staff yet */}
+                          {(!document.assigned_staff_id ||
                             document.submission_status === "Under_Review" ||
-                            document.status === "Pending" ||
-                            document.status === "Under_Review") && (
+                            document.status === "Pending") && (
                             <>
                               <DropdownMenuItem
-                                onClick={() => handleReview(document, "approve")}
+                                onClick={() =>
+                                  handleReview(document, "approve")
+                                }
                                 className="text-green-600"
                               >
                                 <CheckCircle2 className="mr-2 h-4 w-4" />
-                                Approve
+                                Approve & Assign Staff
                               </DropdownMenuItem>
                               <DropdownMenuItem
                                 onClick={() => handleReview(document, "reject")}
@@ -580,7 +693,9 @@ export function AdminThesisVerificationTable({
                               </DropdownMenuItem>
                             </>
                           )}
-                          {document.submission_status === "Super_Admin_Approved" && (
+                          {/* Show publish option for documents that have been reviewed by staff */}
+                          {document.submission_status ===
+                            "Super_Admin_Approved" && (
                             <DropdownMenuItem
                               onClick={() => handleReview(document, "publish")}
                               className="text-blue-600"
@@ -604,11 +719,18 @@ export function AdminThesisVerificationTable({
       {totalPages > 1 && (
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t">
           <div className="text-sm text-muted-foreground font-medium">
-            Showing <span className="font-semibold text-foreground">{startIndex + 1}</span> to{" "}
+            Showing{" "}
+            <span className="font-semibold text-foreground">
+              {startIndex + 1}
+            </span>{" "}
+            to{" "}
             <span className="font-semibold text-foreground">
               {Math.min(endIndex, filteredDocuments.length)}
             </span>{" "}
-            of <span className="font-semibold text-foreground">{filteredDocuments.length}</span>{" "}
+            of{" "}
+            <span className="font-semibold text-foreground">
+              {filteredDocuments.length}
+            </span>{" "}
             {filteredDocuments.length === 1 ? "document" : "documents"}
           </div>
           <Pagination>
@@ -621,31 +743,36 @@ export function AdminThesisVerificationTable({
                     if (currentPage > 1) setCurrentPage(currentPage - 1);
                   }}
                   className={
-                    currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"
+                    currentPage === 1
+                      ? "pointer-events-none opacity-50"
+                      : "cursor-pointer"
                   }
                 />
               </PaginationItem>
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                <PaginationItem key={page}>
-                  <PaginationLink
-                    href="#"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setCurrentPage(page);
-                    }}
-                    isActive={currentPage === page}
-                    className="cursor-pointer"
-                  >
-                    {page}
-                  </PaginationLink>
-                </PaginationItem>
-              ))}
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                (page) => (
+                  <PaginationItem key={page}>
+                    <PaginationLink
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setCurrentPage(page);
+                      }}
+                      isActive={currentPage === page}
+                      className="cursor-pointer"
+                    >
+                      {page}
+                    </PaginationLink>
+                  </PaginationItem>
+                )
+              )}
               <PaginationItem>
                 <PaginationNext
                   href="#"
                   onClick={(e) => {
                     e.preventDefault();
-                    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+                    if (currentPage < totalPages)
+                      setCurrentPage(currentPage + 1);
                   }}
                   className={
                     currentPage === totalPages
@@ -681,19 +808,55 @@ export function AdminThesisVerificationTable({
             </DialogTitle>
             <DialogDescription>
               {reviewAction === "approve"
-                ? "Approve this thesis document. It will be marked as approved and can be published."
+                ? "Approve this thesis document and assign it to a staff member for verification. The document will be set to 'Under Review' status until the assigned staff completes their review."
                 : reviewAction === "reject"
                 ? "Reject this thesis document. Please provide a reason for rejection."
-                : "Publish this thesis document. It will be made available publicly."}
+                : "Publish this thesis document. It will be made available publicly. Only documents that have been reviewed and approved by staff can be published."}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
             {selectedDocument && (
               <div className="p-3 bg-muted rounded-md">
-                <div className="text-sm font-medium">{selectedDocument.title}</div>
+                <div className="text-sm font-medium">
+                  {selectedDocument.title}
+                </div>
                 <div className="text-xs text-muted-foreground mt-1">
                   Submitted by: {selectedDocument.student.full_name}
                 </div>
+              </div>
+            )}
+            {reviewAction === "approve" && (
+              <div className="space-y-2">
+                <Label htmlFor="assigned-staff">
+                  Assign Staff for Verification{" "}
+                  <span className="text-destructive">*</span>
+                </Label>
+                {isLoadingStaff ? (
+                  <div className="text-sm text-muted-foreground">
+                    Loading staff members...
+                  </div>
+                ) : (
+                  <Select
+                    value={selectedStaffId}
+                    onValueChange={setSelectedStaffId}
+                    required
+                  >
+                    <SelectTrigger id="assigned-staff" className="h-11">
+                      <SelectValue placeholder="Select a staff member to assign" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {staffMembers.map((staff) => (
+                        <SelectItem key={staff.id} value={staff.id.toString()}>
+                          {staff.full_name} ({staff.email})
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+                <p className="text-xs text-muted-foreground">
+                  Only the assigned staff member will be able to see and verify
+                  this document.
+                </p>
               </div>
             )}
             {reviewAction === "reject" && (
@@ -738,6 +901,7 @@ export function AdminThesisVerificationTable({
                 setReviewAction(null);
                 setReviewNotes("");
                 setRejectionReason("");
+                setSelectedStaffId("");
               }}
               disabled={isReviewing}
             >
@@ -746,7 +910,9 @@ export function AdminThesisVerificationTable({
             <Button
               onClick={confirmReview}
               disabled={
-                isReviewing || (reviewAction === "reject" && !rejectionReason.trim())
+                isReviewing ||
+                (reviewAction === "reject" && !rejectionReason.trim()) ||
+                (reviewAction === "approve" && !selectedStaffId)
               }
               variant={
                 reviewAction === "approve" || reviewAction === "publish"
@@ -768,4 +934,3 @@ export function AdminThesisVerificationTable({
     </>
   );
 }
-

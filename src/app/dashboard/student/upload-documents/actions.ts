@@ -27,6 +27,7 @@ export async function getStudentThesisDocuments() {
       admin_reviewed_at: true,
       approved_at: true,
       date_updated: true,
+      document_type: true,
     },
     orderBy: {
       submitted_at: "desc",

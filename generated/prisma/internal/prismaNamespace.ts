@@ -80,12 +80,12 @@ export type PrismaVersion = {
 }
 
 /**
- * Prisma Client JS version: 7.0.1
- * Query Engine version: f09f2815f091dbba658cdcd2264306d88bb5bda6
+ * Prisma Client JS version: 7.1.0
+ * Query Engine version: ab635e6b9d606fa5c8fb8b1a7f909c3c3c1c98ba
  */
 export const prismaVersion: PrismaVersion = {
-  client: "7.0.1",
-  engine: "f09f2815f091dbba658cdcd2264306d88bb5bda6"
+  client: "7.1.0",
+  engine: "ab635e6b9d606fa5c8fb8b1a7f909c3c3c1c98ba"
 }
 
 /**
@@ -898,6 +898,7 @@ export const Lib_thesis_documentsScalarFieldEnum = {
   submission_status: 'submission_status',
   reviewed_by_staff_id: 'reviewed_by_staff_id',
   reviewed_by_admin_id: 'reviewed_by_admin_id',
+  assigned_staff_id: 'assigned_staff_id',
   staff_review_notes: 'staff_review_notes',
   admin_review_notes: 'admin_review_notes',
   rejection_reason: 'rejection_reason',
@@ -907,7 +908,18 @@ export const Lib_thesis_documentsScalarFieldEnum = {
   admin_reviewed_at: 'admin_reviewed_at',
   approved_at: 'approved_at',
   published_at: 'published_at',
-  date_updated: 'date_updated'
+  date_updated: 'date_updated',
+  document_type: 'document_type',
+  journal_name: 'journal_name',
+  journal_volume: 'journal_volume',
+  journal_issue: 'journal_issue',
+  doi: 'doi',
+  co_authors: 'co_authors',
+  adviser_name: 'adviser_name',
+  team_members: 'team_members',
+  project_type: 'project_type',
+  capstone_category: 'capstone_category',
+  program: 'program'
 } as const
 
 export type Lib_thesis_documentsScalarFieldEnum = (typeof Lib_thesis_documentsScalarFieldEnum)[keyof typeof Lib_thesis_documentsScalarFieldEnum]
@@ -1035,7 +1047,17 @@ export const lib_thesis_documentsOrderByRelevanceFieldEnum = {
   staff_review_notes: 'staff_review_notes',
   admin_review_notes: 'admin_review_notes',
   rejection_reason: 'rejection_reason',
-  internal_notes: 'internal_notes'
+  internal_notes: 'internal_notes',
+  journal_name: 'journal_name',
+  journal_volume: 'journal_volume',
+  journal_issue: 'journal_issue',
+  doi: 'doi',
+  co_authors: 'co_authors',
+  adviser_name: 'adviser_name',
+  team_members: 'team_members',
+  project_type: 'project_type',
+  capstone_category: 'capstone_category',
+  program: 'program'
 } as const
 
 export type lib_thesis_documentsOrderByRelevanceFieldEnum = (typeof lib_thesis_documentsOrderByRelevanceFieldEnum)[keyof typeof lib_thesis_documentsOrderByRelevanceFieldEnum]
@@ -1138,6 +1160,13 @@ export type Enumlib_thesis_documents_submission_statusFieldRefInput<$PrismaModel
 
 
 /**
+ * Reference to a field of type 'lib_thesis_documents_document_type'
+ */
+export type Enumlib_thesis_documents_document_typeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'lib_thesis_documents_document_type'>
+    
+
+
+/**
  * Reference to a field of type 'lib_book_requests_status'
  */
 export type Enumlib_book_requests_statusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'lib_book_requests_status'>
@@ -1227,7 +1256,7 @@ export type PrismaClientOptions = ({
    *  { emit: 'stdout', level: 'error' }
    * 
    * ```
-   * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/logging#the-log-option).
+   * Read more in our [docs](https://pris.ly/d/logging).
    */
   log?: (LogLevel | LogDefinition)[]
   /**
@@ -1255,6 +1284,22 @@ export type PrismaClientOptions = ({
    * ```
    */
   omit?: GlobalOmitConfig
+  /**
+   * SQL commenter plugins that add metadata to SQL queries as comments.
+   * Comments follow the sqlcommenter format: https://google.github.io/sqlcommenter/
+   * 
+   * @example
+   * ```
+   * const prisma = new PrismaClient({
+   *   adapter,
+   *   comments: [
+   *     traceContext(),
+   *     queryInsights(),
+   *   ],
+   * })
+   * ```
+   */
+  comments?: runtime.SqlCommenterPlugin[]
 }
 export type GlobalOmitConfig = {
   lib_users?: Prisma.lib_usersOmit

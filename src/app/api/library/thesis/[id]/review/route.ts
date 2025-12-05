@@ -41,13 +41,14 @@ export async function PATCH(
 
     const { action, review_notes, rejection_reason } = validation.data;
 
-    // Check if thesis exists
+    // Check if thesis exists and is assigned to this staff member
     const existingThesis = await prisma.lib_thesis_documents.findUnique({
       where: { id: thesisId },
       select: {
         id: true,
         status: true,
         submission_status: true,
+        assigned_staff_id: true,
       },
     });
 
@@ -58,14 +59,24 @@ export async function PATCH(
       );
     }
 
+    // Verify that the document is assigned to this staff member
+    if (existingThesis.assigned_staff_id !== session.user.id) {
+      return NextResponse.json(
+        { message: "You are not assigned to review this document." },
+        { status: 403 }
+      );
+    }
+
     const updateData: any = {
       reviewed_by_staff_id: session.user.id,
       staff_reviewed_at: new Date(),
     };
 
     if (action === "approve") {
-      updateData.submission_status = "Staff_Approved";
-      updateData.status = "Under_Review";
+      // After staff approval, document is ready for publishing
+      updateData.submission_status = "Super_Admin_Approved";
+      updateData.status = "Approved";
+      updateData.approved_at = new Date();
       if (review_notes) {
         updateData.staff_review_notes = sanitizeInput(review_notes);
       }
@@ -100,7 +111,13 @@ export async function PATCH(
 
     return NextResponse.json(
       {
-        message: `Thesis document ${action === "approve" ? "approved" : action === "reject" ? "rejected" : "marked for revision"} successfully.`,
+        message: `Thesis document ${
+          action === "approve"
+            ? "approved"
+            : action === "reject"
+            ? "rejected"
+            : "marked for revision"
+        } successfully.`,
         thesis: updatedThesis,
       },
       {
@@ -120,4 +137,3 @@ export async function PATCH(
     );
   }
 }
-

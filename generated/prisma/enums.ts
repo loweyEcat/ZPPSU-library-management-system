@@ -105,3 +105,12 @@ export const lib_book_requests_status = {
 } as const
 
 export type lib_book_requests_status = (typeof lib_book_requests_status)[keyof typeof lib_book_requests_status]
+
+
+export const lib_thesis_documents_document_type = {
+  Thesis: 'Thesis',
+  Journal: 'Journal',
+  Capstone: 'Capstone'
+} as const
+
+export type lib_thesis_documents_document_type = (typeof lib_thesis_documents_document_type)[keyof typeof lib_thesis_documents_document_type]

@@ -64,6 +64,7 @@ interface ThesisDocument {
   staff_reviewed_at: string | null;
   admin_reviewed_at: string | null;
   approved_at: string | null;
+  document_type: string | null;
 }
 
 interface ThesisDocumentsTableProps {
@@ -467,7 +468,7 @@ export function ThesisDocumentsTable({ documents, uploaderName, onRefresh }: The
               <TableHead className="font-semibold">Semester</TableHead>
               <TableHead className="font-semibold">Uploaded Document</TableHead>
               <TableHead className="font-semibold">Date Uploaded</TableHead>
-              <TableHead className="font-semibold">Date Requested</TableHead>
+              <TableHead className="font-semibold">Document Type</TableHead>
               <TableHead className="font-semibold">Date Approved</TableHead>
               <TableHead className="font-semibold">Status</TableHead>
               <TableHead className="text-right font-semibold">Actions</TableHead>
@@ -510,9 +511,9 @@ export function ThesisDocumentsTable({ documents, uploaderName, onRefresh }: The
                   </TableCell>
                   <TableCell>{formatDate(document.submitted_at)}</TableCell>
                   <TableCell>
-                    {document.staff_reviewed_at
-                      ? formatDate(document.staff_reviewed_at)
-                      : "N/A"}
+                    <Badge variant="outline">
+                      {document.document_type || "N/A"}
+                    </Badge>
                   </TableCell>
                   <TableCell>
                     {document.approved_at ? formatDate(document.approved_at) : "N/A"}

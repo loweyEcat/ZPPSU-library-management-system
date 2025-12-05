@@ -32,6 +32,7 @@ export type Lib_thesis_documentsAvgAggregateOutputType = {
   file_size: number | null
   reviewed_by_staff_id: number | null
   reviewed_by_admin_id: number | null
+  assigned_staff_id: number | null
 }
 
 export type Lib_thesis_documentsSumAggregateOutputType = {
@@ -40,6 +41,7 @@ export type Lib_thesis_documentsSumAggregateOutputType = {
   file_size: number | null
   reviewed_by_staff_id: number | null
   reviewed_by_admin_id: number | null
+  assigned_staff_id: number | null
 }
 
 export type Lib_thesis_documentsMinAggregateOutputType = {
@@ -62,6 +64,7 @@ export type Lib_thesis_documentsMinAggregateOutputType = {
   submission_status: $Enums.lib_thesis_documents_submission_status | null
   reviewed_by_staff_id: number | null
   reviewed_by_admin_id: number | null
+  assigned_staff_id: number | null
   staff_review_notes: string | null
   admin_review_notes: string | null
   rejection_reason: string | null
@@ -72,6 +75,17 @@ export type Lib_thesis_documentsMinAggregateOutputType = {
   approved_at: Date | null
   published_at: Date | null
   date_updated: Date | null
+  document_type: $Enums.lib_thesis_documents_document_type | null
+  journal_name: string | null
+  journal_volume: string | null
+  journal_issue: string | null
+  doi: string | null
+  co_authors: string | null
+  adviser_name: string | null
+  team_members: string | null
+  project_type: string | null
+  capstone_category: string | null
+  program: string | null
 }
 
 export type Lib_thesis_documentsMaxAggregateOutputType = {
@@ -94,6 +108,7 @@ export type Lib_thesis_documentsMaxAggregateOutputType = {
   submission_status: $Enums.lib_thesis_documents_submission_status | null
   reviewed_by_staff_id: number | null
   reviewed_by_admin_id: number | null
+  assigned_staff_id: number | null
   staff_review_notes: string | null
   admin_review_notes: string | null
   rejection_reason: string | null
@@ -104,6 +119,17 @@ export type Lib_thesis_documentsMaxAggregateOutputType = {
   approved_at: Date | null
   published_at: Date | null
   date_updated: Date | null
+  document_type: $Enums.lib_thesis_documents_document_type | null
+  journal_name: string | null
+  journal_volume: string | null
+  journal_issue: string | null
+  doi: string | null
+  co_authors: string | null
+  adviser_name: string | null
+  team_members: string | null
+  project_type: string | null
+  capstone_category: string | null
+  program: string | null
 }
 
 export type Lib_thesis_documentsCountAggregateOutputType = {
@@ -126,6 +152,7 @@ export type Lib_thesis_documentsCountAggregateOutputType = {
   submission_status: number
   reviewed_by_staff_id: number
   reviewed_by_admin_id: number
+  assigned_staff_id: number
   staff_review_notes: number
   admin_review_notes: number
   rejection_reason: number
@@ -136,6 +163,17 @@ export type Lib_thesis_documentsCountAggregateOutputType = {
   approved_at: number
   published_at: number
   date_updated: number
+  document_type: number
+  journal_name: number
+  journal_volume: number
+  journal_issue: number
+  doi: number
+  co_authors: number
+  adviser_name: number
+  team_members: number
+  project_type: number
+  capstone_category: number
+  program: number
   _all: number
 }
 
@@ -146,6 +184,7 @@ export type Lib_thesis_documentsAvgAggregateInputType = {
   file_size?: true
   reviewed_by_staff_id?: true
   reviewed_by_admin_id?: true
+  assigned_staff_id?: true
 }
 
 export type Lib_thesis_documentsSumAggregateInputType = {
@@ -154,6 +193,7 @@ export type Lib_thesis_documentsSumAggregateInputType = {
   file_size?: true
   reviewed_by_staff_id?: true
   reviewed_by_admin_id?: true
+  assigned_staff_id?: true
 }
 
 export type Lib_thesis_documentsMinAggregateInputType = {
@@ -176,6 +216,7 @@ export type Lib_thesis_documentsMinAggregateInputType = {
   submission_status?: true
   reviewed_by_staff_id?: true
   reviewed_by_admin_id?: true
+  assigned_staff_id?: true
   staff_review_notes?: true
   admin_review_notes?: true
   rejection_reason?: true
@@ -186,6 +227,17 @@ export type Lib_thesis_documentsMinAggregateInputType = {
   approved_at?: true
   published_at?: true
   date_updated?: true
+  document_type?: true
+  journal_name?: true
+  journal_volume?: true
+  journal_issue?: true
+  doi?: true
+  co_authors?: true
+  adviser_name?: true
+  team_members?: true
+  project_type?: true
+  capstone_category?: true
+  program?: true
 }
 
 export type Lib_thesis_documentsMaxAggregateInputType = {
@@ -208,6 +260,7 @@ export type Lib_thesis_documentsMaxAggregateInputType = {
   submission_status?: true
   reviewed_by_staff_id?: true
   reviewed_by_admin_id?: true
+  assigned_staff_id?: true
   staff_review_notes?: true
   admin_review_notes?: true
   rejection_reason?: true
@@ -218,6 +271,17 @@ export type Lib_thesis_documentsMaxAggregateInputType = {
   approved_at?: true
   published_at?: true
   date_updated?: true
+  document_type?: true
+  journal_name?: true
+  journal_volume?: true
+  journal_issue?: true
+  doi?: true
+  co_authors?: true
+  adviser_name?: true
+  team_members?: true
+  project_type?: true
+  capstone_category?: true
+  program?: true
 }
 
 export type Lib_thesis_documentsCountAggregateInputType = {
@@ -240,6 +304,7 @@ export type Lib_thesis_documentsCountAggregateInputType = {
   submission_status?: true
   reviewed_by_staff_id?: true
   reviewed_by_admin_id?: true
+  assigned_staff_id?: true
   staff_review_notes?: true
   admin_review_notes?: true
   rejection_reason?: true
@@ -250,6 +315,17 @@ export type Lib_thesis_documentsCountAggregateInputType = {
   approved_at?: true
   published_at?: true
   date_updated?: true
+  document_type?: true
+  journal_name?: true
+  journal_volume?: true
+  journal_issue?: true
+  doi?: true
+  co_authors?: true
+  adviser_name?: true
+  team_members?: true
+  project_type?: true
+  capstone_category?: true
+  program?: true
   _all?: true
 }
 
@@ -359,6 +435,7 @@ export type Lib_thesis_documentsGroupByOutputType = {
   submission_status: $Enums.lib_thesis_documents_submission_status
   reviewed_by_staff_id: number | null
   reviewed_by_admin_id: number | null
+  assigned_staff_id: number | null
   staff_review_notes: string | null
   admin_review_notes: string | null
   rejection_reason: string | null
@@ -369,6 +446,17 @@ export type Lib_thesis_documentsGroupByOutputType = {
   approved_at: Date | null
   published_at: Date | null
   date_updated: Date
+  document_type: $Enums.lib_thesis_documents_document_type
+  journal_name: string | null
+  journal_volume: string | null
+  journal_issue: string | null
+  doi: string | null
+  co_authors: string | null
+  adviser_name: string | null
+  team_members: string | null
+  project_type: string | null
+  capstone_category: string | null
+  program: string | null
   _count: Lib_thesis_documentsCountAggregateOutputType | null
   _avg: Lib_thesis_documentsAvgAggregateOutputType | null
   _sum: Lib_thesis_documentsSumAggregateOutputType | null
@@ -414,6 +502,7 @@ export type lib_thesis_documentsWhereInput = {
   submission_status?: Prisma.Enumlib_thesis_documents_submission_statusFilter<"lib_thesis_documents"> | $Enums.lib_thesis_documents_submission_status
   reviewed_by_staff_id?: Prisma.IntNullableFilter<"lib_thesis_documents"> | number | null
   reviewed_by_admin_id?: Prisma.IntNullableFilter<"lib_thesis_documents"> | number | null
+  assigned_staff_id?: Prisma.IntNullableFilter<"lib_thesis_documents"> | number | null
   staff_review_notes?: Prisma.StringNullableFilter<"lib_thesis_documents"> | string | null
   admin_review_notes?: Prisma.StringNullableFilter<"lib_thesis_documents"> | string | null
   rejection_reason?: Prisma.StringNullableFilter<"lib_thesis_documents"> | string | null
@@ -424,8 +513,20 @@ export type lib_thesis_documentsWhereInput = {
   approved_at?: Prisma.DateTimeNullableFilter<"lib_thesis_documents"> | Date | string | null
   published_at?: Prisma.DateTimeNullableFilter<"lib_thesis_documents"> | Date | string | null
   date_updated?: Prisma.DateTimeFilter<"lib_thesis_documents"> | Date | string
+  document_type?: Prisma.Enumlib_thesis_documents_document_typeFilter<"lib_thesis_documents"> | $Enums.lib_thesis_documents_document_type
+  journal_name?: Prisma.StringNullableFilter<"lib_thesis_documents"> | string | null
+  journal_volume?: Prisma.StringNullableFilter<"lib_thesis_documents"> | string | null
+  journal_issue?: Prisma.StringNullableFilter<"lib_thesis_documents"> | string | null
+  doi?: Prisma.StringNullableFilter<"lib_thesis_documents"> | string | null
+  co_authors?: Prisma.StringNullableFilter<"lib_thesis_documents"> | string | null
+  adviser_name?: Prisma.StringNullableFilter<"lib_thesis_documents"> | string | null
+  team_members?: Prisma.StringNullableFilter<"lib_thesis_documents"> | string | null
+  project_type?: Prisma.StringNullableFilter<"lib_thesis_documents"> | string | null
+  capstone_category?: Prisma.StringNullableFilter<"lib_thesis_documents"> | string | null
+  program?: Prisma.StringNullableFilter<"lib_thesis_documents"> | string | null
   lib_users_lib_thesis_documents_reviewed_by_admin_idTolib_users?: Prisma.XOR<Prisma.Lib_usersNullableScalarRelationFilter, Prisma.lib_usersWhereInput> | null
   lib_users_lib_thesis_documents_reviewed_by_staff_idTolib_users?: Prisma.XOR<Prisma.Lib_usersNullableScalarRelationFilter, Prisma.lib_usersWhereInput> | null
+  lib_users_lib_thesis_documents_assigned_staff_idTolib_users?: Prisma.XOR<Prisma.Lib_usersNullableScalarRelationFilter, Prisma.lib_usersWhereInput> | null
   lib_users_lib_thesis_documents_student_idTolib_users?: Prisma.XOR<Prisma.Lib_usersScalarRelationFilter, Prisma.lib_usersWhereInput>
 }
 
@@ -449,6 +550,7 @@ export type lib_thesis_documentsOrderByWithRelationInput = {
   submission_status?: Prisma.SortOrder
   reviewed_by_staff_id?: Prisma.SortOrderInput | Prisma.SortOrder
   reviewed_by_admin_id?: Prisma.SortOrderInput | Prisma.SortOrder
+  assigned_staff_id?: Prisma.SortOrderInput | Prisma.SortOrder
   staff_review_notes?: Prisma.SortOrderInput | Prisma.SortOrder
   admin_review_notes?: Prisma.SortOrderInput | Prisma.SortOrder
   rejection_reason?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -459,8 +561,20 @@ export type lib_thesis_documentsOrderByWithRelationInput = {
   approved_at?: Prisma.SortOrderInput | Prisma.SortOrder
   published_at?: Prisma.SortOrderInput | Prisma.SortOrder
   date_updated?: Prisma.SortOrder
+  document_type?: Prisma.SortOrder
+  journal_name?: Prisma.SortOrderInput | Prisma.SortOrder
+  journal_volume?: Prisma.SortOrderInput | Prisma.SortOrder
+  journal_issue?: Prisma.SortOrderInput | Prisma.SortOrder
+  doi?: Prisma.SortOrderInput | Prisma.SortOrder
+  co_authors?: Prisma.SortOrderInput | Prisma.SortOrder
+  adviser_name?: Prisma.SortOrderInput | Prisma.SortOrder
+  team_members?: Prisma.SortOrderInput | Prisma.SortOrder
+  project_type?: Prisma.SortOrderInput | Prisma.SortOrder
+  capstone_category?: Prisma.SortOrderInput | Prisma.SortOrder
+  program?: Prisma.SortOrderInput | Prisma.SortOrder
   lib_users_lib_thesis_documents_reviewed_by_admin_idTolib_users?: Prisma.lib_usersOrderByWithRelationInput
   lib_users_lib_thesis_documents_reviewed_by_staff_idTolib_users?: Prisma.lib_usersOrderByWithRelationInput
+  lib_users_lib_thesis_documents_assigned_staff_idTolib_users?: Prisma.lib_usersOrderByWithRelationInput
   lib_users_lib_thesis_documents_student_idTolib_users?: Prisma.lib_usersOrderByWithRelationInput
   _relevance?: Prisma.lib_thesis_documentsOrderByRelevanceInput
 }
@@ -488,6 +602,7 @@ export type lib_thesis_documentsWhereUniqueInput = Prisma.AtLeast<{
   submission_status?: Prisma.Enumlib_thesis_documents_submission_statusFilter<"lib_thesis_documents"> | $Enums.lib_thesis_documents_submission_status
   reviewed_by_staff_id?: Prisma.IntNullableFilter<"lib_thesis_documents"> | number | null
   reviewed_by_admin_id?: Prisma.IntNullableFilter<"lib_thesis_documents"> | number | null
+  assigned_staff_id?: Prisma.IntNullableFilter<"lib_thesis_documents"> | number | null
   staff_review_notes?: Prisma.StringNullableFilter<"lib_thesis_documents"> | string | null
   admin_review_notes?: Prisma.StringNullableFilter<"lib_thesis_documents"> | string | null
   rejection_reason?: Prisma.StringNullableFilter<"lib_thesis_documents"> | string | null
@@ -498,8 +613,20 @@ export type lib_thesis_documentsWhereUniqueInput = Prisma.AtLeast<{
   approved_at?: Prisma.DateTimeNullableFilter<"lib_thesis_documents"> | Date | string | null
   published_at?: Prisma.DateTimeNullableFilter<"lib_thesis_documents"> | Date | string | null
   date_updated?: Prisma.DateTimeFilter<"lib_thesis_documents"> | Date | string
+  document_type?: Prisma.Enumlib_thesis_documents_document_typeFilter<"lib_thesis_documents"> | $Enums.lib_thesis_documents_document_type
+  journal_name?: Prisma.StringNullableFilter<"lib_thesis_documents"> | string | null
+  journal_volume?: Prisma.StringNullableFilter<"lib_thesis_documents"> | string | null
+  journal_issue?: Prisma.StringNullableFilter<"lib_thesis_documents"> | string | null
+  doi?: Prisma.StringNullableFilter<"lib_thesis_documents"> | string | null
+  co_authors?: Prisma.StringNullableFilter<"lib_thesis_documents"> | string | null
+  adviser_name?: Prisma.StringNullableFilter<"lib_thesis_documents"> | string | null
+  team_members?: Prisma.StringNullableFilter<"lib_thesis_documents"> | string | null
+  project_type?: Prisma.StringNullableFilter<"lib_thesis_documents"> | string | null
+  capstone_category?: Prisma.StringNullableFilter<"lib_thesis_documents"> | string | null
+  program?: Prisma.StringNullableFilter<"lib_thesis_documents"> | string | null
   lib_users_lib_thesis_documents_reviewed_by_admin_idTolib_users?: Prisma.XOR<Prisma.Lib_usersNullableScalarRelationFilter, Prisma.lib_usersWhereInput> | null
   lib_users_lib_thesis_documents_reviewed_by_staff_idTolib_users?: Prisma.XOR<Prisma.Lib_usersNullableScalarRelationFilter, Prisma.lib_usersWhereInput> | null
+  lib_users_lib_thesis_documents_assigned_staff_idTolib_users?: Prisma.XOR<Prisma.Lib_usersNullableScalarRelationFilter, Prisma.lib_usersWhereInput> | null
   lib_users_lib_thesis_documents_student_idTolib_users?: Prisma.XOR<Prisma.Lib_usersScalarRelationFilter, Prisma.lib_usersWhereInput>
 }, "id">
 
@@ -523,6 +650,7 @@ export type lib_thesis_documentsOrderByWithAggregationInput = {
   submission_status?: Prisma.SortOrder
   reviewed_by_staff_id?: Prisma.SortOrderInput | Prisma.SortOrder
   reviewed_by_admin_id?: Prisma.SortOrderInput | Prisma.SortOrder
+  assigned_staff_id?: Prisma.SortOrderInput | Prisma.SortOrder
   staff_review_notes?: Prisma.SortOrderInput | Prisma.SortOrder
   admin_review_notes?: Prisma.SortOrderInput | Prisma.SortOrder
   rejection_reason?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -533,6 +661,17 @@ export type lib_thesis_documentsOrderByWithAggregationInput = {
   approved_at?: Prisma.SortOrderInput | Prisma.SortOrder
   published_at?: Prisma.SortOrderInput | Prisma.SortOrder
   date_updated?: Prisma.SortOrder
+  document_type?: Prisma.SortOrder
+  journal_name?: Prisma.SortOrderInput | Prisma.SortOrder
+  journal_volume?: Prisma.SortOrderInput | Prisma.SortOrder
+  journal_issue?: Prisma.SortOrderInput | Prisma.SortOrder
+  doi?: Prisma.SortOrderInput | Prisma.SortOrder
+  co_authors?: Prisma.SortOrderInput | Prisma.SortOrder
+  adviser_name?: Prisma.SortOrderInput | Prisma.SortOrder
+  team_members?: Prisma.SortOrderInput | Prisma.SortOrder
+  project_type?: Prisma.SortOrderInput | Prisma.SortOrder
+  capstone_category?: Prisma.SortOrderInput | Prisma.SortOrder
+  program?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.lib_thesis_documentsCountOrderByAggregateInput
   _avg?: Prisma.lib_thesis_documentsAvgOrderByAggregateInput
   _max?: Prisma.lib_thesis_documentsMaxOrderByAggregateInput
@@ -563,6 +702,7 @@ export type lib_thesis_documentsScalarWhereWithAggregatesInput = {
   submission_status?: Prisma.Enumlib_thesis_documents_submission_statusWithAggregatesFilter<"lib_thesis_documents"> | $Enums.lib_thesis_documents_submission_status
   reviewed_by_staff_id?: Prisma.IntNullableWithAggregatesFilter<"lib_thesis_documents"> | number | null
   reviewed_by_admin_id?: Prisma.IntNullableWithAggregatesFilter<"lib_thesis_documents"> | number | null
+  assigned_staff_id?: Prisma.IntNullableWithAggregatesFilter<"lib_thesis_documents"> | number | null
   staff_review_notes?: Prisma.StringNullableWithAggregatesFilter<"lib_thesis_documents"> | string | null
   admin_review_notes?: Prisma.StringNullableWithAggregatesFilter<"lib_thesis_documents"> | string | null
   rejection_reason?: Prisma.StringNullableWithAggregatesFilter<"lib_thesis_documents"> | string | null
@@ -573,6 +713,17 @@ export type lib_thesis_documentsScalarWhereWithAggregatesInput = {
   approved_at?: Prisma.DateTimeNullableWithAggregatesFilter<"lib_thesis_documents"> | Date | string | null
   published_at?: Prisma.DateTimeNullableWithAggregatesFilter<"lib_thesis_documents"> | Date | string | null
   date_updated?: Prisma.DateTimeWithAggregatesFilter<"lib_thesis_documents"> | Date | string
+  document_type?: Prisma.Enumlib_thesis_documents_document_typeWithAggregatesFilter<"lib_thesis_documents"> | $Enums.lib_thesis_documents_document_type
+  journal_name?: Prisma.StringNullableWithAggregatesFilter<"lib_thesis_documents"> | string | null
+  journal_volume?: Prisma.StringNullableWithAggregatesFilter<"lib_thesis_documents"> | string | null
+  journal_issue?: Prisma.StringNullableWithAggregatesFilter<"lib_thesis_documents"> | string | null
+  doi?: Prisma.StringNullableWithAggregatesFilter<"lib_thesis_documents"> | string | null
+  co_authors?: Prisma.StringNullableWithAggregatesFilter<"lib_thesis_documents"> | string | null
+  adviser_name?: Prisma.StringNullableWithAggregatesFilter<"lib_thesis_documents"> | string | null
+  team_members?: Prisma.StringNullableWithAggregatesFilter<"lib_thesis_documents"> | string | null
+  project_type?: Prisma.StringNullableWithAggregatesFilter<"lib_thesis_documents"> | string | null
+  capstone_category?: Prisma.StringNullableWithAggregatesFilter<"lib_thesis_documents"> | string | null
+  program?: Prisma.StringNullableWithAggregatesFilter<"lib_thesis_documents"> | string | null
 }
 
 export type lib_thesis_documentsCreateInput = {
@@ -601,8 +752,20 @@ export type lib_thesis_documentsCreateInput = {
   approved_at?: Date | string | null
   published_at?: Date | string | null
   date_updated?: Date | string
+  document_type?: $Enums.lib_thesis_documents_document_type
+  journal_name?: string | null
+  journal_volume?: string | null
+  journal_issue?: string | null
+  doi?: string | null
+  co_authors?: string | null
+  adviser_name?: string | null
+  team_members?: string | null
+  project_type?: string | null
+  capstone_category?: string | null
+  program?: string | null
   lib_users_lib_thesis_documents_reviewed_by_admin_idTolib_users?: Prisma.lib_usersCreateNestedOneWithoutLib_thesis_documents_lib_thesis_documents_reviewed_by_admin_idTolib_usersInput
   lib_users_lib_thesis_documents_reviewed_by_staff_idTolib_users?: Prisma.lib_usersCreateNestedOneWithoutLib_thesis_documents_lib_thesis_documents_reviewed_by_staff_idTolib_usersInput
+  lib_users_lib_thesis_documents_assigned_staff_idTolib_users?: Prisma.lib_usersCreateNestedOneWithoutLib_thesis_documents_lib_thesis_documents_assigned_staff_idTolib_usersInput
   lib_users_lib_thesis_documents_student_idTolib_users: Prisma.lib_usersCreateNestedOneWithoutLib_thesis_documents_lib_thesis_documents_student_idTolib_usersInput
 }
 
@@ -626,6 +789,7 @@ export type lib_thesis_documentsUncheckedCreateInput = {
   submission_status?: $Enums.lib_thesis_documents_submission_status
   reviewed_by_staff_id?: number | null
   reviewed_by_admin_id?: number | null
+  assigned_staff_id?: number | null
   staff_review_notes?: string | null
   admin_review_notes?: string | null
   rejection_reason?: string | null
@@ -636,6 +800,17 @@ export type lib_thesis_documentsUncheckedCreateInput = {
   approved_at?: Date | string | null
   published_at?: Date | string | null
   date_updated?: Date | string
+  document_type?: $Enums.lib_thesis_documents_document_type
+  journal_name?: string | null
+  journal_volume?: string | null
+  journal_issue?: string | null
+  doi?: string | null
+  co_authors?: string | null
+  adviser_name?: string | null
+  team_members?: string | null
+  project_type?: string | null
+  capstone_category?: string | null
+  program?: string | null
 }
 
 export type lib_thesis_documentsUpdateInput = {
@@ -664,8 +839,20 @@ export type lib_thesis_documentsUpdateInput = {
   approved_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   published_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   date_updated?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  document_type?: Prisma.Enumlib_thesis_documents_document_typeFieldUpdateOperationsInput | $Enums.lib_thesis_documents_document_type
+  journal_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  journal_volume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  journal_issue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  doi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  co_authors?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adviser_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  team_members?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  project_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  capstone_category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  program?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lib_users_lib_thesis_documents_reviewed_by_admin_idTolib_users?: Prisma.lib_usersUpdateOneWithoutLib_thesis_documents_lib_thesis_documents_reviewed_by_admin_idTolib_usersNestedInput
   lib_users_lib_thesis_documents_reviewed_by_staff_idTolib_users?: Prisma.lib_usersUpdateOneWithoutLib_thesis_documents_lib_thesis_documents_reviewed_by_staff_idTolib_usersNestedInput
+  lib_users_lib_thesis_documents_assigned_staff_idTolib_users?: Prisma.lib_usersUpdateOneWithoutLib_thesis_documents_lib_thesis_documents_assigned_staff_idTolib_usersNestedInput
   lib_users_lib_thesis_documents_student_idTolib_users?: Prisma.lib_usersUpdateOneRequiredWithoutLib_thesis_documents_lib_thesis_documents_student_idTolib_usersNestedInput
 }
 
@@ -689,6 +876,7 @@ export type lib_thesis_documentsUncheckedUpdateInput = {
   submission_status?: Prisma.Enumlib_thesis_documents_submission_statusFieldUpdateOperationsInput | $Enums.lib_thesis_documents_submission_status
   reviewed_by_staff_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   reviewed_by_admin_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  assigned_staff_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   staff_review_notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   admin_review_notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rejection_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -699,6 +887,17 @@ export type lib_thesis_documentsUncheckedUpdateInput = {
   approved_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   published_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   date_updated?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  document_type?: Prisma.Enumlib_thesis_documents_document_typeFieldUpdateOperationsInput | $Enums.lib_thesis_documents_document_type
+  journal_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  journal_volume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  journal_issue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  doi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  co_authors?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adviser_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  team_members?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  project_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  capstone_category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  program?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type lib_thesis_documentsCreateManyInput = {
@@ -721,6 +920,7 @@ export type lib_thesis_documentsCreateManyInput = {
   submission_status?: $Enums.lib_thesis_documents_submission_status
   reviewed_by_staff_id?: number | null
   reviewed_by_admin_id?: number | null
+  assigned_staff_id?: number | null
   staff_review_notes?: string | null
   admin_review_notes?: string | null
   rejection_reason?: string | null
@@ -731,6 +931,17 @@ export type lib_thesis_documentsCreateManyInput = {
   approved_at?: Date | string | null
   published_at?: Date | string | null
   date_updated?: Date | string
+  document_type?: $Enums.lib_thesis_documents_document_type
+  journal_name?: string | null
+  journal_volume?: string | null
+  journal_issue?: string | null
+  doi?: string | null
+  co_authors?: string | null
+  adviser_name?: string | null
+  team_members?: string | null
+  project_type?: string | null
+  capstone_category?: string | null
+  program?: string | null
 }
 
 export type lib_thesis_documentsUpdateManyMutationInput = {
@@ -759,6 +970,17 @@ export type lib_thesis_documentsUpdateManyMutationInput = {
   approved_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   published_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   date_updated?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  document_type?: Prisma.Enumlib_thesis_documents_document_typeFieldUpdateOperationsInput | $Enums.lib_thesis_documents_document_type
+  journal_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  journal_volume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  journal_issue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  doi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  co_authors?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adviser_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  team_members?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  project_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  capstone_category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  program?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type lib_thesis_documentsUncheckedUpdateManyInput = {
@@ -781,6 +1003,7 @@ export type lib_thesis_documentsUncheckedUpdateManyInput = {
   submission_status?: Prisma.Enumlib_thesis_documents_submission_statusFieldUpdateOperationsInput | $Enums.lib_thesis_documents_submission_status
   reviewed_by_staff_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   reviewed_by_admin_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  assigned_staff_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   staff_review_notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   admin_review_notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rejection_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -791,6 +1014,17 @@ export type lib_thesis_documentsUncheckedUpdateManyInput = {
   approved_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   published_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   date_updated?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  document_type?: Prisma.Enumlib_thesis_documents_document_typeFieldUpdateOperationsInput | $Enums.lib_thesis_documents_document_type
+  journal_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  journal_volume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  journal_issue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  doi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  co_authors?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adviser_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  team_members?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  project_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  capstone_category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  program?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type Lib_thesis_documentsListRelationFilter = {
@@ -829,6 +1063,7 @@ export type lib_thesis_documentsCountOrderByAggregateInput = {
   submission_status?: Prisma.SortOrder
   reviewed_by_staff_id?: Prisma.SortOrder
   reviewed_by_admin_id?: Prisma.SortOrder
+  assigned_staff_id?: Prisma.SortOrder
   staff_review_notes?: Prisma.SortOrder
   admin_review_notes?: Prisma.SortOrder
   rejection_reason?: Prisma.SortOrder
@@ -839,6 +1074,17 @@ export type lib_thesis_documentsCountOrderByAggregateInput = {
   approved_at?: Prisma.SortOrder
   published_at?: Prisma.SortOrder
   date_updated?: Prisma.SortOrder
+  document_type?: Prisma.SortOrder
+  journal_name?: Prisma.SortOrder
+  journal_volume?: Prisma.SortOrder
+  journal_issue?: Prisma.SortOrder
+  doi?: Prisma.SortOrder
+  co_authors?: Prisma.SortOrder
+  adviser_name?: Prisma.SortOrder
+  team_members?: Prisma.SortOrder
+  project_type?: Prisma.SortOrder
+  capstone_category?: Prisma.SortOrder
+  program?: Prisma.SortOrder
 }
 
 export type lib_thesis_documentsAvgOrderByAggregateInput = {
@@ -847,6 +1093,7 @@ export type lib_thesis_documentsAvgOrderByAggregateInput = {
   file_size?: Prisma.SortOrder
   reviewed_by_staff_id?: Prisma.SortOrder
   reviewed_by_admin_id?: Prisma.SortOrder
+  assigned_staff_id?: Prisma.SortOrder
 }
 
 export type lib_thesis_documentsMaxOrderByAggregateInput = {
@@ -869,6 +1116,7 @@ export type lib_thesis_documentsMaxOrderByAggregateInput = {
   submission_status?: Prisma.SortOrder
   reviewed_by_staff_id?: Prisma.SortOrder
   reviewed_by_admin_id?: Prisma.SortOrder
+  assigned_staff_id?: Prisma.SortOrder
   staff_review_notes?: Prisma.SortOrder
   admin_review_notes?: Prisma.SortOrder
   rejection_reason?: Prisma.SortOrder
@@ -879,6 +1127,17 @@ export type lib_thesis_documentsMaxOrderByAggregateInput = {
   approved_at?: Prisma.SortOrder
   published_at?: Prisma.SortOrder
   date_updated?: Prisma.SortOrder
+  document_type?: Prisma.SortOrder
+  journal_name?: Prisma.SortOrder
+  journal_volume?: Prisma.SortOrder
+  journal_issue?: Prisma.SortOrder
+  doi?: Prisma.SortOrder
+  co_authors?: Prisma.SortOrder
+  adviser_name?: Prisma.SortOrder
+  team_members?: Prisma.SortOrder
+  project_type?: Prisma.SortOrder
+  capstone_category?: Prisma.SortOrder
+  program?: Prisma.SortOrder
 }
 
 export type lib_thesis_documentsMinOrderByAggregateInput = {
@@ -901,6 +1160,7 @@ export type lib_thesis_documentsMinOrderByAggregateInput = {
   submission_status?: Prisma.SortOrder
   reviewed_by_staff_id?: Prisma.SortOrder
   reviewed_by_admin_id?: Prisma.SortOrder
+  assigned_staff_id?: Prisma.SortOrder
   staff_review_notes?: Prisma.SortOrder
   admin_review_notes?: Prisma.SortOrder
   rejection_reason?: Prisma.SortOrder
@@ -911,6 +1171,17 @@ export type lib_thesis_documentsMinOrderByAggregateInput = {
   approved_at?: Prisma.SortOrder
   published_at?: Prisma.SortOrder
   date_updated?: Prisma.SortOrder
+  document_type?: Prisma.SortOrder
+  journal_name?: Prisma.SortOrder
+  journal_volume?: Prisma.SortOrder
+  journal_issue?: Prisma.SortOrder
+  doi?: Prisma.SortOrder
+  co_authors?: Prisma.SortOrder
+  adviser_name?: Prisma.SortOrder
+  team_members?: Prisma.SortOrder
+  project_type?: Prisma.SortOrder
+  capstone_category?: Prisma.SortOrder
+  program?: Prisma.SortOrder
 }
 
 export type lib_thesis_documentsSumOrderByAggregateInput = {
@@ -919,6 +1190,7 @@ export type lib_thesis_documentsSumOrderByAggregateInput = {
   file_size?: Prisma.SortOrder
   reviewed_by_staff_id?: Prisma.SortOrder
   reviewed_by_admin_id?: Prisma.SortOrder
+  assigned_staff_id?: Prisma.SortOrder
 }
 
 export type lib_thesis_documentsCreateNestedManyWithoutLib_users_lib_thesis_documents_reviewed_by_admin_idTolib_usersInput = {
@@ -932,6 +1204,13 @@ export type lib_thesis_documentsCreateNestedManyWithoutLib_users_lib_thesis_docu
   create?: Prisma.XOR<Prisma.lib_thesis_documentsCreateWithoutLib_users_lib_thesis_documents_reviewed_by_staff_idTolib_usersInput, Prisma.lib_thesis_documentsUncheckedCreateWithoutLib_users_lib_thesis_documents_reviewed_by_staff_idTolib_usersInput> | Prisma.lib_thesis_documentsCreateWithoutLib_users_lib_thesis_documents_reviewed_by_staff_idTolib_usersInput[] | Prisma.lib_thesis_documentsUncheckedCreateWithoutLib_users_lib_thesis_documents_reviewed_by_staff_idTolib_usersInput[]
   connectOrCreate?: Prisma.lib_thesis_documentsCreateOrConnectWithoutLib_users_lib_thesis_documents_reviewed_by_staff_idTolib_usersInput | Prisma.lib_thesis_documentsCreateOrConnectWithoutLib_users_lib_thesis_documents_reviewed_by_staff_idTolib_usersInput[]
   createMany?: Prisma.lib_thesis_documentsCreateManyLib_users_lib_thesis_documents_reviewed_by_staff_idTolib_usersInputEnvelope
+  connect?: Prisma.lib_thesis_documentsWhereUniqueInput | Prisma.lib_thesis_documentsWhereUniqueInput[]
+}
+
+export type lib_thesis_documentsCreateNestedManyWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput = {
+  create?: Prisma.XOR<Prisma.lib_thesis_documentsCreateWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput, Prisma.lib_thesis_documentsUncheckedCreateWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput> | Prisma.lib_thesis_documentsCreateWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput[] | Prisma.lib_thesis_documentsUncheckedCreateWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput[]
+  connectOrCreate?: Prisma.lib_thesis_documentsCreateOrConnectWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput | Prisma.lib_thesis_documentsCreateOrConnectWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput[]
+  createMany?: Prisma.lib_thesis_documentsCreateManyLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInputEnvelope
   connect?: Prisma.lib_thesis_documentsWhereUniqueInput | Prisma.lib_thesis_documentsWhereUniqueInput[]
 }
 
@@ -953,6 +1232,13 @@ export type lib_thesis_documentsUncheckedCreateNestedManyWithoutLib_users_lib_th
   create?: Prisma.XOR<Prisma.lib_thesis_documentsCreateWithoutLib_users_lib_thesis_documents_reviewed_by_staff_idTolib_usersInput, Prisma.lib_thesis_documentsUncheckedCreateWithoutLib_users_lib_thesis_documents_reviewed_by_staff_idTolib_usersInput> | Prisma.lib_thesis_documentsCreateWithoutLib_users_lib_thesis_documents_reviewed_by_staff_idTolib_usersInput[] | Prisma.lib_thesis_documentsUncheckedCreateWithoutLib_users_lib_thesis_documents_reviewed_by_staff_idTolib_usersInput[]
   connectOrCreate?: Prisma.lib_thesis_documentsCreateOrConnectWithoutLib_users_lib_thesis_documents_reviewed_by_staff_idTolib_usersInput | Prisma.lib_thesis_documentsCreateOrConnectWithoutLib_users_lib_thesis_documents_reviewed_by_staff_idTolib_usersInput[]
   createMany?: Prisma.lib_thesis_documentsCreateManyLib_users_lib_thesis_documents_reviewed_by_staff_idTolib_usersInputEnvelope
+  connect?: Prisma.lib_thesis_documentsWhereUniqueInput | Prisma.lib_thesis_documentsWhereUniqueInput[]
+}
+
+export type lib_thesis_documentsUncheckedCreateNestedManyWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput = {
+  create?: Prisma.XOR<Prisma.lib_thesis_documentsCreateWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput, Prisma.lib_thesis_documentsUncheckedCreateWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput> | Prisma.lib_thesis_documentsCreateWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput[] | Prisma.lib_thesis_documentsUncheckedCreateWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput[]
+  connectOrCreate?: Prisma.lib_thesis_documentsCreateOrConnectWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput | Prisma.lib_thesis_documentsCreateOrConnectWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput[]
+  createMany?: Prisma.lib_thesis_documentsCreateManyLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInputEnvelope
   connect?: Prisma.lib_thesis_documentsWhereUniqueInput | Prisma.lib_thesis_documentsWhereUniqueInput[]
 }
 
@@ -988,6 +1274,20 @@ export type lib_thesis_documentsUpdateManyWithoutLib_users_lib_thesis_documents_
   connect?: Prisma.lib_thesis_documentsWhereUniqueInput | Prisma.lib_thesis_documentsWhereUniqueInput[]
   update?: Prisma.lib_thesis_documentsUpdateWithWhereUniqueWithoutLib_users_lib_thesis_documents_reviewed_by_staff_idTolib_usersInput | Prisma.lib_thesis_documentsUpdateWithWhereUniqueWithoutLib_users_lib_thesis_documents_reviewed_by_staff_idTolib_usersInput[]
   updateMany?: Prisma.lib_thesis_documentsUpdateManyWithWhereWithoutLib_users_lib_thesis_documents_reviewed_by_staff_idTolib_usersInput | Prisma.lib_thesis_documentsUpdateManyWithWhereWithoutLib_users_lib_thesis_documents_reviewed_by_staff_idTolib_usersInput[]
+  deleteMany?: Prisma.lib_thesis_documentsScalarWhereInput | Prisma.lib_thesis_documentsScalarWhereInput[]
+}
+
+export type lib_thesis_documentsUpdateManyWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersNestedInput = {
+  create?: Prisma.XOR<Prisma.lib_thesis_documentsCreateWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput, Prisma.lib_thesis_documentsUncheckedCreateWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput> | Prisma.lib_thesis_documentsCreateWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput[] | Prisma.lib_thesis_documentsUncheckedCreateWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput[]
+  connectOrCreate?: Prisma.lib_thesis_documentsCreateOrConnectWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput | Prisma.lib_thesis_documentsCreateOrConnectWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput[]
+  upsert?: Prisma.lib_thesis_documentsUpsertWithWhereUniqueWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput | Prisma.lib_thesis_documentsUpsertWithWhereUniqueWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput[]
+  createMany?: Prisma.lib_thesis_documentsCreateManyLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInputEnvelope
+  set?: Prisma.lib_thesis_documentsWhereUniqueInput | Prisma.lib_thesis_documentsWhereUniqueInput[]
+  disconnect?: Prisma.lib_thesis_documentsWhereUniqueInput | Prisma.lib_thesis_documentsWhereUniqueInput[]
+  delete?: Prisma.lib_thesis_documentsWhereUniqueInput | Prisma.lib_thesis_documentsWhereUniqueInput[]
+  connect?: Prisma.lib_thesis_documentsWhereUniqueInput | Prisma.lib_thesis_documentsWhereUniqueInput[]
+  update?: Prisma.lib_thesis_documentsUpdateWithWhereUniqueWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput | Prisma.lib_thesis_documentsUpdateWithWhereUniqueWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput[]
+  updateMany?: Prisma.lib_thesis_documentsUpdateManyWithWhereWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput | Prisma.lib_thesis_documentsUpdateManyWithWhereWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput[]
   deleteMany?: Prisma.lib_thesis_documentsScalarWhereInput | Prisma.lib_thesis_documentsScalarWhereInput[]
 }
 
@@ -1033,6 +1333,20 @@ export type lib_thesis_documentsUncheckedUpdateManyWithoutLib_users_lib_thesis_d
   deleteMany?: Prisma.lib_thesis_documentsScalarWhereInput | Prisma.lib_thesis_documentsScalarWhereInput[]
 }
 
+export type lib_thesis_documentsUncheckedUpdateManyWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersNestedInput = {
+  create?: Prisma.XOR<Prisma.lib_thesis_documentsCreateWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput, Prisma.lib_thesis_documentsUncheckedCreateWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput> | Prisma.lib_thesis_documentsCreateWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput[] | Prisma.lib_thesis_documentsUncheckedCreateWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput[]
+  connectOrCreate?: Prisma.lib_thesis_documentsCreateOrConnectWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput | Prisma.lib_thesis_documentsCreateOrConnectWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput[]
+  upsert?: Prisma.lib_thesis_documentsUpsertWithWhereUniqueWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput | Prisma.lib_thesis_documentsUpsertWithWhereUniqueWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput[]
+  createMany?: Prisma.lib_thesis_documentsCreateManyLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInputEnvelope
+  set?: Prisma.lib_thesis_documentsWhereUniqueInput | Prisma.lib_thesis_documentsWhereUniqueInput[]
+  disconnect?: Prisma.lib_thesis_documentsWhereUniqueInput | Prisma.lib_thesis_documentsWhereUniqueInput[]
+  delete?: Prisma.lib_thesis_documentsWhereUniqueInput | Prisma.lib_thesis_documentsWhereUniqueInput[]
+  connect?: Prisma.lib_thesis_documentsWhereUniqueInput | Prisma.lib_thesis_documentsWhereUniqueInput[]
+  update?: Prisma.lib_thesis_documentsUpdateWithWhereUniqueWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput | Prisma.lib_thesis_documentsUpdateWithWhereUniqueWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput[]
+  updateMany?: Prisma.lib_thesis_documentsUpdateManyWithWhereWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput | Prisma.lib_thesis_documentsUpdateManyWithWhereWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput[]
+  deleteMany?: Prisma.lib_thesis_documentsScalarWhereInput | Prisma.lib_thesis_documentsScalarWhereInput[]
+}
+
 export type lib_thesis_documentsUncheckedUpdateManyWithoutLib_users_lib_thesis_documents_student_idTolib_usersNestedInput = {
   create?: Prisma.XOR<Prisma.lib_thesis_documentsCreateWithoutLib_users_lib_thesis_documents_student_idTolib_usersInput, Prisma.lib_thesis_documentsUncheckedCreateWithoutLib_users_lib_thesis_documents_student_idTolib_usersInput> | Prisma.lib_thesis_documentsCreateWithoutLib_users_lib_thesis_documents_student_idTolib_usersInput[] | Prisma.lib_thesis_documentsUncheckedCreateWithoutLib_users_lib_thesis_documents_student_idTolib_usersInput[]
   connectOrCreate?: Prisma.lib_thesis_documentsCreateOrConnectWithoutLib_users_lib_thesis_documents_student_idTolib_usersInput | Prisma.lib_thesis_documentsCreateOrConnectWithoutLib_users_lib_thesis_documents_student_idTolib_usersInput[]
@@ -1057,6 +1371,10 @@ export type Enumlib_thesis_documents_submission_statusFieldUpdateOperationsInput
 
 export type NullableDateTimeFieldUpdateOperationsInput = {
   set?: Date | string | null
+}
+
+export type Enumlib_thesis_documents_document_typeFieldUpdateOperationsInput = {
+  set?: $Enums.lib_thesis_documents_document_type
 }
 
 export type NullableIntFieldUpdateOperationsInput = {
@@ -1093,7 +1411,19 @@ export type lib_thesis_documentsCreateWithoutLib_users_lib_thesis_documents_revi
   approved_at?: Date | string | null
   published_at?: Date | string | null
   date_updated?: Date | string
+  document_type?: $Enums.lib_thesis_documents_document_type
+  journal_name?: string | null
+  journal_volume?: string | null
+  journal_issue?: string | null
+  doi?: string | null
+  co_authors?: string | null
+  adviser_name?: string | null
+  team_members?: string | null
+  project_type?: string | null
+  capstone_category?: string | null
+  program?: string | null
   lib_users_lib_thesis_documents_reviewed_by_staff_idTolib_users?: Prisma.lib_usersCreateNestedOneWithoutLib_thesis_documents_lib_thesis_documents_reviewed_by_staff_idTolib_usersInput
+  lib_users_lib_thesis_documents_assigned_staff_idTolib_users?: Prisma.lib_usersCreateNestedOneWithoutLib_thesis_documents_lib_thesis_documents_assigned_staff_idTolib_usersInput
   lib_users_lib_thesis_documents_student_idTolib_users: Prisma.lib_usersCreateNestedOneWithoutLib_thesis_documents_lib_thesis_documents_student_idTolib_usersInput
 }
 
@@ -1116,6 +1446,7 @@ export type lib_thesis_documentsUncheckedCreateWithoutLib_users_lib_thesis_docum
   status?: $Enums.lib_thesis_documents_status
   submission_status?: $Enums.lib_thesis_documents_submission_status
   reviewed_by_staff_id?: number | null
+  assigned_staff_id?: number | null
   staff_review_notes?: string | null
   admin_review_notes?: string | null
   rejection_reason?: string | null
@@ -1126,6 +1457,17 @@ export type lib_thesis_documentsUncheckedCreateWithoutLib_users_lib_thesis_docum
   approved_at?: Date | string | null
   published_at?: Date | string | null
   date_updated?: Date | string
+  document_type?: $Enums.lib_thesis_documents_document_type
+  journal_name?: string | null
+  journal_volume?: string | null
+  journal_issue?: string | null
+  doi?: string | null
+  co_authors?: string | null
+  adviser_name?: string | null
+  team_members?: string | null
+  project_type?: string | null
+  capstone_category?: string | null
+  program?: string | null
 }
 
 export type lib_thesis_documentsCreateOrConnectWithoutLib_users_lib_thesis_documents_reviewed_by_admin_idTolib_usersInput = {
@@ -1164,7 +1506,19 @@ export type lib_thesis_documentsCreateWithoutLib_users_lib_thesis_documents_revi
   approved_at?: Date | string | null
   published_at?: Date | string | null
   date_updated?: Date | string
+  document_type?: $Enums.lib_thesis_documents_document_type
+  journal_name?: string | null
+  journal_volume?: string | null
+  journal_issue?: string | null
+  doi?: string | null
+  co_authors?: string | null
+  adviser_name?: string | null
+  team_members?: string | null
+  project_type?: string | null
+  capstone_category?: string | null
+  program?: string | null
   lib_users_lib_thesis_documents_reviewed_by_admin_idTolib_users?: Prisma.lib_usersCreateNestedOneWithoutLib_thesis_documents_lib_thesis_documents_reviewed_by_admin_idTolib_usersInput
+  lib_users_lib_thesis_documents_assigned_staff_idTolib_users?: Prisma.lib_usersCreateNestedOneWithoutLib_thesis_documents_lib_thesis_documents_assigned_staff_idTolib_usersInput
   lib_users_lib_thesis_documents_student_idTolib_users: Prisma.lib_usersCreateNestedOneWithoutLib_thesis_documents_lib_thesis_documents_student_idTolib_usersInput
 }
 
@@ -1187,6 +1541,7 @@ export type lib_thesis_documentsUncheckedCreateWithoutLib_users_lib_thesis_docum
   status?: $Enums.lib_thesis_documents_status
   submission_status?: $Enums.lib_thesis_documents_submission_status
   reviewed_by_admin_id?: number | null
+  assigned_staff_id?: number | null
   staff_review_notes?: string | null
   admin_review_notes?: string | null
   rejection_reason?: string | null
@@ -1197,6 +1552,17 @@ export type lib_thesis_documentsUncheckedCreateWithoutLib_users_lib_thesis_docum
   approved_at?: Date | string | null
   published_at?: Date | string | null
   date_updated?: Date | string
+  document_type?: $Enums.lib_thesis_documents_document_type
+  journal_name?: string | null
+  journal_volume?: string | null
+  journal_issue?: string | null
+  doi?: string | null
+  co_authors?: string | null
+  adviser_name?: string | null
+  team_members?: string | null
+  project_type?: string | null
+  capstone_category?: string | null
+  program?: string | null
 }
 
 export type lib_thesis_documentsCreateOrConnectWithoutLib_users_lib_thesis_documents_reviewed_by_staff_idTolib_usersInput = {
@@ -1206,6 +1572,101 @@ export type lib_thesis_documentsCreateOrConnectWithoutLib_users_lib_thesis_docum
 
 export type lib_thesis_documentsCreateManyLib_users_lib_thesis_documents_reviewed_by_staff_idTolib_usersInputEnvelope = {
   data: Prisma.lib_thesis_documentsCreateManyLib_users_lib_thesis_documents_reviewed_by_staff_idTolib_usersInput | Prisma.lib_thesis_documentsCreateManyLib_users_lib_thesis_documents_reviewed_by_staff_idTolib_usersInput[]
+  skipDuplicates?: boolean
+}
+
+export type lib_thesis_documentsCreateWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput = {
+  title: string
+  researcher_name: string
+  abstract?: string | null
+  keywords?: string | null
+  department?: string | null
+  year_level?: string | null
+  academic_year?: string | null
+  semester?: string | null
+  file_url: string
+  file_name: string
+  file_size: number
+  file_type: string
+  file_path: string
+  status?: $Enums.lib_thesis_documents_status
+  submission_status?: $Enums.lib_thesis_documents_submission_status
+  staff_review_notes?: string | null
+  admin_review_notes?: string | null
+  rejection_reason?: string | null
+  internal_notes?: string | null
+  submitted_at?: Date | string
+  staff_reviewed_at?: Date | string | null
+  admin_reviewed_at?: Date | string | null
+  approved_at?: Date | string | null
+  published_at?: Date | string | null
+  date_updated?: Date | string
+  document_type?: $Enums.lib_thesis_documents_document_type
+  journal_name?: string | null
+  journal_volume?: string | null
+  journal_issue?: string | null
+  doi?: string | null
+  co_authors?: string | null
+  adviser_name?: string | null
+  team_members?: string | null
+  project_type?: string | null
+  capstone_category?: string | null
+  program?: string | null
+  lib_users_lib_thesis_documents_reviewed_by_admin_idTolib_users?: Prisma.lib_usersCreateNestedOneWithoutLib_thesis_documents_lib_thesis_documents_reviewed_by_admin_idTolib_usersInput
+  lib_users_lib_thesis_documents_reviewed_by_staff_idTolib_users?: Prisma.lib_usersCreateNestedOneWithoutLib_thesis_documents_lib_thesis_documents_reviewed_by_staff_idTolib_usersInput
+  lib_users_lib_thesis_documents_student_idTolib_users: Prisma.lib_usersCreateNestedOneWithoutLib_thesis_documents_lib_thesis_documents_student_idTolib_usersInput
+}
+
+export type lib_thesis_documentsUncheckedCreateWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput = {
+  id?: number
+  student_id: number
+  title: string
+  researcher_name: string
+  abstract?: string | null
+  keywords?: string | null
+  department?: string | null
+  year_level?: string | null
+  academic_year?: string | null
+  semester?: string | null
+  file_url: string
+  file_name: string
+  file_size: number
+  file_type: string
+  file_path: string
+  status?: $Enums.lib_thesis_documents_status
+  submission_status?: $Enums.lib_thesis_documents_submission_status
+  reviewed_by_staff_id?: number | null
+  reviewed_by_admin_id?: number | null
+  staff_review_notes?: string | null
+  admin_review_notes?: string | null
+  rejection_reason?: string | null
+  internal_notes?: string | null
+  submitted_at?: Date | string
+  staff_reviewed_at?: Date | string | null
+  admin_reviewed_at?: Date | string | null
+  approved_at?: Date | string | null
+  published_at?: Date | string | null
+  date_updated?: Date | string
+  document_type?: $Enums.lib_thesis_documents_document_type
+  journal_name?: string | null
+  journal_volume?: string | null
+  journal_issue?: string | null
+  doi?: string | null
+  co_authors?: string | null
+  adviser_name?: string | null
+  team_members?: string | null
+  project_type?: string | null
+  capstone_category?: string | null
+  program?: string | null
+}
+
+export type lib_thesis_documentsCreateOrConnectWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput = {
+  where: Prisma.lib_thesis_documentsWhereUniqueInput
+  create: Prisma.XOR<Prisma.lib_thesis_documentsCreateWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput, Prisma.lib_thesis_documentsUncheckedCreateWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput>
+}
+
+export type lib_thesis_documentsCreateManyLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInputEnvelope = {
+  data: Prisma.lib_thesis_documentsCreateManyLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput | Prisma.lib_thesis_documentsCreateManyLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput[]
   skipDuplicates?: boolean
 }
 
@@ -1235,8 +1696,20 @@ export type lib_thesis_documentsCreateWithoutLib_users_lib_thesis_documents_stud
   approved_at?: Date | string | null
   published_at?: Date | string | null
   date_updated?: Date | string
+  document_type?: $Enums.lib_thesis_documents_document_type
+  journal_name?: string | null
+  journal_volume?: string | null
+  journal_issue?: string | null
+  doi?: string | null
+  co_authors?: string | null
+  adviser_name?: string | null
+  team_members?: string | null
+  project_type?: string | null
+  capstone_category?: string | null
+  program?: string | null
   lib_users_lib_thesis_documents_reviewed_by_admin_idTolib_users?: Prisma.lib_usersCreateNestedOneWithoutLib_thesis_documents_lib_thesis_documents_reviewed_by_admin_idTolib_usersInput
   lib_users_lib_thesis_documents_reviewed_by_staff_idTolib_users?: Prisma.lib_usersCreateNestedOneWithoutLib_thesis_documents_lib_thesis_documents_reviewed_by_staff_idTolib_usersInput
+  lib_users_lib_thesis_documents_assigned_staff_idTolib_users?: Prisma.lib_usersCreateNestedOneWithoutLib_thesis_documents_lib_thesis_documents_assigned_staff_idTolib_usersInput
 }
 
 export type lib_thesis_documentsUncheckedCreateWithoutLib_users_lib_thesis_documents_student_idTolib_usersInput = {
@@ -1258,6 +1731,7 @@ export type lib_thesis_documentsUncheckedCreateWithoutLib_users_lib_thesis_docum
   submission_status?: $Enums.lib_thesis_documents_submission_status
   reviewed_by_staff_id?: number | null
   reviewed_by_admin_id?: number | null
+  assigned_staff_id?: number | null
   staff_review_notes?: string | null
   admin_review_notes?: string | null
   rejection_reason?: string | null
@@ -1268,6 +1742,17 @@ export type lib_thesis_documentsUncheckedCreateWithoutLib_users_lib_thesis_docum
   approved_at?: Date | string | null
   published_at?: Date | string | null
   date_updated?: Date | string
+  document_type?: $Enums.lib_thesis_documents_document_type
+  journal_name?: string | null
+  journal_volume?: string | null
+  journal_issue?: string | null
+  doi?: string | null
+  co_authors?: string | null
+  adviser_name?: string | null
+  team_members?: string | null
+  project_type?: string | null
+  capstone_category?: string | null
+  program?: string | null
 }
 
 export type lib_thesis_documentsCreateOrConnectWithoutLib_users_lib_thesis_documents_student_idTolib_usersInput = {
@@ -1319,6 +1804,7 @@ export type lib_thesis_documentsScalarWhereInput = {
   submission_status?: Prisma.Enumlib_thesis_documents_submission_statusFilter<"lib_thesis_documents"> | $Enums.lib_thesis_documents_submission_status
   reviewed_by_staff_id?: Prisma.IntNullableFilter<"lib_thesis_documents"> | number | null
   reviewed_by_admin_id?: Prisma.IntNullableFilter<"lib_thesis_documents"> | number | null
+  assigned_staff_id?: Prisma.IntNullableFilter<"lib_thesis_documents"> | number | null
   staff_review_notes?: Prisma.StringNullableFilter<"lib_thesis_documents"> | string | null
   admin_review_notes?: Prisma.StringNullableFilter<"lib_thesis_documents"> | string | null
   rejection_reason?: Prisma.StringNullableFilter<"lib_thesis_documents"> | string | null
@@ -1329,6 +1815,17 @@ export type lib_thesis_documentsScalarWhereInput = {
   approved_at?: Prisma.DateTimeNullableFilter<"lib_thesis_documents"> | Date | string | null
   published_at?: Prisma.DateTimeNullableFilter<"lib_thesis_documents"> | Date | string | null
   date_updated?: Prisma.DateTimeFilter<"lib_thesis_documents"> | Date | string
+  document_type?: Prisma.Enumlib_thesis_documents_document_typeFilter<"lib_thesis_documents"> | $Enums.lib_thesis_documents_document_type
+  journal_name?: Prisma.StringNullableFilter<"lib_thesis_documents"> | string | null
+  journal_volume?: Prisma.StringNullableFilter<"lib_thesis_documents"> | string | null
+  journal_issue?: Prisma.StringNullableFilter<"lib_thesis_documents"> | string | null
+  doi?: Prisma.StringNullableFilter<"lib_thesis_documents"> | string | null
+  co_authors?: Prisma.StringNullableFilter<"lib_thesis_documents"> | string | null
+  adviser_name?: Prisma.StringNullableFilter<"lib_thesis_documents"> | string | null
+  team_members?: Prisma.StringNullableFilter<"lib_thesis_documents"> | string | null
+  project_type?: Prisma.StringNullableFilter<"lib_thesis_documents"> | string | null
+  capstone_category?: Prisma.StringNullableFilter<"lib_thesis_documents"> | string | null
+  program?: Prisma.StringNullableFilter<"lib_thesis_documents"> | string | null
 }
 
 export type lib_thesis_documentsUpsertWithWhereUniqueWithoutLib_users_lib_thesis_documents_reviewed_by_staff_idTolib_usersInput = {
@@ -1345,6 +1842,22 @@ export type lib_thesis_documentsUpdateWithWhereUniqueWithoutLib_users_lib_thesis
 export type lib_thesis_documentsUpdateManyWithWhereWithoutLib_users_lib_thesis_documents_reviewed_by_staff_idTolib_usersInput = {
   where: Prisma.lib_thesis_documentsScalarWhereInput
   data: Prisma.XOR<Prisma.lib_thesis_documentsUpdateManyMutationInput, Prisma.lib_thesis_documentsUncheckedUpdateManyWithoutLib_users_lib_thesis_documents_reviewed_by_staff_idTolib_usersInput>
+}
+
+export type lib_thesis_documentsUpsertWithWhereUniqueWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput = {
+  where: Prisma.lib_thesis_documentsWhereUniqueInput
+  update: Prisma.XOR<Prisma.lib_thesis_documentsUpdateWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput, Prisma.lib_thesis_documentsUncheckedUpdateWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput>
+  create: Prisma.XOR<Prisma.lib_thesis_documentsCreateWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput, Prisma.lib_thesis_documentsUncheckedCreateWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput>
+}
+
+export type lib_thesis_documentsUpdateWithWhereUniqueWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput = {
+  where: Prisma.lib_thesis_documentsWhereUniqueInput
+  data: Prisma.XOR<Prisma.lib_thesis_documentsUpdateWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput, Prisma.lib_thesis_documentsUncheckedUpdateWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput>
+}
+
+export type lib_thesis_documentsUpdateManyWithWhereWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput = {
+  where: Prisma.lib_thesis_documentsScalarWhereInput
+  data: Prisma.XOR<Prisma.lib_thesis_documentsUpdateManyMutationInput, Prisma.lib_thesis_documentsUncheckedUpdateManyWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput>
 }
 
 export type lib_thesis_documentsUpsertWithWhereUniqueWithoutLib_users_lib_thesis_documents_student_idTolib_usersInput = {
@@ -1382,6 +1895,7 @@ export type lib_thesis_documentsCreateManyLib_users_lib_thesis_documents_reviewe
   status?: $Enums.lib_thesis_documents_status
   submission_status?: $Enums.lib_thesis_documents_submission_status
   reviewed_by_staff_id?: number | null
+  assigned_staff_id?: number | null
   staff_review_notes?: string | null
   admin_review_notes?: string | null
   rejection_reason?: string | null
@@ -1392,6 +1906,17 @@ export type lib_thesis_documentsCreateManyLib_users_lib_thesis_documents_reviewe
   approved_at?: Date | string | null
   published_at?: Date | string | null
   date_updated?: Date | string
+  document_type?: $Enums.lib_thesis_documents_document_type
+  journal_name?: string | null
+  journal_volume?: string | null
+  journal_issue?: string | null
+  doi?: string | null
+  co_authors?: string | null
+  adviser_name?: string | null
+  team_members?: string | null
+  project_type?: string | null
+  capstone_category?: string | null
+  program?: string | null
 }
 
 export type lib_thesis_documentsCreateManyLib_users_lib_thesis_documents_reviewed_by_staff_idTolib_usersInput = {
@@ -1413,6 +1938,7 @@ export type lib_thesis_documentsCreateManyLib_users_lib_thesis_documents_reviewe
   status?: $Enums.lib_thesis_documents_status
   submission_status?: $Enums.lib_thesis_documents_submission_status
   reviewed_by_admin_id?: number | null
+  assigned_staff_id?: number | null
   staff_review_notes?: string | null
   admin_review_notes?: string | null
   rejection_reason?: string | null
@@ -1423,10 +1949,22 @@ export type lib_thesis_documentsCreateManyLib_users_lib_thesis_documents_reviewe
   approved_at?: Date | string | null
   published_at?: Date | string | null
   date_updated?: Date | string
+  document_type?: $Enums.lib_thesis_documents_document_type
+  journal_name?: string | null
+  journal_volume?: string | null
+  journal_issue?: string | null
+  doi?: string | null
+  co_authors?: string | null
+  adviser_name?: string | null
+  team_members?: string | null
+  project_type?: string | null
+  capstone_category?: string | null
+  program?: string | null
 }
 
-export type lib_thesis_documentsCreateManyLib_users_lib_thesis_documents_student_idTolib_usersInput = {
+export type lib_thesis_documentsCreateManyLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput = {
   id?: number
+  student_id: number
   title: string
   researcher_name: string
   abstract?: string | null
@@ -1454,6 +1992,60 @@ export type lib_thesis_documentsCreateManyLib_users_lib_thesis_documents_student
   approved_at?: Date | string | null
   published_at?: Date | string | null
   date_updated?: Date | string
+  document_type?: $Enums.lib_thesis_documents_document_type
+  journal_name?: string | null
+  journal_volume?: string | null
+  journal_issue?: string | null
+  doi?: string | null
+  co_authors?: string | null
+  adviser_name?: string | null
+  team_members?: string | null
+  project_type?: string | null
+  capstone_category?: string | null
+  program?: string | null
+}
+
+export type lib_thesis_documentsCreateManyLib_users_lib_thesis_documents_student_idTolib_usersInput = {
+  id?: number
+  title: string
+  researcher_name: string
+  abstract?: string | null
+  keywords?: string | null
+  department?: string | null
+  year_level?: string | null
+  academic_year?: string | null
+  semester?: string | null
+  file_url: string
+  file_name: string
+  file_size: number
+  file_type: string
+  file_path: string
+  status?: $Enums.lib_thesis_documents_status
+  submission_status?: $Enums.lib_thesis_documents_submission_status
+  reviewed_by_staff_id?: number | null
+  reviewed_by_admin_id?: number | null
+  assigned_staff_id?: number | null
+  staff_review_notes?: string | null
+  admin_review_notes?: string | null
+  rejection_reason?: string | null
+  internal_notes?: string | null
+  submitted_at?: Date | string
+  staff_reviewed_at?: Date | string | null
+  admin_reviewed_at?: Date | string | null
+  approved_at?: Date | string | null
+  published_at?: Date | string | null
+  date_updated?: Date | string
+  document_type?: $Enums.lib_thesis_documents_document_type
+  journal_name?: string | null
+  journal_volume?: string | null
+  journal_issue?: string | null
+  doi?: string | null
+  co_authors?: string | null
+  adviser_name?: string | null
+  team_members?: string | null
+  project_type?: string | null
+  capstone_category?: string | null
+  program?: string | null
 }
 
 export type lib_thesis_documentsUpdateWithoutLib_users_lib_thesis_documents_reviewed_by_admin_idTolib_usersInput = {
@@ -1482,7 +2074,19 @@ export type lib_thesis_documentsUpdateWithoutLib_users_lib_thesis_documents_revi
   approved_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   published_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   date_updated?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  document_type?: Prisma.Enumlib_thesis_documents_document_typeFieldUpdateOperationsInput | $Enums.lib_thesis_documents_document_type
+  journal_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  journal_volume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  journal_issue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  doi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  co_authors?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adviser_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  team_members?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  project_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  capstone_category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  program?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lib_users_lib_thesis_documents_reviewed_by_staff_idTolib_users?: Prisma.lib_usersUpdateOneWithoutLib_thesis_documents_lib_thesis_documents_reviewed_by_staff_idTolib_usersNestedInput
+  lib_users_lib_thesis_documents_assigned_staff_idTolib_users?: Prisma.lib_usersUpdateOneWithoutLib_thesis_documents_lib_thesis_documents_assigned_staff_idTolib_usersNestedInput
   lib_users_lib_thesis_documents_student_idTolib_users?: Prisma.lib_usersUpdateOneRequiredWithoutLib_thesis_documents_lib_thesis_documents_student_idTolib_usersNestedInput
 }
 
@@ -1505,6 +2109,7 @@ export type lib_thesis_documentsUncheckedUpdateWithoutLib_users_lib_thesis_docum
   status?: Prisma.Enumlib_thesis_documents_statusFieldUpdateOperationsInput | $Enums.lib_thesis_documents_status
   submission_status?: Prisma.Enumlib_thesis_documents_submission_statusFieldUpdateOperationsInput | $Enums.lib_thesis_documents_submission_status
   reviewed_by_staff_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  assigned_staff_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   staff_review_notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   admin_review_notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rejection_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1515,6 +2120,17 @@ export type lib_thesis_documentsUncheckedUpdateWithoutLib_users_lib_thesis_docum
   approved_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   published_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   date_updated?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  document_type?: Prisma.Enumlib_thesis_documents_document_typeFieldUpdateOperationsInput | $Enums.lib_thesis_documents_document_type
+  journal_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  journal_volume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  journal_issue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  doi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  co_authors?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adviser_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  team_members?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  project_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  capstone_category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  program?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type lib_thesis_documentsUncheckedUpdateManyWithoutLib_users_lib_thesis_documents_reviewed_by_admin_idTolib_usersInput = {
@@ -1536,6 +2152,7 @@ export type lib_thesis_documentsUncheckedUpdateManyWithoutLib_users_lib_thesis_d
   status?: Prisma.Enumlib_thesis_documents_statusFieldUpdateOperationsInput | $Enums.lib_thesis_documents_status
   submission_status?: Prisma.Enumlib_thesis_documents_submission_statusFieldUpdateOperationsInput | $Enums.lib_thesis_documents_submission_status
   reviewed_by_staff_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  assigned_staff_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   staff_review_notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   admin_review_notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rejection_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1546,6 +2163,17 @@ export type lib_thesis_documentsUncheckedUpdateManyWithoutLib_users_lib_thesis_d
   approved_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   published_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   date_updated?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  document_type?: Prisma.Enumlib_thesis_documents_document_typeFieldUpdateOperationsInput | $Enums.lib_thesis_documents_document_type
+  journal_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  journal_volume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  journal_issue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  doi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  co_authors?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adviser_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  team_members?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  project_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  capstone_category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  program?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type lib_thesis_documentsUpdateWithoutLib_users_lib_thesis_documents_reviewed_by_staff_idTolib_usersInput = {
@@ -1574,7 +2202,19 @@ export type lib_thesis_documentsUpdateWithoutLib_users_lib_thesis_documents_revi
   approved_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   published_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   date_updated?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  document_type?: Prisma.Enumlib_thesis_documents_document_typeFieldUpdateOperationsInput | $Enums.lib_thesis_documents_document_type
+  journal_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  journal_volume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  journal_issue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  doi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  co_authors?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adviser_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  team_members?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  project_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  capstone_category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  program?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lib_users_lib_thesis_documents_reviewed_by_admin_idTolib_users?: Prisma.lib_usersUpdateOneWithoutLib_thesis_documents_lib_thesis_documents_reviewed_by_admin_idTolib_usersNestedInput
+  lib_users_lib_thesis_documents_assigned_staff_idTolib_users?: Prisma.lib_usersUpdateOneWithoutLib_thesis_documents_lib_thesis_documents_assigned_staff_idTolib_usersNestedInput
   lib_users_lib_thesis_documents_student_idTolib_users?: Prisma.lib_usersUpdateOneRequiredWithoutLib_thesis_documents_lib_thesis_documents_student_idTolib_usersNestedInput
 }
 
@@ -1597,6 +2237,7 @@ export type lib_thesis_documentsUncheckedUpdateWithoutLib_users_lib_thesis_docum
   status?: Prisma.Enumlib_thesis_documents_statusFieldUpdateOperationsInput | $Enums.lib_thesis_documents_status
   submission_status?: Prisma.Enumlib_thesis_documents_submission_statusFieldUpdateOperationsInput | $Enums.lib_thesis_documents_submission_status
   reviewed_by_admin_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  assigned_staff_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   staff_review_notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   admin_review_notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rejection_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1607,6 +2248,17 @@ export type lib_thesis_documentsUncheckedUpdateWithoutLib_users_lib_thesis_docum
   approved_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   published_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   date_updated?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  document_type?: Prisma.Enumlib_thesis_documents_document_typeFieldUpdateOperationsInput | $Enums.lib_thesis_documents_document_type
+  journal_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  journal_volume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  journal_issue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  doi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  co_authors?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adviser_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  team_members?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  project_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  capstone_category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  program?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type lib_thesis_documentsUncheckedUpdateManyWithoutLib_users_lib_thesis_documents_reviewed_by_staff_idTolib_usersInput = {
@@ -1628,6 +2280,7 @@ export type lib_thesis_documentsUncheckedUpdateManyWithoutLib_users_lib_thesis_d
   status?: Prisma.Enumlib_thesis_documents_statusFieldUpdateOperationsInput | $Enums.lib_thesis_documents_status
   submission_status?: Prisma.Enumlib_thesis_documents_submission_statusFieldUpdateOperationsInput | $Enums.lib_thesis_documents_submission_status
   reviewed_by_admin_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  assigned_staff_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   staff_review_notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   admin_review_notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rejection_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1638,6 +2291,145 @@ export type lib_thesis_documentsUncheckedUpdateManyWithoutLib_users_lib_thesis_d
   approved_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   published_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   date_updated?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  document_type?: Prisma.Enumlib_thesis_documents_document_typeFieldUpdateOperationsInput | $Enums.lib_thesis_documents_document_type
+  journal_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  journal_volume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  journal_issue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  doi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  co_authors?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adviser_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  team_members?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  project_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  capstone_category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  program?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type lib_thesis_documentsUpdateWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput = {
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  researcher_name?: Prisma.StringFieldUpdateOperationsInput | string
+  abstract?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  keywords?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  year_level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  academic_year?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  semester?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  file_url?: Prisma.StringFieldUpdateOperationsInput | string
+  file_name?: Prisma.StringFieldUpdateOperationsInput | string
+  file_size?: Prisma.IntFieldUpdateOperationsInput | number
+  file_type?: Prisma.StringFieldUpdateOperationsInput | string
+  file_path?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.Enumlib_thesis_documents_statusFieldUpdateOperationsInput | $Enums.lib_thesis_documents_status
+  submission_status?: Prisma.Enumlib_thesis_documents_submission_statusFieldUpdateOperationsInput | $Enums.lib_thesis_documents_submission_status
+  staff_review_notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  admin_review_notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejection_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  internal_notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  submitted_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  staff_reviewed_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  admin_reviewed_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  approved_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  published_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  date_updated?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  document_type?: Prisma.Enumlib_thesis_documents_document_typeFieldUpdateOperationsInput | $Enums.lib_thesis_documents_document_type
+  journal_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  journal_volume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  journal_issue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  doi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  co_authors?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adviser_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  team_members?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  project_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  capstone_category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  program?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lib_users_lib_thesis_documents_reviewed_by_admin_idTolib_users?: Prisma.lib_usersUpdateOneWithoutLib_thesis_documents_lib_thesis_documents_reviewed_by_admin_idTolib_usersNestedInput
+  lib_users_lib_thesis_documents_reviewed_by_staff_idTolib_users?: Prisma.lib_usersUpdateOneWithoutLib_thesis_documents_lib_thesis_documents_reviewed_by_staff_idTolib_usersNestedInput
+  lib_users_lib_thesis_documents_student_idTolib_users?: Prisma.lib_usersUpdateOneRequiredWithoutLib_thesis_documents_lib_thesis_documents_student_idTolib_usersNestedInput
+}
+
+export type lib_thesis_documentsUncheckedUpdateWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  student_id?: Prisma.IntFieldUpdateOperationsInput | number
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  researcher_name?: Prisma.StringFieldUpdateOperationsInput | string
+  abstract?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  keywords?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  year_level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  academic_year?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  semester?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  file_url?: Prisma.StringFieldUpdateOperationsInput | string
+  file_name?: Prisma.StringFieldUpdateOperationsInput | string
+  file_size?: Prisma.IntFieldUpdateOperationsInput | number
+  file_type?: Prisma.StringFieldUpdateOperationsInput | string
+  file_path?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.Enumlib_thesis_documents_statusFieldUpdateOperationsInput | $Enums.lib_thesis_documents_status
+  submission_status?: Prisma.Enumlib_thesis_documents_submission_statusFieldUpdateOperationsInput | $Enums.lib_thesis_documents_submission_status
+  reviewed_by_staff_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  reviewed_by_admin_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  staff_review_notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  admin_review_notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejection_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  internal_notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  submitted_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  staff_reviewed_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  admin_reviewed_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  approved_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  published_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  date_updated?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  document_type?: Prisma.Enumlib_thesis_documents_document_typeFieldUpdateOperationsInput | $Enums.lib_thesis_documents_document_type
+  journal_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  journal_volume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  journal_issue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  doi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  co_authors?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adviser_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  team_members?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  project_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  capstone_category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  program?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type lib_thesis_documentsUncheckedUpdateManyWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  student_id?: Prisma.IntFieldUpdateOperationsInput | number
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  researcher_name?: Prisma.StringFieldUpdateOperationsInput | string
+  abstract?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  keywords?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  year_level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  academic_year?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  semester?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  file_url?: Prisma.StringFieldUpdateOperationsInput | string
+  file_name?: Prisma.StringFieldUpdateOperationsInput | string
+  file_size?: Prisma.IntFieldUpdateOperationsInput | number
+  file_type?: Prisma.StringFieldUpdateOperationsInput | string
+  file_path?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.Enumlib_thesis_documents_statusFieldUpdateOperationsInput | $Enums.lib_thesis_documents_status
+  submission_status?: Prisma.Enumlib_thesis_documents_submission_statusFieldUpdateOperationsInput | $Enums.lib_thesis_documents_submission_status
+  reviewed_by_staff_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  reviewed_by_admin_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  staff_review_notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  admin_review_notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejection_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  internal_notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  submitted_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  staff_reviewed_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  admin_reviewed_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  approved_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  published_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  date_updated?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  document_type?: Prisma.Enumlib_thesis_documents_document_typeFieldUpdateOperationsInput | $Enums.lib_thesis_documents_document_type
+  journal_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  journal_volume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  journal_issue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  doi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  co_authors?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adviser_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  team_members?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  project_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  capstone_category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  program?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type lib_thesis_documentsUpdateWithoutLib_users_lib_thesis_documents_student_idTolib_usersInput = {
@@ -1666,8 +2458,20 @@ export type lib_thesis_documentsUpdateWithoutLib_users_lib_thesis_documents_stud
   approved_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   published_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   date_updated?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  document_type?: Prisma.Enumlib_thesis_documents_document_typeFieldUpdateOperationsInput | $Enums.lib_thesis_documents_document_type
+  journal_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  journal_volume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  journal_issue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  doi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  co_authors?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adviser_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  team_members?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  project_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  capstone_category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  program?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lib_users_lib_thesis_documents_reviewed_by_admin_idTolib_users?: Prisma.lib_usersUpdateOneWithoutLib_thesis_documents_lib_thesis_documents_reviewed_by_admin_idTolib_usersNestedInput
   lib_users_lib_thesis_documents_reviewed_by_staff_idTolib_users?: Prisma.lib_usersUpdateOneWithoutLib_thesis_documents_lib_thesis_documents_reviewed_by_staff_idTolib_usersNestedInput
+  lib_users_lib_thesis_documents_assigned_staff_idTolib_users?: Prisma.lib_usersUpdateOneWithoutLib_thesis_documents_lib_thesis_documents_assigned_staff_idTolib_usersNestedInput
 }
 
 export type lib_thesis_documentsUncheckedUpdateWithoutLib_users_lib_thesis_documents_student_idTolib_usersInput = {
@@ -1689,6 +2493,7 @@ export type lib_thesis_documentsUncheckedUpdateWithoutLib_users_lib_thesis_docum
   submission_status?: Prisma.Enumlib_thesis_documents_submission_statusFieldUpdateOperationsInput | $Enums.lib_thesis_documents_submission_status
   reviewed_by_staff_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   reviewed_by_admin_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  assigned_staff_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   staff_review_notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   admin_review_notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rejection_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1699,6 +2504,17 @@ export type lib_thesis_documentsUncheckedUpdateWithoutLib_users_lib_thesis_docum
   approved_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   published_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   date_updated?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  document_type?: Prisma.Enumlib_thesis_documents_document_typeFieldUpdateOperationsInput | $Enums.lib_thesis_documents_document_type
+  journal_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  journal_volume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  journal_issue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  doi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  co_authors?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adviser_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  team_members?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  project_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  capstone_category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  program?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type lib_thesis_documentsUncheckedUpdateManyWithoutLib_users_lib_thesis_documents_student_idTolib_usersInput = {
@@ -1720,6 +2536,7 @@ export type lib_thesis_documentsUncheckedUpdateManyWithoutLib_users_lib_thesis_d
   submission_status?: Prisma.Enumlib_thesis_documents_submission_statusFieldUpdateOperationsInput | $Enums.lib_thesis_documents_submission_status
   reviewed_by_staff_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   reviewed_by_admin_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  assigned_staff_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   staff_review_notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   admin_review_notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rejection_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1730,6 +2547,17 @@ export type lib_thesis_documentsUncheckedUpdateManyWithoutLib_users_lib_thesis_d
   approved_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   published_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   date_updated?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  document_type?: Prisma.Enumlib_thesis_documents_document_typeFieldUpdateOperationsInput | $Enums.lib_thesis_documents_document_type
+  journal_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  journal_volume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  journal_issue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  doi?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  co_authors?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adviser_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  team_members?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  project_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  capstone_category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  program?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -1754,6 +2582,7 @@ export type lib_thesis_documentsSelect<ExtArgs extends runtime.Types.Extensions.
   submission_status?: boolean
   reviewed_by_staff_id?: boolean
   reviewed_by_admin_id?: boolean
+  assigned_staff_id?: boolean
   staff_review_notes?: boolean
   admin_review_notes?: boolean
   rejection_reason?: boolean
@@ -1764,8 +2593,20 @@ export type lib_thesis_documentsSelect<ExtArgs extends runtime.Types.Extensions.
   approved_at?: boolean
   published_at?: boolean
   date_updated?: boolean
+  document_type?: boolean
+  journal_name?: boolean
+  journal_volume?: boolean
+  journal_issue?: boolean
+  doi?: boolean
+  co_authors?: boolean
+  adviser_name?: boolean
+  team_members?: boolean
+  project_type?: boolean
+  capstone_category?: boolean
+  program?: boolean
   lib_users_lib_thesis_documents_reviewed_by_admin_idTolib_users?: boolean | Prisma.lib_thesis_documents$lib_users_lib_thesis_documents_reviewed_by_admin_idTolib_usersArgs<ExtArgs>
   lib_users_lib_thesis_documents_reviewed_by_staff_idTolib_users?: boolean | Prisma.lib_thesis_documents$lib_users_lib_thesis_documents_reviewed_by_staff_idTolib_usersArgs<ExtArgs>
+  lib_users_lib_thesis_documents_assigned_staff_idTolib_users?: boolean | Prisma.lib_thesis_documents$lib_users_lib_thesis_documents_assigned_staff_idTolib_usersArgs<ExtArgs>
   lib_users_lib_thesis_documents_student_idTolib_users?: boolean | Prisma.lib_usersDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["lib_thesis_documents"]>
 
@@ -1791,6 +2632,7 @@ export type lib_thesis_documentsSelectScalar = {
   submission_status?: boolean
   reviewed_by_staff_id?: boolean
   reviewed_by_admin_id?: boolean
+  assigned_staff_id?: boolean
   staff_review_notes?: boolean
   admin_review_notes?: boolean
   rejection_reason?: boolean
@@ -1801,12 +2643,24 @@ export type lib_thesis_documentsSelectScalar = {
   approved_at?: boolean
   published_at?: boolean
   date_updated?: boolean
+  document_type?: boolean
+  journal_name?: boolean
+  journal_volume?: boolean
+  journal_issue?: boolean
+  doi?: boolean
+  co_authors?: boolean
+  adviser_name?: boolean
+  team_members?: boolean
+  project_type?: boolean
+  capstone_category?: boolean
+  program?: boolean
 }
 
-export type lib_thesis_documentsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "student_id" | "title" | "researcher_name" | "abstract" | "keywords" | "department" | "year_level" | "academic_year" | "semester" | "file_url" | "file_name" | "file_size" | "file_type" | "file_path" | "status" | "submission_status" | "reviewed_by_staff_id" | "reviewed_by_admin_id" | "staff_review_notes" | "admin_review_notes" | "rejection_reason" | "internal_notes" | "submitted_at" | "staff_reviewed_at" | "admin_reviewed_at" | "approved_at" | "published_at" | "date_updated", ExtArgs["result"]["lib_thesis_documents"]>
+export type lib_thesis_documentsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "student_id" | "title" | "researcher_name" | "abstract" | "keywords" | "department" | "year_level" | "academic_year" | "semester" | "file_url" | "file_name" | "file_size" | "file_type" | "file_path" | "status" | "submission_status" | "reviewed_by_staff_id" | "reviewed_by_admin_id" | "assigned_staff_id" | "staff_review_notes" | "admin_review_notes" | "rejection_reason" | "internal_notes" | "submitted_at" | "staff_reviewed_at" | "admin_reviewed_at" | "approved_at" | "published_at" | "date_updated" | "document_type" | "journal_name" | "journal_volume" | "journal_issue" | "doi" | "co_authors" | "adviser_name" | "team_members" | "project_type" | "capstone_category" | "program", ExtArgs["result"]["lib_thesis_documents"]>
 export type lib_thesis_documentsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   lib_users_lib_thesis_documents_reviewed_by_admin_idTolib_users?: boolean | Prisma.lib_thesis_documents$lib_users_lib_thesis_documents_reviewed_by_admin_idTolib_usersArgs<ExtArgs>
   lib_users_lib_thesis_documents_reviewed_by_staff_idTolib_users?: boolean | Prisma.lib_thesis_documents$lib_users_lib_thesis_documents_reviewed_by_staff_idTolib_usersArgs<ExtArgs>
+  lib_users_lib_thesis_documents_assigned_staff_idTolib_users?: boolean | Prisma.lib_thesis_documents$lib_users_lib_thesis_documents_assigned_staff_idTolib_usersArgs<ExtArgs>
   lib_users_lib_thesis_documents_student_idTolib_users?: boolean | Prisma.lib_usersDefaultArgs<ExtArgs>
 }
 
@@ -1815,6 +2669,7 @@ export type $lib_thesis_documentsPayload<ExtArgs extends runtime.Types.Extension
   objects: {
     lib_users_lib_thesis_documents_reviewed_by_admin_idTolib_users: Prisma.$lib_usersPayload<ExtArgs> | null
     lib_users_lib_thesis_documents_reviewed_by_staff_idTolib_users: Prisma.$lib_usersPayload<ExtArgs> | null
+    lib_users_lib_thesis_documents_assigned_staff_idTolib_users: Prisma.$lib_usersPayload<ExtArgs> | null
     lib_users_lib_thesis_documents_student_idTolib_users: Prisma.$lib_usersPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1837,6 +2692,7 @@ export type $lib_thesis_documentsPayload<ExtArgs extends runtime.Types.Extension
     submission_status: $Enums.lib_thesis_documents_submission_status
     reviewed_by_staff_id: number | null
     reviewed_by_admin_id: number | null
+    assigned_staff_id: number | null
     staff_review_notes: string | null
     admin_review_notes: string | null
     rejection_reason: string | null
@@ -1847,6 +2703,17 @@ export type $lib_thesis_documentsPayload<ExtArgs extends runtime.Types.Extension
     approved_at: Date | null
     published_at: Date | null
     date_updated: Date
+    document_type: $Enums.lib_thesis_documents_document_type
+    journal_name: string | null
+    journal_volume: string | null
+    journal_issue: string | null
+    doi: string | null
+    co_authors: string | null
+    adviser_name: string | null
+    team_members: string | null
+    project_type: string | null
+    capstone_category: string | null
+    program: string | null
   }, ExtArgs["result"]["lib_thesis_documents"]>
   composites: {}
 }
@@ -2189,6 +3056,7 @@ export interface Prisma__lib_thesis_documentsClient<T, Null = never, ExtArgs ext
   readonly [Symbol.toStringTag]: "PrismaPromise"
   lib_users_lib_thesis_documents_reviewed_by_admin_idTolib_users<T extends Prisma.lib_thesis_documents$lib_users_lib_thesis_documents_reviewed_by_admin_idTolib_usersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.lib_thesis_documents$lib_users_lib_thesis_documents_reviewed_by_admin_idTolib_usersArgs<ExtArgs>>): Prisma.Prisma__lib_usersClient<runtime.Types.Result.GetResult<Prisma.$lib_usersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   lib_users_lib_thesis_documents_reviewed_by_staff_idTolib_users<T extends Prisma.lib_thesis_documents$lib_users_lib_thesis_documents_reviewed_by_staff_idTolib_usersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.lib_thesis_documents$lib_users_lib_thesis_documents_reviewed_by_staff_idTolib_usersArgs<ExtArgs>>): Prisma.Prisma__lib_usersClient<runtime.Types.Result.GetResult<Prisma.$lib_usersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  lib_users_lib_thesis_documents_assigned_staff_idTolib_users<T extends Prisma.lib_thesis_documents$lib_users_lib_thesis_documents_assigned_staff_idTolib_usersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.lib_thesis_documents$lib_users_lib_thesis_documents_assigned_staff_idTolib_usersArgs<ExtArgs>>): Prisma.Prisma__lib_usersClient<runtime.Types.Result.GetResult<Prisma.$lib_usersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   lib_users_lib_thesis_documents_student_idTolib_users<T extends Prisma.lib_usersDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.lib_usersDefaultArgs<ExtArgs>>): Prisma.Prisma__lib_usersClient<runtime.Types.Result.GetResult<Prisma.$lib_usersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -2238,6 +3106,7 @@ export interface lib_thesis_documentsFieldRefs {
   readonly submission_status: Prisma.FieldRef<"lib_thesis_documents", 'lib_thesis_documents_submission_status'>
   readonly reviewed_by_staff_id: Prisma.FieldRef<"lib_thesis_documents", 'Int'>
   readonly reviewed_by_admin_id: Prisma.FieldRef<"lib_thesis_documents", 'Int'>
+  readonly assigned_staff_id: Prisma.FieldRef<"lib_thesis_documents", 'Int'>
   readonly staff_review_notes: Prisma.FieldRef<"lib_thesis_documents", 'String'>
   readonly admin_review_notes: Prisma.FieldRef<"lib_thesis_documents", 'String'>
   readonly rejection_reason: Prisma.FieldRef<"lib_thesis_documents", 'String'>
@@ -2248,6 +3117,17 @@ export interface lib_thesis_documentsFieldRefs {
   readonly approved_at: Prisma.FieldRef<"lib_thesis_documents", 'DateTime'>
   readonly published_at: Prisma.FieldRef<"lib_thesis_documents", 'DateTime'>
   readonly date_updated: Prisma.FieldRef<"lib_thesis_documents", 'DateTime'>
+  readonly document_type: Prisma.FieldRef<"lib_thesis_documents", 'lib_thesis_documents_document_type'>
+  readonly journal_name: Prisma.FieldRef<"lib_thesis_documents", 'String'>
+  readonly journal_volume: Prisma.FieldRef<"lib_thesis_documents", 'String'>
+  readonly journal_issue: Prisma.FieldRef<"lib_thesis_documents", 'String'>
+  readonly doi: Prisma.FieldRef<"lib_thesis_documents", 'String'>
+  readonly co_authors: Prisma.FieldRef<"lib_thesis_documents", 'String'>
+  readonly adviser_name: Prisma.FieldRef<"lib_thesis_documents", 'String'>
+  readonly team_members: Prisma.FieldRef<"lib_thesis_documents", 'String'>
+  readonly project_type: Prisma.FieldRef<"lib_thesis_documents", 'String'>
+  readonly capstone_category: Prisma.FieldRef<"lib_thesis_documents", 'String'>
+  readonly program: Prisma.FieldRef<"lib_thesis_documents", 'String'>
 }
     
 
@@ -2613,6 +3493,25 @@ export type lib_thesis_documents$lib_users_lib_thesis_documents_reviewed_by_admi
  * lib_thesis_documents.lib_users_lib_thesis_documents_reviewed_by_staff_idTolib_users
  */
 export type lib_thesis_documents$lib_users_lib_thesis_documents_reviewed_by_staff_idTolib_usersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the lib_users
+   */
+  select?: Prisma.lib_usersSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the lib_users
+   */
+  omit?: Prisma.lib_usersOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.lib_usersInclude<ExtArgs> | null
+  where?: Prisma.lib_usersWhereInput
+}
+
+/**
+ * lib_thesis_documents.lib_users_lib_thesis_documents_assigned_staff_idTolib_users
+ */
+export type lib_thesis_documents$lib_users_lib_thesis_documents_assigned_staff_idTolib_usersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the lib_users
    */

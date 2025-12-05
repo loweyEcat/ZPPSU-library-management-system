@@ -70,12 +70,12 @@ export function UploadThesisDialog({
       <DialogContent className="max-w-4xl max-h-[95vh] overflow-y-auto sm:max-h-[90vh]">
         <DialogHeader className="space-y-3 pb-4 border-b">
           <DialogTitle className="text-2xl font-semibold">
-            {mode === "edit" ? "Edit Thesis Document" : "Upload Thesis Document"}
+            {mode === "edit" ? "Edit Document" : "Upload Document"}
           </DialogTitle>
           <DialogDescription className="text-base">
             {mode === "edit"
-              ? "Update your thesis document information. You can only edit documents with Pending, Rejected, or Revision Required status."
-              : "Fill in the information below to upload your thesis document. The document will be reviewed by staff and admin."}
+              ? "Update your document information. You can only edit documents with Pending, Rejected, or Revision Required status."
+              : "Fill in the information below to upload your document. Select the document type (Thesis, Journal, or Capstone) and fill in the required fields. The document will be reviewed by staff and admin."}
           </DialogDescription>
         </DialogHeader>
         <div className="pt-4">

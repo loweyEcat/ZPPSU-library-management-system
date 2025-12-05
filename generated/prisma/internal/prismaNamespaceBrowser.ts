@@ -129,6 +129,7 @@ export const Lib_thesis_documentsScalarFieldEnum = {
   submission_status: 'submission_status',
   reviewed_by_staff_id: 'reviewed_by_staff_id',
   reviewed_by_admin_id: 'reviewed_by_admin_id',
+  assigned_staff_id: 'assigned_staff_id',
   staff_review_notes: 'staff_review_notes',
   admin_review_notes: 'admin_review_notes',
   rejection_reason: 'rejection_reason',
@@ -138,7 +139,18 @@ export const Lib_thesis_documentsScalarFieldEnum = {
   admin_reviewed_at: 'admin_reviewed_at',
   approved_at: 'approved_at',
   published_at: 'published_at',
-  date_updated: 'date_updated'
+  date_updated: 'date_updated',
+  document_type: 'document_type',
+  journal_name: 'journal_name',
+  journal_volume: 'journal_volume',
+  journal_issue: 'journal_issue',
+  doi: 'doi',
+  co_authors: 'co_authors',
+  adviser_name: 'adviser_name',
+  team_members: 'team_members',
+  project_type: 'project_type',
+  capstone_category: 'capstone_category',
+  program: 'program'
 } as const
 
 export type Lib_thesis_documentsScalarFieldEnum = (typeof Lib_thesis_documentsScalarFieldEnum)[keyof typeof Lib_thesis_documentsScalarFieldEnum]
@@ -266,7 +278,17 @@ export const lib_thesis_documentsOrderByRelevanceFieldEnum = {
   staff_review_notes: 'staff_review_notes',
   admin_review_notes: 'admin_review_notes',
   rejection_reason: 'rejection_reason',
-  internal_notes: 'internal_notes'
+  internal_notes: 'internal_notes',
+  journal_name: 'journal_name',
+  journal_volume: 'journal_volume',
+  journal_issue: 'journal_issue',
+  doi: 'doi',
+  co_authors: 'co_authors',
+  adviser_name: 'adviser_name',
+  team_members: 'team_members',
+  project_type: 'project_type',
+  capstone_category: 'capstone_category',
+  program: 'program'
 } as const
 
 export type lib_thesis_documentsOrderByRelevanceFieldEnum = (typeof lib_thesis_documentsOrderByRelevanceFieldEnum)[keyof typeof lib_thesis_documentsOrderByRelevanceFieldEnum]

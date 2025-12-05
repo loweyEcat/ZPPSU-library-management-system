@@ -27,6 +27,8 @@ export async function getAllThesisDocuments() {
       admin_reviewed_at: true,
       approved_at: true,
       published_at: true,
+      assigned_staff_id: true,
+      document_type: true,
       lib_users_lib_thesis_documents_student_idTolib_users: {
         select: {
           id: true,
@@ -41,6 +43,13 @@ export async function getAllThesisDocuments() {
           full_name: true,
         },
       },
+      lib_users_lib_thesis_documents_assigned_staff_idTolib_users: {
+        select: {
+          id: true,
+          full_name: true,
+          email: true,
+        },
+      },
     },
     orderBy: {
       submitted_at: "desc",
@@ -52,12 +61,16 @@ export async function getAllThesisDocuments() {
     const {
       lib_users_lib_thesis_documents_student_idTolib_users,
       lib_users_lib_thesis_documents_reviewed_by_staff_idTolib_users,
+      lib_users_lib_thesis_documents_assigned_staff_idTolib_users,
       ...rest
     } = doc;
     return {
       ...rest,
       student: lib_users_lib_thesis_documents_student_idTolib_users,
-      reviewed_by_staff: lib_users_lib_thesis_documents_reviewed_by_staff_idTolib_users,
+      reviewed_by_staff:
+        lib_users_lib_thesis_documents_reviewed_by_staff_idTolib_users,
+      assigned_staff:
+        lib_users_lib_thesis_documents_assigned_staff_idTolib_users,
       submitted_at: doc.submitted_at.toISOString(),
       staff_reviewed_at: doc.staff_reviewed_at?.toISOString() || null,
       admin_reviewed_at: doc.admin_reviewed_at?.toISOString() || null,
@@ -66,4 +79,3 @@ export async function getAllThesisDocuments() {
     };
   });
 }
-

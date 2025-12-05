@@ -3,7 +3,16 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, Upload, FileText, User, BookOpen, Calendar, GraduationCap } from "lucide-react";
+import {
+  Loader2,
+  Upload,
+  FileText,
+  User,
+  BookOpen,
+  Calendar,
+  GraduationCap,
+  Tag,
+} from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "sonner";
@@ -24,27 +33,97 @@ import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import { MultiNameInput } from "@/components/ui/multi-name-input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
-const createUploadThesisSchema = (isEdit: boolean) => z.object({
-  title: z.string().min(1, "Title is required").max(255, "Title must not exceed 255 characters"),
-  researcher_names: z.array(z.string().min(1, "Researcher name cannot be empty")).min(1, "At least one researcher name is required"),
-  abstract: z.string().optional(),
-  keywords: z.string().max(500, "Keywords must not exceed 500 characters").optional(),
-  department: z.string().max(100, "Department must not exceed 100 characters").optional(),
-  year_level: z.string().max(50, "Year level must not exceed 50 characters").optional(),
-  academic_year: z.string().max(20, "Academic year must not exceed 20 characters").optional(),
-  semester: z.string().max(20, "Semester must not exceed 20 characters").optional(),
-  file: isEdit
-    ? z.instanceof(File, { message: "Please select a file to upload" }).optional()
-    : z.instanceof(File, { message: "Please select a file to upload" }),
-});
+const createUploadThesisSchema = (isEdit: boolean) =>
+  z.object({
+    document_type: z.enum(["Thesis", "Journal", "Capstone"], {
+      message: "Please select a document type",
+    }),
+    title: z
+      .string()
+      .max(255, "Title must not exceed 255 characters")
+      .optional(),
+    researcher_names: z
+      .array(z.string().min(1, "Researcher name cannot be empty"))
+      .optional(),
+    abstract: z.string().optional(),
+    keywords: z
+      .string()
+      .max(500, "Keywords must not exceed 500 characters")
+      .optional(),
+    department: z
+      .string()
+      .max(100, "Department must not exceed 100 characters")
+      .optional(),
+    year_level: z
+      .string()
+      .max(50, "Year level must not exceed 50 characters")
+      .optional(),
+    academic_year: z
+      .string()
+      .max(20, "Academic year must not exceed 20 characters")
+      .optional(),
+    semester: z
+      .string()
+      .max(20, "Semester must not exceed 20 characters")
+      .optional(),
+    // Journal fields
+    journal_name: z
+      .string()
+      .max(255, "Journal name must not exceed 255 characters")
+      .optional(),
+    journal_volume: z
+      .string()
+      .max(50, "Journal volume must not exceed 50 characters")
+      .optional(),
+    journal_issue: z
+      .string()
+      .max(50, "Journal issue must not exceed 50 characters")
+      .optional(),
+    doi: z.string().max(100, "DOI must not exceed 100 characters").optional(),
+    co_authors: z.string().optional(),
+    // Thesis fields
+    adviser_name: z
+      .string()
+      .max(255, "Adviser name must not exceed 255 characters")
+      .optional(),
+    // Capstone fields
+    team_members: z.string().optional(),
+    project_type: z
+      .string()
+      .max(100, "Project type must not exceed 100 characters")
+      .optional(),
+    capstone_category: z
+      .string()
+      .max(50, "Capstone category must not exceed 50 characters")
+      .optional(),
+    program: z
+      .string()
+      .max(100, "Program must not exceed 100 characters")
+      .optional(),
+    file: isEdit
+      ? z
+          .instanceof(File, { message: "Please select a file to upload" })
+          .optional()
+      : z.instanceof(File, { message: "Please select a file to upload" }),
+  });
 
-type UploadThesisFormValues = z.infer<ReturnType<typeof createUploadThesisSchema>>;
+type UploadThesisFormValues = z.infer<
+  ReturnType<typeof createUploadThesisSchema>
+>;
 
 interface UploadThesisFormProps {
   onSuccess?: () => void;
   initialData?: {
     id: number;
+    document_type?: string;
     title: string;
     researcher_name: string;
     abstract?: string | null;
@@ -53,27 +132,69 @@ interface UploadThesisFormProps {
     year_level?: string | null;
     academic_year?: string | null;
     semester?: string | null;
+    journal_name?: string | null;
+    journal_volume?: string | null;
+    journal_issue?: string | null;
+    doi?: string | null;
+    co_authors?: string | null;
+    adviser_name?: string | null;
+    team_members?: string | null;
+    project_type?: string | null;
+    capstone_category?: string | null;
+    program?: string | null;
   };
   isEdit?: boolean;
 }
 
-export function UploadThesisForm({ onSuccess, initialData, isEdit = false }: UploadThesisFormProps) {
+export function UploadThesisForm({
+  onSuccess,
+  initialData,
+  isEdit = false,
+}: UploadThesisFormProps) {
   const router = useRouter();
   const [error, setError] = React.useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [isUploadingFile, setIsUploadingFile] = React.useState(false);
 
-  const uploadThesisSchema = React.useMemo(() => createUploadThesisSchema(isEdit), [isEdit]);
+  const uploadThesisSchema = React.useMemo(() => {
+    const baseSchema = createUploadThesisSchema(isEdit);
+    return baseSchema.superRefine((data, ctx) => {
+      // For Thesis and Capstone, title is required
+      if (data.document_type !== "Journal") {
+        if (!data.title || data.title.trim().length === 0) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Title is required for Thesis and Capstone documents",
+            path: ["title"],
+          });
+        }
+        if (!data.researcher_names || data.researcher_names.length === 0) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message:
+              "At least one researcher name is required for Thesis and Capstone documents",
+            path: ["researcher_names"],
+          });
+        }
+      }
+    });
+  }, [isEdit]);
 
   // Parse researcher_name from initialData (comma-separated string) to array
   const parseResearcherNames = (names: string | undefined): string[] => {
     if (!names) return [];
-    return names.split(",").map((name) => name.trim()).filter((name) => name.length > 0);
+    return names
+      .split(",")
+      .map((name) => name.trim())
+      .filter((name) => name.length > 0);
   };
 
   const form = useForm<UploadThesisFormValues>({
     resolver: zodResolver(uploadThesisSchema),
     defaultValues: {
+      document_type:
+        (initialData?.document_type as "Thesis" | "Journal" | "Capstone") ||
+        "Thesis",
       title: initialData?.title || "",
       researcher_names: parseResearcherNames(initialData?.researcher_name),
       abstract: initialData?.abstract || "",
@@ -82,9 +203,20 @@ export function UploadThesisForm({ onSuccess, initialData, isEdit = false }: Upl
       year_level: initialData?.year_level || "",
       academic_year: initialData?.academic_year || "",
       semester: initialData?.semester || "",
+      journal_name: initialData?.journal_name || "",
+      journal_volume: initialData?.journal_volume || "",
+      journal_issue: initialData?.journal_issue || "",
+      doi: initialData?.doi || "",
+      co_authors: initialData?.co_authors || "",
+      adviser_name: initialData?.adviser_name || "",
+      project_type: initialData?.project_type || "",
+      capstone_category: initialData?.capstone_category || "",
+      program: initialData?.program || "",
       file: undefined,
     },
   });
+
+  const documentType = form.watch("document_type");
 
   const onSubmit = React.useCallback(
     async (values: UploadThesisFormValues) => {
@@ -113,7 +245,9 @@ export function UploadThesisForm({ onSuccess, initialData, isEdit = false }: Upl
             const errorData = await uploadResponse.json().catch(() => ({
               message: "Failed to upload file. Please try again.",
             }));
-            setError(errorData.message ?? "Failed to upload file. Please try again.");
+            setError(
+              errorData.message ?? "Failed to upload file. Please try again."
+            );
             setIsSubmitting(false);
             setIsUploadingFile(false);
             return;
@@ -129,35 +263,78 @@ export function UploadThesisForm({ onSuccess, initialData, isEdit = false }: Upl
         }
 
         // Join researcher names with comma for storage
-        const researcherNameString = values.researcher_names.join(", ");
+        const researcherNameString = values.researcher_names?.join(", ") || "";
 
         // Create or update thesis document
         if (isEdit && initialData?.id) {
           // Update existing thesis
           const updateData: any = {
-            title: values.title,
-            researcher_name: researcherNameString,
-            abstract: values.abstract || null,
+            document_type: values.document_type,
+            // Only include these fields for Thesis and Capstone
+            ...(values.document_type !== "Journal" && {
+              title: values.title,
+              researcher_name: researcherNameString,
+              abstract: values.abstract || null,
+              department: values.department || null,
+              year_level: values.year_level || null,
+              academic_year: values.academic_year || null,
+              semester: values.semester || null,
+            }),
             keywords: values.keywords || null,
-            department: values.department || null,
-            year_level: values.year_level || null,
-            academic_year: values.academic_year || null,
-            semester: values.semester || null,
+            journal_name:
+              values.document_type === "Journal"
+                ? values.journal_name || null
+                : null,
+            journal_volume:
+              values.document_type === "Journal"
+                ? values.journal_volume || null
+                : null,
+            journal_issue:
+              values.document_type === "Journal"
+                ? values.journal_issue || null
+                : null,
+            doi: values.document_type === "Journal" ? values.doi || null : null,
+            co_authors:
+              values.document_type === "Journal"
+                ? values.co_authors || null
+                : null,
+            adviser_name:
+              values.document_type === "Thesis"
+                ? values.adviser_name || null
+                : null,
+            project_type:
+              values.document_type === "Capstone"
+                ? values.project_type || null
+                : null,
+            capstone_category:
+              values.document_type === "Capstone"
+                ? values.capstone_category || null
+                : null,
+            program:
+              values.document_type === "Capstone"
+                ? values.program || null
+                : null,
           };
 
-          const response = await fetch(`/api/library/thesis/${initialData.id}`, {
-            method: "PATCH",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(updateData),
-          });
+          const response = await fetch(
+            `/api/library/thesis/${initialData.id}`,
+            {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(updateData),
+            }
+          );
 
           if (!response.ok) {
             const errorBody = await response.json().catch(() => ({
               message: "Failed to update thesis document. Please try again.",
             }));
-            setError(errorBody.message ?? "Failed to update thesis document. Please try again.");
+            setError(
+              errorBody.message ??
+                "Failed to update thesis document. Please try again."
+            );
             setIsSubmitting(false);
             return;
           }
@@ -171,14 +348,54 @@ export function UploadThesisForm({ onSuccess, initialData, isEdit = false }: Upl
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              title: values.title,
-              researcher_name: researcherNameString,
-              abstract: values.abstract || undefined,
+              document_type: values.document_type,
+              // Only include these fields for Thesis and Capstone
+              ...(values.document_type !== "Journal" && {
+                title: values.title,
+                researcher_name: researcherNameString,
+                abstract: values.abstract || undefined,
+                department: values.department || undefined,
+                year_level: values.year_level || undefined,
+                academic_year: values.academic_year || undefined,
+                semester: values.semester || undefined,
+              }),
               keywords: values.keywords || undefined,
-              department: values.department || undefined,
-              year_level: values.year_level || undefined,
-              academic_year: values.academic_year || undefined,
-              semester: values.semester || undefined,
+              journal_name:
+                values.document_type === "Journal"
+                  ? values.journal_name || undefined
+                  : undefined,
+              journal_volume:
+                values.document_type === "Journal"
+                  ? values.journal_volume || undefined
+                  : undefined,
+              journal_issue:
+                values.document_type === "Journal"
+                  ? values.journal_issue || undefined
+                  : undefined,
+              doi:
+                values.document_type === "Journal"
+                  ? values.doi || undefined
+                  : undefined,
+              co_authors:
+                values.document_type === "Journal"
+                  ? values.co_authors || undefined
+                  : undefined,
+              adviser_name:
+                values.document_type === "Thesis"
+                  ? values.adviser_name || undefined
+                  : undefined,
+              project_type:
+                values.document_type === "Capstone"
+                  ? values.project_type || undefined
+                  : undefined,
+              capstone_category:
+                values.document_type === "Capstone"
+                  ? values.capstone_category || undefined
+                  : undefined,
+              program:
+                values.document_type === "Capstone"
+                  ? values.program || undefined
+                  : undefined,
               file_url: fileUrl,
               file_name: fileName,
               file_size: fileSize,
@@ -191,7 +408,10 @@ export function UploadThesisForm({ onSuccess, initialData, isEdit = false }: Upl
             const errorBody = await response.json().catch(() => ({
               message: "Failed to upload thesis document. Please try again.",
             }));
-            setError(errorBody.message ?? "Failed to upload thesis document. Please try again.");
+            setError(
+              errorBody.message ??
+                "Failed to upload thesis document. Please try again."
+            );
             setIsSubmitting(false);
             return;
           }
@@ -217,97 +437,39 @@ export function UploadThesisForm({ onSuccess, initialData, isEdit = false }: Upl
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        {/* Document Information Section */}
+        {/* Document Category Section */}
         <div className="space-y-4">
           <div className="flex items-center gap-2">
-            <FileText className="h-4 w-4 text-muted-foreground" />
-            <h3 className="text-sm font-semibold text-foreground">Document Information</h3>
+            <Tag className="h-4 w-4 text-muted-foreground" />
+            <h3 className="text-sm font-semibold text-foreground">
+              Document Category
+            </h3>
           </div>
 
           <FormField
             control={form.control}
-            name="title"
+            name="document_type"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="font-medium">Research Title *</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    placeholder="Enter the research title"
-                    disabled={isSubmitting}
-                    className="h-11"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="researcher_names"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="font-medium flex items-center gap-2">
-                  <User className="h-3.5 w-3.5" />
-                  Researcher Names *
-                </FormLabel>
-                <FormControl>
-                  <MultiNameInput
-                    value={field.value || []}
-                    onChange={field.onChange}
-                    placeholder="Enter researcher name and press Enter"
-                    disabled={isSubmitting}
-                    maxNames={10}
-                  />
-                </FormControl>
+                <FormLabel className="font-medium">Document Type *</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                  disabled={isSubmitting}
+                >
+                  <FormControl>
+                    <SelectTrigger className="h-11">
+                      <SelectValue placeholder="Select document type" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="Thesis">Thesis</SelectItem>
+                    <SelectItem value="Journal">Journal</SelectItem>
+                    <SelectItem value="Capstone">Capstone</SelectItem>
+                  </SelectContent>
+                </Select>
                 <FormDescription>
-                  Add multiple researcher names. Press Enter or click outside to add each name.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="abstract"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="font-medium">Abstract</FormLabel>
-                <FormControl>
-                  <Textarea
-                    {...field}
-                    placeholder="Enter thesis abstract (optional)"
-                    disabled={isSubmitting}
-                    rows={4}
-                    className="resize-none"
-                  />
-                </FormControl>
-                <FormDescription>
-                  Optional. Provide a brief summary of your research.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="keywords"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="font-medium">Keywords</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    placeholder="e.g., machine learning, data analysis, research"
-                    disabled={isSubmitting}
-                    className="h-11"
-                  />
-                </FormControl>
-                <FormDescription>
-                  Optional. Separate keywords with commas.
+                  Select the type of document you are uploading.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -317,96 +479,438 @@ export function UploadThesisForm({ onSuccess, initialData, isEdit = false }: Upl
 
         <Separator />
 
-        {/* Academic Information Section */}
-        <div className="space-y-4">
-          <div className="flex items-center gap-2">
-            <GraduationCap className="h-4 w-4 text-muted-foreground" />
-            <h3 className="text-sm font-semibold text-foreground">Academic Information</h3>
-          </div>
+        {/* Document Information Section - Only for Thesis and Capstone */}
+        {documentType !== "Journal" && (
+          <>
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <FileText className="h-4 w-4 text-muted-foreground" />
+                <h3 className="text-sm font-semibold text-foreground">
+                  Document Information
+                </h3>
+              </div>
 
-          <div className="grid gap-4 md:grid-cols-2">
-            <FormField
-              control={form.control}
-              name="department"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="font-medium">Department</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      placeholder="e.g., Computer Science"
-                      disabled={isSubmitting}
-                      className="h-11"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <FormField
+                control={form.control}
+                name="title"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-medium">
+                      Research Title *
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder="Enter the research title"
+                        disabled={isSubmitting}
+                        className="h-11"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="year_level"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="font-medium">Year Level</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      placeholder="e.g., 4th Year"
-                      disabled={isSubmitting}
-                      className="h-11"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+              <FormField
+                control={form.control}
+                name="researcher_names"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-medium flex items-center gap-2">
+                      <User className="h-3.5 w-3.5" />
+                      Researcher Names *
+                    </FormLabel>
+                    <FormControl>
+                      <MultiNameInput
+                        value={field.value || []}
+                        onChange={field.onChange}
+                        placeholder="Enter researcher name and press Enter"
+                        disabled={isSubmitting}
+                        maxNames={10}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Add multiple researcher names. Press Enter or click
+                      outside to add each name.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          <div className="grid gap-4 md:grid-cols-2">
-            <FormField
-              control={form.control}
-              name="academic_year"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="font-medium flex items-center gap-2">
-                    <Calendar className="h-3.5 w-3.5" />
-                    Academic Year
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      placeholder="e.g., 2024-2025"
-                      disabled={isSubmitting}
-                      className="h-11"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <FormField
+                control={form.control}
+                name="abstract"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-medium">Abstract</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        {...field}
+                        placeholder="Enter thesis abstract (optional)"
+                        disabled={isSubmitting}
+                        rows={4}
+                        className="resize-none"
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Optional. Provide a brief summary of your research.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="semester"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="font-medium">Semester</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      placeholder="e.g., 1st Semester"
-                      disabled={isSubmitting}
-                      className="h-11"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        </div>
+              <FormField
+                control={form.control}
+                name="keywords"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-medium">Keywords</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder="e.g., machine learning, data analysis, research"
+                        disabled={isSubmitting}
+                        className="h-11"
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Optional. Separate keywords with commas.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <Separator />
+
+            {/* Academic Information Section - Only for Thesis and Capstone */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <GraduationCap className="h-4 w-4 text-muted-foreground" />
+                <h3 className="text-sm font-semibold text-foreground">
+                  Academic Information
+                </h3>
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <FormField
+                  control={form.control}
+                  name="department"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-medium">Collges</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="e.g., Computer Science"
+                          disabled={isSubmitting}
+                          className="h-11"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="year_level"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-medium">Year Level</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="e.g., 4th Year"
+                          disabled={isSubmitting}
+                          className="h-11"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <FormField
+                  control={form.control}
+                  name="academic_year"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-medium flex items-center gap-2">
+                        <Calendar className="h-3.5 w-3.5" />
+                        Academic Year
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="e.g., 2024-2025"
+                          disabled={isSubmitting}
+                          className="h-11"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="semester"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-medium">Semester</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="e.g., 1st Semester"
+                          disabled={isSubmitting}
+                          className="h-11"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* Journal Specific Fields */}
+        {documentType === "Journal" && (
+          <>
+            <Separator />
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <BookOpen className="h-4 w-4 text-muted-foreground" />
+                <h3 className="text-sm font-semibold text-foreground">
+                  Journal Information
+                </h3>
+              </div>
+
+              <FormField
+                control={form.control}
+                name="journal_name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-medium">Journal Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder="Enter journal name"
+                        disabled={isSubmitting}
+                        className="h-11"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <FormField
+                  control={form.control}
+                  name="journal_volume"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-medium">Volume</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="e.g., Volume 10"
+                          disabled={isSubmitting}
+                          className="h-11"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="journal_issue"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-medium">Issue</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="e.g., Issue 3"
+                          disabled={isSubmitting}
+                          className="h-11"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="doi"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-medium">
+                      DOI (Digital Object Identifier)
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder="e.g., 10.1234/example.doi"
+                        disabled={isSubmitting}
+                        className="h-11"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="co_authors"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-medium">Co-Authors</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        {...field}
+                        placeholder="Enter co-authors (separate multiple authors with commas)"
+                        disabled={isSubmitting}
+                        rows={3}
+                        className="resize-none"
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Optional. List co-authors separated by commas.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </>
+        )}
+
+        {/* Thesis Specific Fields */}
+        {documentType === "Thesis" && (
+          <>
+            <Separator />
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <GraduationCap className="h-4 w-4 text-muted-foreground" />
+                <h3 className="text-sm font-semibold text-foreground">
+                  Thesis Information
+                </h3>
+              </div>
+
+              <FormField
+                control={form.control}
+                name="adviser_name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-medium">Adviser Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder="Enter adviser name"
+                        disabled={isSubmitting}
+                        className="h-11"
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Optional. Name of your thesis adviser.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </>
+        )}
+
+        {/* Capstone Specific Fields */}
+        {documentType === "Capstone" && (
+          <>
+            <Separator />
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <BookOpen className="h-4 w-4 text-muted-foreground" />
+                <h3 className="text-sm font-semibold text-foreground">
+                  Capstone Information
+                </h3>
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <FormField
+                  control={form.control}
+                  name="project_type"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-medium">
+                        Project Type
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="e.g., Software Development, Research"
+                          disabled={isSubmitting}
+                          className="h-11"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="capstone_category"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-medium">Category</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="e.g., Web Application, Mobile App"
+                          disabled={isSubmitting}
+                          className="h-11"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="program"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-medium">Program</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder="e.g., Computer Science, Information Technology"
+                        disabled={isSubmitting}
+                        className="h-11"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </>
+        )}
 
         <Separator />
 
@@ -414,7 +918,9 @@ export function UploadThesisForm({ onSuccess, initialData, isEdit = false }: Upl
         <div className="space-y-4">
           <div className="flex items-center gap-2">
             <Upload className="h-4 w-4 text-muted-foreground" />
-            <h3 className="text-sm font-semibold text-foreground">Document File</h3>
+            <h3 className="text-sm font-semibold text-foreground">
+              Document File
+            </h3>
           </div>
 
           <FormField
@@ -466,7 +972,9 @@ export function UploadThesisForm({ onSuccess, initialData, isEdit = false }: Upl
                   </div>
                 </FormControl>
                 <FormDescription>
-                  {isEdit ? "Upload a new file to replace the existing one (optional)" : "Upload PDF or DOC/DOCX file (max 50MB)"}
+                  {isEdit
+                    ? "Upload a new file to replace the existing one (optional)"
+                    : "Upload PDF or DOC/DOCX file (max 50MB)"}
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -488,6 +996,7 @@ export function UploadThesisForm({ onSuccess, initialData, isEdit = false }: Upl
             className="w-full sm:w-auto"
             onClick={() => {
               form.reset({
+                document_type: "Thesis",
                 title: "",
                 researcher_names: [],
                 abstract: "",
@@ -496,6 +1005,15 @@ export function UploadThesisForm({ onSuccess, initialData, isEdit = false }: Upl
                 year_level: "",
                 academic_year: "",
                 semester: "",
+                journal_name: "",
+                journal_volume: "",
+                journal_issue: "",
+                doi: "",
+                co_authors: "",
+                adviser_name: "",
+                project_type: "",
+                capstone_category: "",
+                program: "",
                 file: undefined,
               });
             }}
@@ -512,7 +1030,11 @@ export function UploadThesisForm({ onSuccess, initialData, isEdit = false }: Upl
             {isSubmitting || isUploadingFile ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                {isUploadingFile ? "Uploading File…" : isEdit ? "Updating…" : "Uploading…"}
+                {isUploadingFile
+                  ? "Uploading File…"
+                  : isEdit
+                  ? "Updating…"
+                  : "Uploading…"}
               </>
             ) : (
               <>
@@ -526,4 +1048,3 @@ export function UploadThesisForm({ onSuccess, initialData, isEdit = false }: Upl
     </Form>
   );
 }
-

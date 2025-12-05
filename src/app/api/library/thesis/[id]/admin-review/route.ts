@@ -8,6 +8,7 @@ const adminReviewThesisSchema = z.object({
   action: z.enum(["approve", "reject", "publish"]),
   review_notes: z.string().optional().nullable(),
   rejection_reason: z.string().optional().nullable(),
+  assigned_staff_id: z.number().int().positive().optional().nullable(),
 });
 
 export async function PATCH(
@@ -39,7 +40,8 @@ export async function PATCH(
       );
     }
 
-    const { action, review_notes, rejection_reason } = validation.data;
+    const { action, review_notes, rejection_reason, assigned_staff_id } =
+      validation.data;
 
     // Check if thesis exists
     const existingThesis = await prisma.lib_thesis_documents.findUnique({
@@ -58,15 +60,46 @@ export async function PATCH(
       );
     }
 
+    // Validate assigned_staff_id when approving
+    if (action === "approve") {
+      if (!assigned_staff_id) {
+        return NextResponse.json(
+          { message: "Staff assignment is required when approving documents." },
+          { status: 400 }
+        );
+      }
+
+      const staff = await prisma.lib_users.findUnique({
+        where: { id: assigned_staff_id },
+        select: { id: true, user_role: true },
+      });
+
+      if (!staff) {
+        return NextResponse.json(
+          { message: "Assigned staff member not found." },
+          { status: 404 }
+        );
+      }
+
+      if (staff.user_role !== "Staff" && staff.user_role !== "Admin") {
+        return NextResponse.json(
+          { message: "Assigned user must be a staff member." },
+          { status: 400 }
+        );
+      }
+    }
+
     const updateData: any = {
       reviewed_by_admin_id: session.user.id,
       admin_reviewed_at: new Date(),
     };
 
     if (action === "approve") {
-      updateData.submission_status = "Super_Admin_Approved";
-      updateData.status = "Approved";
-      updateData.approved_at = new Date();
+      // Set to Under_Review status and assign to staff for verification
+      updateData.submission_status = "Under_Review";
+      updateData.status = "Under_Review";
+      updateData.assigned_staff_id = assigned_staff_id;
+      // Don't set approved_at yet - that happens after staff review
       if (review_notes) {
         updateData.admin_review_notes = sanitizeInput(review_notes);
       }
@@ -80,10 +113,13 @@ export async function PATCH(
         updateData.admin_review_notes = sanitizeInput(review_notes);
       }
     } else if (action === "publish") {
-      // Can only publish if already approved
+      // Can only publish if staff has approved it (Super_Admin_Approved)
       if (existingThesis.submission_status !== "Super_Admin_Approved") {
         return NextResponse.json(
-          { message: "Can only publish approved documents." },
+          {
+            message:
+              "Can only publish documents that have been reviewed and approved by staff.",
+          },
           { status: 400 }
         );
       }
@@ -110,7 +146,13 @@ export async function PATCH(
 
     return NextResponse.json(
       {
-        message: `Thesis document ${action === "approve" ? "approved" : action === "reject" ? "rejected" : "published"} successfully.`,
+        message: `Thesis document ${
+          action === "approve"
+            ? "approved"
+            : action === "reject"
+            ? "rejected"
+            : "published"
+        } successfully.`,
         thesis: updatedThesis,
       },
       {
@@ -130,4 +172,3 @@ export async function PATCH(
     );
   }
 }
-

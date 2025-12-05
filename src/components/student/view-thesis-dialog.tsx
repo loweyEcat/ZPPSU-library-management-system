@@ -215,7 +215,7 @@ export function ViewThesisDialog({
             <div className="grid gap-4 md:grid-cols-2">
               <div>
                 <label className="text-sm font-medium text-muted-foreground">
-                  Department
+                  Colleges
                 </label>
                 <p className="text-sm font-medium mt-1">
                   {document.department || "N/A"}

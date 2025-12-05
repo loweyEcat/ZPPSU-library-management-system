@@ -224,6 +224,13 @@ export type DateTimeNullableFilter<$PrismaModel = never> = {
   not?: Prisma.NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
 }
 
+export type Enumlib_thesis_documents_document_typeFilter<$PrismaModel = never> = {
+  equals?: $Enums.lib_thesis_documents_document_type | Prisma.Enumlib_thesis_documents_document_typeFieldRefInput<$PrismaModel>
+  in?: $Enums.lib_thesis_documents_document_type[]
+  notIn?: $Enums.lib_thesis_documents_document_type[]
+  not?: Prisma.NestedEnumlib_thesis_documents_document_typeFilter<$PrismaModel> | $Enums.lib_thesis_documents_document_type
+}
+
 export type Enumlib_thesis_documents_statusWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.lib_thesis_documents_status | Prisma.Enumlib_thesis_documents_statusFieldRefInput<$PrismaModel>
   in?: $Enums.lib_thesis_documents_status[]
@@ -272,6 +279,16 @@ export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _min?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>
   _max?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>
+}
+
+export type Enumlib_thesis_documents_document_typeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.lib_thesis_documents_document_type | Prisma.Enumlib_thesis_documents_document_typeFieldRefInput<$PrismaModel>
+  in?: $Enums.lib_thesis_documents_document_type[]
+  notIn?: $Enums.lib_thesis_documents_document_type[]
+  not?: Prisma.NestedEnumlib_thesis_documents_document_typeWithAggregatesFilter<$PrismaModel> | $Enums.lib_thesis_documents_document_type
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumlib_thesis_documents_document_typeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumlib_thesis_documents_document_typeFilter<$PrismaModel>
 }
 
 export type Enumlib_book_requests_statusNullableFilter<$PrismaModel = never> = {
@@ -585,6 +602,13 @@ export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
   not?: Prisma.NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
 }
 
+export type NestedEnumlib_thesis_documents_document_typeFilter<$PrismaModel = never> = {
+  equals?: $Enums.lib_thesis_documents_document_type | Prisma.Enumlib_thesis_documents_document_typeFieldRefInput<$PrismaModel>
+  in?: $Enums.lib_thesis_documents_document_type[]
+  notIn?: $Enums.lib_thesis_documents_document_type[]
+  not?: Prisma.NestedEnumlib_thesis_documents_document_typeFilter<$PrismaModel> | $Enums.lib_thesis_documents_document_type
+}
+
 export type NestedEnumlib_thesis_documents_statusWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.lib_thesis_documents_status | Prisma.Enumlib_thesis_documents_statusFieldRefInput<$PrismaModel>
   in?: $Enums.lib_thesis_documents_status[]
@@ -644,6 +668,16 @@ export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _min?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>
   _max?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>
+}
+
+export type NestedEnumlib_thesis_documents_document_typeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.lib_thesis_documents_document_type | Prisma.Enumlib_thesis_documents_document_typeFieldRefInput<$PrismaModel>
+  in?: $Enums.lib_thesis_documents_document_type[]
+  notIn?: $Enums.lib_thesis_documents_document_type[]
+  not?: Prisma.NestedEnumlib_thesis_documents_document_typeWithAggregatesFilter<$PrismaModel> | $Enums.lib_thesis_documents_document_type
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumlib_thesis_documents_document_typeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumlib_thesis_documents_document_typeFilter<$PrismaModel>
 }
 
 export type NestedEnumlib_book_requests_statusNullableFilter<$PrismaModel = never> = {
