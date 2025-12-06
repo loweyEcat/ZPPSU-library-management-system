@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { FileText, User, Calendar, Download, X } from "lucide-react";
+import { FileText, User, Calendar, Download, X, BookOpen } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -35,6 +35,16 @@ interface ThesisDocument {
   staff_reviewed_at?: string | null;
   admin_reviewed_at?: string | null;
   approved_at?: string | null;
+  document_type?: string | null;
+  journal_name?: string | null;
+  journal_volume?: string | null;
+  journal_issue?: string | null;
+  doi?: string | null;
+  co_authors?: string | null;
+  adviser_name?: string | null;
+  project_type?: string | null;
+  capstone_category?: string | null;
+  program?: string | null;
 }
 
 interface ViewThesisDialogProps {
@@ -107,148 +117,311 @@ export function ViewThesisDialog({
     }
   };
 
+  const documentType = document.document_type || "Thesis";
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-3xl max-h-[95vh] overflow-y-auto">
         <DialogHeader className="space-y-3 pb-4 border-b">
           <DialogTitle className="text-2xl font-semibold">
-            Thesis Document Details
+            Document Details
           </DialogTitle>
           <DialogDescription className="text-base">
-            View detailed information about your thesis document.
+            View detailed information about the document.
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6 pt-4">
-          {/* Document Information */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <FileText className="h-4 w-4 text-muted-foreground" />
-              <h3 className="text-sm font-semibold text-foreground">
-                Document Information
-              </h3>
-            </div>
+          {/* Document Information - Only for Thesis and Capstone */}
+          {documentType !== "Journal" && (
+            <>
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <FileText className="h-4 w-4 text-muted-foreground" />
+                  <h3 className="text-sm font-semibold text-foreground">
+                    Document Information
+                  </h3>
+                </div>
 
-            <div>
-              <label className="text-sm font-medium text-muted-foreground">
-                Research Title
-              </label>
-              <p className="text-sm font-medium mt-1">{document.title}</p>
-            </div>
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground">
+                    Research Title
+                  </label>
+                  <p className="text-sm font-medium mt-1">{document.title}</p>
+                </div>
 
-            <div>
-              <label className="text-sm font-medium text-muted-foreground flex items-center gap-2 mb-2">
-                <User className="h-3.5 w-3.5" />
-                Researcher Names
-                {document.researcher_name && (
-                  <span className="text-xs text-muted-foreground font-normal">
-                    (
-                    {
-                      document.researcher_name
-                        .split(",")
-                        .filter((n) => n.trim()).length
-                    }{" "}
-                    researcher
-                    {document.researcher_name.split(",").filter((n) => n.trim())
-                      .length !== 1
-                      ? "s"
-                      : ""}
-                    )
-                  </span>
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground flex items-center gap-2 mb-2">
+                    <User className="h-3.5 w-3.5" />
+                    Researcher Names
+                    {document.researcher_name && (
+                      <span className="text-xs text-muted-foreground font-normal">
+                        (
+                        {
+                          document.researcher_name
+                            .split(",")
+                            .filter((n) => n.trim()).length
+                        }{" "}
+                        researcher
+                        {document.researcher_name
+                          .split(",")
+                          .filter((n) => n.trim()).length !== 1
+                          ? "s"
+                          : ""}
+                        )
+                      </span>
+                    )}
+                  </label>
+                  {document.researcher_name ? (
+                    <div className="mt-1 p-4 rounded-md border bg-muted/30 min-h-[60px] max-h-[200px] overflow-y-auto">
+                      <div className="flex flex-wrap gap-2">
+                        {document.researcher_name
+                          .split(",")
+                          .map((name, index) => {
+                            const trimmedName = name.trim();
+                            if (!trimmedName) return null;
+                            return (
+                              <Badge
+                                key={index}
+                                variant="secondary"
+                                className="px-3 py-1.5 text-sm font-medium whitespace-nowrap"
+                              >
+                                {trimmedName}
+                              </Badge>
+                            );
+                          })}
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="text-sm text-muted-foreground mt-1">N/A</p>
+                  )}
+                </div>
+
+                {document.abstract && (
+                  <div>
+                    <label className="text-sm font-medium text-muted-foreground">
+                      Abstract
+                    </label>
+                    <p className="text-sm mt-1 whitespace-pre-wrap">
+                      {document.abstract}
+                    </p>
+                  </div>
                 )}
-              </label>
-              {document.researcher_name ? (
-                <div className="mt-1 p-4 rounded-md border bg-muted/30 min-h-[60px] max-h-[200px] overflow-y-auto">
-                  <div className="flex flex-wrap gap-2">
-                    {document.researcher_name.split(",").map((name, index) => {
-                      const trimmedName = name.trim();
-                      if (!trimmedName) return null;
-                      return (
-                        <Badge
-                          key={index}
-                          variant="secondary"
-                          className="px-3 py-1.5 text-sm font-medium whitespace-nowrap"
-                        >
-                          {trimmedName}
-                        </Badge>
-                      );
-                    })}
+
+                {document.keywords && (
+                  <div>
+                    <label className="text-sm font-medium text-muted-foreground">
+                      Keywords
+                    </label>
+                    <p className="text-sm mt-1">{document.keywords}</p>
+                  </div>
+                )}
+              </div>
+
+              <Separator />
+
+              {/* Academic Information - Only for Thesis and Capstone */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <Calendar className="h-4 w-4 text-muted-foreground" />
+                  <h3 className="text-sm font-semibold text-foreground">
+                    Academic Information
+                  </h3>
+                </div>
+
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div>
+                    <label className="text-sm font-medium text-muted-foreground">
+                      Colleges
+                    </label>
+                    <p className="text-sm font-medium mt-1">
+                      {document.department || "N/A"}
+                    </p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-muted-foreground">
+                      Year Level
+                    </label>
+                    <p className="text-sm font-medium mt-1">
+                      {document.year_level || "N/A"}
+                    </p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-muted-foreground">
+                      Academic Year
+                    </label>
+                    <p className="text-sm font-medium mt-1">
+                      {document.academic_year || "N/A"}
+                    </p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-muted-foreground">
+                      Semester
+                    </label>
+                    <p className="text-sm font-medium mt-1">
+                      {document.semester || "N/A"}
+                    </p>
                   </div>
                 </div>
-              ) : (
-                <p className="text-sm text-muted-foreground mt-1">N/A</p>
-              )}
-            </div>
-
-            {document.abstract && (
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">
-                  Abstract
-                </label>
-                <p className="text-sm mt-1 whitespace-pre-wrap">
-                  {document.abstract}
-                </p>
               </div>
-            )}
 
-            {document.keywords && (
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">
-                  Keywords
-                </label>
-                <p className="text-sm mt-1">{document.keywords}</p>
-              </div>
-            )}
-          </div>
+              <Separator />
+            </>
+          )}
 
-          <Separator />
+          {/* Journal Information - Only for Journal */}
+          {documentType === "Journal" && (
+            <>
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <BookOpen className="h-4 w-4 text-muted-foreground" />
+                  <h3 className="text-sm font-semibold text-foreground">
+                    Journal Information
+                  </h3>
+                </div>
 
-          {/* Academic Information */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <Calendar className="h-4 w-4 text-muted-foreground" />
-              <h3 className="text-sm font-semibold text-foreground">
-                Academic Information
-              </h3>
-            </div>
+                {document.journal_name && (
+                  <div>
+                    <label className="text-sm font-medium text-muted-foreground">
+                      Journal Name
+                    </label>
+                    <p className="text-sm font-medium mt-1">
+                      {document.journal_name}
+                    </p>
+                  </div>
+                )}
 
-            <div className="grid gap-4 md:grid-cols-2">
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">
-                  Colleges
-                </label>
-                <p className="text-sm font-medium mt-1">
-                  {document.department || "N/A"}
-                </p>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">
-                  Year Level
-                </label>
-                <p className="text-sm font-medium mt-1">
-                  {document.year_level || "N/A"}
-                </p>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">
-                  Academic Year
-                </label>
-                <p className="text-sm font-medium mt-1">
-                  {document.academic_year || "N/A"}
-                </p>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">
-                  Semester
-                </label>
-                <p className="text-sm font-medium mt-1">
-                  {document.semester || "N/A"}
-                </p>
-              </div>
-            </div>
-          </div>
+                <div className="grid gap-4 md:grid-cols-2">
+                  {document.journal_volume && (
+                    <div>
+                      <label className="text-sm font-medium text-muted-foreground">
+                        Volume
+                      </label>
+                      <p className="text-sm font-medium mt-1">
+                        {document.journal_volume}
+                      </p>
+                    </div>
+                  )}
+                  {document.journal_issue && (
+                    <div>
+                      <label className="text-sm font-medium text-muted-foreground">
+                        Issue
+                      </label>
+                      <p className="text-sm font-medium mt-1">
+                        {document.journal_issue}
+                      </p>
+                    </div>
+                  )}
+                </div>
 
-          <Separator />
+                {document.doi && (
+                  <div>
+                    <label className="text-sm font-medium text-muted-foreground">
+                      DOI (Digital Object Identifier)
+                    </label>
+                    <p className="text-sm font-medium mt-1">{document.doi}</p>
+                  </div>
+                )}
+
+                {document.co_authors && (
+                  <div>
+                    <label className="text-sm font-medium text-muted-foreground">
+                      Co-Authors
+                    </label>
+                    <p className="text-sm mt-1 whitespace-pre-wrap">
+                      {document.co_authors}
+                    </p>
+                  </div>
+                )}
+
+                {document.keywords && (
+                  <div>
+                    <label className="text-sm font-medium text-muted-foreground">
+                      Keywords
+                    </label>
+                    <p className="text-sm mt-1">{document.keywords}</p>
+                  </div>
+                )}
+              </div>
+
+              <Separator />
+            </>
+          )}
+
+          {/* Thesis Specific Information */}
+          {documentType === "Thesis" && document.adviser_name && (
+            <>
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <User className="h-4 w-4 text-muted-foreground" />
+                  <h3 className="text-sm font-semibold text-foreground">
+                    Thesis Information
+                  </h3>
+                </div>
+
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground">
+                    Adviser Name
+                  </label>
+                  <p className="text-sm font-medium mt-1">
+                    {document.adviser_name}
+                  </p>
+                </div>
+              </div>
+
+              <Separator />
+            </>
+          )}
+
+          {/* Capstone Specific Information */}
+          {documentType === "Capstone" && (
+            <>
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <BookOpen className="h-4 w-4 text-muted-foreground" />
+                  <h3 className="text-sm font-semibold text-foreground">
+                    Capstone Information
+                  </h3>
+                </div>
+
+                <div className="grid gap-4 md:grid-cols-2">
+                  {document.project_type && (
+                    <div>
+                      <label className="text-sm font-medium text-muted-foreground">
+                        Project Type
+                      </label>
+                      <p className="text-sm font-medium mt-1">
+                        {document.project_type}
+                      </p>
+                    </div>
+                  )}
+                  {document.capstone_category && (
+                    <div>
+                      <label className="text-sm font-medium text-muted-foreground">
+                        Category
+                      </label>
+                      <p className="text-sm font-medium mt-1">
+                        {document.capstone_category}
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                {document.program && (
+                  <div>
+                    <label className="text-sm font-medium text-muted-foreground">
+                      Program
+                    </label>
+                    <p className="text-sm font-medium mt-1">
+                      {document.program}
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              <Separator />
+            </>
+          )}
 
           {/* File Information */}
           <div className="space-y-4">

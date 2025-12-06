@@ -95,6 +95,20 @@ interface ThesisDocument {
   } | null;
   assigned_staff_id: number | null;
   document_type: string | null;
+  abstract?: string | null;
+  keywords?: string | null;
+  journal_name?: string | null;
+  journal_volume?: string | null;
+  journal_issue?: string | null;
+  doi?: string | null;
+  co_authors?: string | null;
+  adviser_name?: string | null;
+  project_type?: string | null;
+  capstone_category?: string | null;
+  program?: string | null;
+  staff_review_notes?: string | null;
+  admin_review_notes?: string | null;
+  rejection_reason?: string | null;
 }
 
 interface AdminThesisVerificationTableProps {
