@@ -1,38 +1,34 @@
 import { requireStudent } from "@/lib/auth-library";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { getPublishedDocumentsForStudent } from "./actions";
+import { StudentResourcesTable } from "@/components/student/student-resources-table";
+import { Library } from "lucide-react";
 
 export default async function ResourcesPage() {
   const session = await requireStudent();
+  const documents = await getPublishedDocumentsForStudent();
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-3xl font-bold tracking-tight">Resources</h2>
-        <p className="text-muted-foreground">
-          Access library resources and materials
-        </p>
+      {/* Header Section */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <Library className="h-8 w-8 text-primary" />
+            <h2 className="text-3xl font-bold tracking-tight">
+              Library Resources
+            </h2>
+          </div>
+          <p className="text-muted-foreground">
+            Browse all published student documents (Thesis, Journals, Capstone).
+            Restricted documents are marked with a lock icon.
+          </p>
+        </div>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Library Resources</CardTitle>
-          <CardDescription>
-            Access digital resources, e-books, and other materials
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-muted-foreground">
-            Resources functionality will be implemented here.
-          </p>
-        </CardContent>
-      </Card>
+      {/* Resources Table */}
+      <div className="space-y-4">
+        <StudentResourcesTable documents={documents} />
+      </div>
     </div>
   );
 }
-

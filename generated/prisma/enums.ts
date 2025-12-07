@@ -114,3 +114,12 @@ export const lib_thesis_documents_document_type = {
 } as const
 
 export type lib_thesis_documents_document_type = (typeof lib_thesis_documents_document_type)[keyof typeof lib_thesis_documents_document_type]
+
+
+export const lib_download_permission_status = {
+  Pending: 'Pending',
+  Approved: 'Approved',
+  Rejected: 'Rejected'
+} as const
+
+export type lib_download_permission_status = (typeof lib_download_permission_status)[keyof typeof lib_download_permission_status]

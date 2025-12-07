@@ -62,7 +62,7 @@ const menuItems = [
     icon: BookOpen,
   },
   {
-    title: "Documents",
+    title: "Download Request Panel",
     url: "/admin/documents",
     icon: FileText,
   },

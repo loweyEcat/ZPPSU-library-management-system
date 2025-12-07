@@ -43,6 +43,21 @@ export type lib_book_requests = Prisma.lib_book_requestsModel
  */
 export type lib_books = Prisma.lib_booksModel
 /**
+ * Model lib_document_reading_sessions
+ * 
+ */
+export type lib_document_reading_sessions = Prisma.lib_document_reading_sessionsModel
+/**
+ * Model lib_document_access_cooldowns
+ * 
+ */
+export type lib_document_access_cooldowns = Prisma.lib_document_access_cooldownsModel
+/**
+ * Model lib_document_download_permissions
+ * 
+ */
+export type lib_document_download_permissions = Prisma.lib_document_download_permissionsModel
+/**
  * Model lib_book_fines
  * 
  */

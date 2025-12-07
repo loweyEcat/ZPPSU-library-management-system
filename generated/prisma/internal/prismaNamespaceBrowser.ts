@@ -56,6 +56,9 @@ export const ModelName = {
   lib_thesis_documents: 'lib_thesis_documents',
   lib_book_requests: 'lib_book_requests',
   lib_books: 'lib_books',
+  lib_document_reading_sessions: 'lib_document_reading_sessions',
+  lib_document_access_cooldowns: 'lib_document_access_cooldowns',
+  lib_document_download_permissions: 'lib_document_download_permissions',
   lib_book_fines: 'lib_book_fines'
 } as const
 
@@ -129,7 +132,6 @@ export const Lib_thesis_documentsScalarFieldEnum = {
   submission_status: 'submission_status',
   reviewed_by_staff_id: 'reviewed_by_staff_id',
   reviewed_by_admin_id: 'reviewed_by_admin_id',
-  assigned_staff_id: 'assigned_staff_id',
   staff_review_notes: 'staff_review_notes',
   admin_review_notes: 'admin_review_notes',
   rejection_reason: 'rejection_reason',
@@ -150,7 +152,11 @@ export const Lib_thesis_documentsScalarFieldEnum = {
   team_members: 'team_members',
   project_type: 'project_type',
   capstone_category: 'capstone_category',
-  program: 'program'
+  program: 'program',
+  assigned_staff_id: 'assigned_staff_id',
+  is_restricted: 'is_restricted',
+  time_limit_minutes: 'time_limit_minutes',
+  max_attempts: 'max_attempts'
 } as const
 
 export type Lib_thesis_documentsScalarFieldEnum = (typeof Lib_thesis_documentsScalarFieldEnum)[keyof typeof Lib_thesis_documentsScalarFieldEnum]
@@ -201,6 +207,45 @@ export const Lib_booksScalarFieldEnum = {
 } as const
 
 export type Lib_booksScalarFieldEnum = (typeof Lib_booksScalarFieldEnum)[keyof typeof Lib_booksScalarFieldEnum]
+
+
+export const Lib_document_reading_sessionsScalarFieldEnum = {
+  id: 'id',
+  document_id: 'document_id',
+  user_id: 'user_id',
+  started_at: 'started_at',
+  ended_at: 'ended_at',
+  duration_minutes: 'duration_minutes',
+  time_limit_minutes: 'time_limit_minutes',
+  was_time_limit_exceeded: 'was_time_limit_exceeded'
+} as const
+
+export type Lib_document_reading_sessionsScalarFieldEnum = (typeof Lib_document_reading_sessionsScalarFieldEnum)[keyof typeof Lib_document_reading_sessionsScalarFieldEnum]
+
+
+export const Lib_document_access_cooldownsScalarFieldEnum = {
+  id: 'id',
+  document_id: 'document_id',
+  user_id: 'user_id',
+  cooldown_until: 'cooldown_until',
+  created_at: 'created_at'
+} as const
+
+export type Lib_document_access_cooldownsScalarFieldEnum = (typeof Lib_document_access_cooldownsScalarFieldEnum)[keyof typeof Lib_document_access_cooldownsScalarFieldEnum]
+
+
+export const Lib_document_download_permissionsScalarFieldEnum = {
+  id: 'id',
+  document_id: 'document_id',
+  student_id: 'student_id',
+  status: 'status',
+  reason: 'reason',
+  requested_at: 'requested_at',
+  reviewed_by_id: 'reviewed_by_id',
+  reviewed_at: 'reviewed_at'
+} as const
+
+export type Lib_document_download_permissionsScalarFieldEnum = (typeof Lib_document_download_permissionsScalarFieldEnum)[keyof typeof Lib_document_download_permissionsScalarFieldEnum]
 
 
 export const Lib_book_finesScalarFieldEnum = {
@@ -319,6 +364,13 @@ export const lib_booksOrderByRelevanceFieldEnum = {
 } as const
 
 export type lib_booksOrderByRelevanceFieldEnum = (typeof lib_booksOrderByRelevanceFieldEnum)[keyof typeof lib_booksOrderByRelevanceFieldEnum]
+
+
+export const lib_document_download_permissionsOrderByRelevanceFieldEnum = {
+  reason: 'reason'
+} as const
+
+export type lib_document_download_permissionsOrderByRelevanceFieldEnum = (typeof lib_document_download_permissionsOrderByRelevanceFieldEnum)[keyof typeof lib_document_download_permissionsOrderByRelevanceFieldEnum]
 
 
 export const lib_book_finesOrderByRelevanceFieldEnum = {

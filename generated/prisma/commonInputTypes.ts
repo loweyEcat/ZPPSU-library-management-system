@@ -231,6 +231,11 @@ export type Enumlib_thesis_documents_document_typeFilter<$PrismaModel = never> =
   not?: Prisma.NestedEnumlib_thesis_documents_document_typeFilter<$PrismaModel> | $Enums.lib_thesis_documents_document_type
 }
 
+export type BoolFilter<$PrismaModel = never> = {
+  equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedBoolFilter<$PrismaModel> | boolean
+}
+
 export type Enumlib_thesis_documents_statusWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.lib_thesis_documents_status | Prisma.Enumlib_thesis_documents_statusFieldRefInput<$PrismaModel>
   in?: $Enums.lib_thesis_documents_status[]
@@ -291,6 +296,14 @@ export type Enumlib_thesis_documents_document_typeWithAggregatesFilter<$PrismaMo
   _max?: Prisma.NestedEnumlib_thesis_documents_document_typeFilter<$PrismaModel>
 }
 
+export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedBoolFilter<$PrismaModel>
+  _max?: Prisma.NestedBoolFilter<$PrismaModel>
+}
+
 export type Enumlib_book_requests_statusNullableFilter<$PrismaModel = never> = {
   equals?: $Enums.lib_book_requests_status | Prisma.Enumlib_book_requests_statusFieldRefInput<$PrismaModel> | null
   in?: $Enums.lib_book_requests_status[] | null
@@ -323,6 +336,23 @@ export type Enumlib_books_statusNullableWithAggregatesFilter<$PrismaModel = neve
   _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _min?: Prisma.NestedEnumlib_books_statusNullableFilter<$PrismaModel>
   _max?: Prisma.NestedEnumlib_books_statusNullableFilter<$PrismaModel>
+}
+
+export type Enumlib_download_permission_statusFilter<$PrismaModel = never> = {
+  equals?: $Enums.lib_download_permission_status | Prisma.Enumlib_download_permission_statusFieldRefInput<$PrismaModel>
+  in?: $Enums.lib_download_permission_status[]
+  notIn?: $Enums.lib_download_permission_status[]
+  not?: Prisma.NestedEnumlib_download_permission_statusFilter<$PrismaModel> | $Enums.lib_download_permission_status
+}
+
+export type Enumlib_download_permission_statusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.lib_download_permission_status | Prisma.Enumlib_download_permission_statusFieldRefInput<$PrismaModel>
+  in?: $Enums.lib_download_permission_status[]
+  notIn?: $Enums.lib_download_permission_status[]
+  not?: Prisma.NestedEnumlib_download_permission_statusWithAggregatesFilter<$PrismaModel> | $Enums.lib_download_permission_status
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumlib_download_permission_statusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumlib_download_permission_statusFilter<$PrismaModel>
 }
 
 export type DecimalFilter<$PrismaModel = never> = {
@@ -609,6 +639,11 @@ export type NestedEnumlib_thesis_documents_document_typeFilter<$PrismaModel = ne
   not?: Prisma.NestedEnumlib_thesis_documents_document_typeFilter<$PrismaModel> | $Enums.lib_thesis_documents_document_type
 }
 
+export type NestedBoolFilter<$PrismaModel = never> = {
+  equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedBoolFilter<$PrismaModel> | boolean
+}
+
 export type NestedEnumlib_thesis_documents_statusWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.lib_thesis_documents_status | Prisma.Enumlib_thesis_documents_statusFieldRefInput<$PrismaModel>
   in?: $Enums.lib_thesis_documents_status[]
@@ -680,6 +715,14 @@ export type NestedEnumlib_thesis_documents_document_typeWithAggregatesFilter<$Pr
   _max?: Prisma.NestedEnumlib_thesis_documents_document_typeFilter<$PrismaModel>
 }
 
+export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedBoolFilter<$PrismaModel>
+  _max?: Prisma.NestedBoolFilter<$PrismaModel>
+}
+
 export type NestedEnumlib_book_requests_statusNullableFilter<$PrismaModel = never> = {
   equals?: $Enums.lib_book_requests_status | Prisma.Enumlib_book_requests_statusFieldRefInput<$PrismaModel> | null
   in?: $Enums.lib_book_requests_status[] | null
@@ -712,6 +755,23 @@ export type NestedEnumlib_books_statusNullableWithAggregatesFilter<$PrismaModel 
   _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _min?: Prisma.NestedEnumlib_books_statusNullableFilter<$PrismaModel>
   _max?: Prisma.NestedEnumlib_books_statusNullableFilter<$PrismaModel>
+}
+
+export type NestedEnumlib_download_permission_statusFilter<$PrismaModel = never> = {
+  equals?: $Enums.lib_download_permission_status | Prisma.Enumlib_download_permission_statusFieldRefInput<$PrismaModel>
+  in?: $Enums.lib_download_permission_status[]
+  notIn?: $Enums.lib_download_permission_status[]
+  not?: Prisma.NestedEnumlib_download_permission_statusFilter<$PrismaModel> | $Enums.lib_download_permission_status
+}
+
+export type NestedEnumlib_download_permission_statusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.lib_download_permission_status | Prisma.Enumlib_download_permission_statusFieldRefInput<$PrismaModel>
+  in?: $Enums.lib_download_permission_status[]
+  notIn?: $Enums.lib_download_permission_status[]
+  not?: Prisma.NestedEnumlib_download_permission_statusWithAggregatesFilter<$PrismaModel> | $Enums.lib_download_permission_status
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumlib_download_permission_statusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumlib_download_permission_statusFilter<$PrismaModel>
 }
 
 export type NestedDecimalFilter<$PrismaModel = never> = {

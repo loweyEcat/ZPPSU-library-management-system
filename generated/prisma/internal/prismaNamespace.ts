@@ -80,12 +80,12 @@ export type PrismaVersion = {
 }
 
 /**
- * Prisma Client JS version: 7.1.0
- * Query Engine version: ab635e6b9d606fa5c8fb8b1a7f909c3c3c1c98ba
+ * Prisma Client JS version: 7.0.0
+ * Query Engine version: 0c19ccc313cf9911a90d99d2ac2eb0280c76c513
  */
 export const prismaVersion: PrismaVersion = {
-  client: "7.1.0",
-  engine: "ab635e6b9d606fa5c8fb8b1a7f909c3c3c1c98ba"
+  client: "7.0.0",
+  engine: "0c19ccc313cf9911a90d99d2ac2eb0280c76c513"
 }
 
 /**
@@ -389,6 +389,9 @@ export const ModelName = {
   lib_thesis_documents: 'lib_thesis_documents',
   lib_book_requests: 'lib_book_requests',
   lib_books: 'lib_books',
+  lib_document_reading_sessions: 'lib_document_reading_sessions',
+  lib_document_access_cooldowns: 'lib_document_access_cooldowns',
+  lib_document_download_permissions: 'lib_document_download_permissions',
   lib_book_fines: 'lib_book_fines'
 } as const
 
@@ -405,7 +408,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "lib_users" | "lib_sessions" | "lib_thesis_documents" | "lib_book_requests" | "lib_books" | "lib_book_fines"
+    modelProps: "lib_users" | "lib_sessions" | "lib_thesis_documents" | "lib_book_requests" | "lib_books" | "lib_document_reading_sessions" | "lib_document_access_cooldowns" | "lib_document_download_permissions" | "lib_book_fines"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -739,6 +742,204 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    lib_document_reading_sessions: {
+      payload: Prisma.$lib_document_reading_sessionsPayload<ExtArgs>
+      fields: Prisma.lib_document_reading_sessionsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.lib_document_reading_sessionsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$lib_document_reading_sessionsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.lib_document_reading_sessionsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$lib_document_reading_sessionsPayload>
+        }
+        findFirst: {
+          args: Prisma.lib_document_reading_sessionsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$lib_document_reading_sessionsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.lib_document_reading_sessionsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$lib_document_reading_sessionsPayload>
+        }
+        findMany: {
+          args: Prisma.lib_document_reading_sessionsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$lib_document_reading_sessionsPayload>[]
+        }
+        create: {
+          args: Prisma.lib_document_reading_sessionsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$lib_document_reading_sessionsPayload>
+        }
+        createMany: {
+          args: Prisma.lib_document_reading_sessionsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.lib_document_reading_sessionsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$lib_document_reading_sessionsPayload>
+        }
+        update: {
+          args: Prisma.lib_document_reading_sessionsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$lib_document_reading_sessionsPayload>
+        }
+        deleteMany: {
+          args: Prisma.lib_document_reading_sessionsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.lib_document_reading_sessionsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.lib_document_reading_sessionsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$lib_document_reading_sessionsPayload>
+        }
+        aggregate: {
+          args: Prisma.Lib_document_reading_sessionsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateLib_document_reading_sessions>
+        }
+        groupBy: {
+          args: Prisma.lib_document_reading_sessionsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Lib_document_reading_sessionsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.lib_document_reading_sessionsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Lib_document_reading_sessionsCountAggregateOutputType> | number
+        }
+      }
+    }
+    lib_document_access_cooldowns: {
+      payload: Prisma.$lib_document_access_cooldownsPayload<ExtArgs>
+      fields: Prisma.lib_document_access_cooldownsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.lib_document_access_cooldownsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$lib_document_access_cooldownsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.lib_document_access_cooldownsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$lib_document_access_cooldownsPayload>
+        }
+        findFirst: {
+          args: Prisma.lib_document_access_cooldownsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$lib_document_access_cooldownsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.lib_document_access_cooldownsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$lib_document_access_cooldownsPayload>
+        }
+        findMany: {
+          args: Prisma.lib_document_access_cooldownsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$lib_document_access_cooldownsPayload>[]
+        }
+        create: {
+          args: Prisma.lib_document_access_cooldownsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$lib_document_access_cooldownsPayload>
+        }
+        createMany: {
+          args: Prisma.lib_document_access_cooldownsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.lib_document_access_cooldownsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$lib_document_access_cooldownsPayload>
+        }
+        update: {
+          args: Prisma.lib_document_access_cooldownsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$lib_document_access_cooldownsPayload>
+        }
+        deleteMany: {
+          args: Prisma.lib_document_access_cooldownsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.lib_document_access_cooldownsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.lib_document_access_cooldownsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$lib_document_access_cooldownsPayload>
+        }
+        aggregate: {
+          args: Prisma.Lib_document_access_cooldownsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateLib_document_access_cooldowns>
+        }
+        groupBy: {
+          args: Prisma.lib_document_access_cooldownsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Lib_document_access_cooldownsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.lib_document_access_cooldownsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Lib_document_access_cooldownsCountAggregateOutputType> | number
+        }
+      }
+    }
+    lib_document_download_permissions: {
+      payload: Prisma.$lib_document_download_permissionsPayload<ExtArgs>
+      fields: Prisma.lib_document_download_permissionsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.lib_document_download_permissionsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$lib_document_download_permissionsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.lib_document_download_permissionsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$lib_document_download_permissionsPayload>
+        }
+        findFirst: {
+          args: Prisma.lib_document_download_permissionsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$lib_document_download_permissionsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.lib_document_download_permissionsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$lib_document_download_permissionsPayload>
+        }
+        findMany: {
+          args: Prisma.lib_document_download_permissionsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$lib_document_download_permissionsPayload>[]
+        }
+        create: {
+          args: Prisma.lib_document_download_permissionsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$lib_document_download_permissionsPayload>
+        }
+        createMany: {
+          args: Prisma.lib_document_download_permissionsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.lib_document_download_permissionsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$lib_document_download_permissionsPayload>
+        }
+        update: {
+          args: Prisma.lib_document_download_permissionsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$lib_document_download_permissionsPayload>
+        }
+        deleteMany: {
+          args: Prisma.lib_document_download_permissionsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.lib_document_download_permissionsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.lib_document_download_permissionsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$lib_document_download_permissionsPayload>
+        }
+        aggregate: {
+          args: Prisma.Lib_document_download_permissionsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateLib_document_download_permissions>
+        }
+        groupBy: {
+          args: Prisma.lib_document_download_permissionsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Lib_document_download_permissionsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.lib_document_download_permissionsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Lib_document_download_permissionsCountAggregateOutputType> | number
+        }
+      }
+    }
     lib_book_fines: {
       payload: Prisma.$lib_book_finesPayload<ExtArgs>
       fields: Prisma.lib_book_finesFieldRefs
@@ -898,7 +1099,6 @@ export const Lib_thesis_documentsScalarFieldEnum = {
   submission_status: 'submission_status',
   reviewed_by_staff_id: 'reviewed_by_staff_id',
   reviewed_by_admin_id: 'reviewed_by_admin_id',
-  assigned_staff_id: 'assigned_staff_id',
   staff_review_notes: 'staff_review_notes',
   admin_review_notes: 'admin_review_notes',
   rejection_reason: 'rejection_reason',
@@ -919,7 +1119,11 @@ export const Lib_thesis_documentsScalarFieldEnum = {
   team_members: 'team_members',
   project_type: 'project_type',
   capstone_category: 'capstone_category',
-  program: 'program'
+  program: 'program',
+  assigned_staff_id: 'assigned_staff_id',
+  is_restricted: 'is_restricted',
+  time_limit_minutes: 'time_limit_minutes',
+  max_attempts: 'max_attempts'
 } as const
 
 export type Lib_thesis_documentsScalarFieldEnum = (typeof Lib_thesis_documentsScalarFieldEnum)[keyof typeof Lib_thesis_documentsScalarFieldEnum]
@@ -970,6 +1174,45 @@ export const Lib_booksScalarFieldEnum = {
 } as const
 
 export type Lib_booksScalarFieldEnum = (typeof Lib_booksScalarFieldEnum)[keyof typeof Lib_booksScalarFieldEnum]
+
+
+export const Lib_document_reading_sessionsScalarFieldEnum = {
+  id: 'id',
+  document_id: 'document_id',
+  user_id: 'user_id',
+  started_at: 'started_at',
+  ended_at: 'ended_at',
+  duration_minutes: 'duration_minutes',
+  time_limit_minutes: 'time_limit_minutes',
+  was_time_limit_exceeded: 'was_time_limit_exceeded'
+} as const
+
+export type Lib_document_reading_sessionsScalarFieldEnum = (typeof Lib_document_reading_sessionsScalarFieldEnum)[keyof typeof Lib_document_reading_sessionsScalarFieldEnum]
+
+
+export const Lib_document_access_cooldownsScalarFieldEnum = {
+  id: 'id',
+  document_id: 'document_id',
+  user_id: 'user_id',
+  cooldown_until: 'cooldown_until',
+  created_at: 'created_at'
+} as const
+
+export type Lib_document_access_cooldownsScalarFieldEnum = (typeof Lib_document_access_cooldownsScalarFieldEnum)[keyof typeof Lib_document_access_cooldownsScalarFieldEnum]
+
+
+export const Lib_document_download_permissionsScalarFieldEnum = {
+  id: 'id',
+  document_id: 'document_id',
+  student_id: 'student_id',
+  status: 'status',
+  reason: 'reason',
+  requested_at: 'requested_at',
+  reviewed_by_id: 'reviewed_by_id',
+  reviewed_at: 'reviewed_at'
+} as const
+
+export type Lib_document_download_permissionsScalarFieldEnum = (typeof Lib_document_download_permissionsScalarFieldEnum)[keyof typeof Lib_document_download_permissionsScalarFieldEnum]
 
 
 export const Lib_book_finesScalarFieldEnum = {
@@ -1090,6 +1333,13 @@ export const lib_booksOrderByRelevanceFieldEnum = {
 export type lib_booksOrderByRelevanceFieldEnum = (typeof lib_booksOrderByRelevanceFieldEnum)[keyof typeof lib_booksOrderByRelevanceFieldEnum]
 
 
+export const lib_document_download_permissionsOrderByRelevanceFieldEnum = {
+  reason: 'reason'
+} as const
+
+export type lib_document_download_permissionsOrderByRelevanceFieldEnum = (typeof lib_document_download_permissionsOrderByRelevanceFieldEnum)[keyof typeof lib_document_download_permissionsOrderByRelevanceFieldEnum]
+
+
 export const lib_book_finesOrderByRelevanceFieldEnum = {
   description: 'description'
 } as const
@@ -1167,6 +1417,13 @@ export type Enumlib_thesis_documents_document_typeFieldRefInput<$PrismaModel> = 
 
 
 /**
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+/**
  * Reference to a field of type 'lib_book_requests_status'
  */
 export type Enumlib_book_requests_statusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'lib_book_requests_status'>
@@ -1177,6 +1434,13 @@ export type Enumlib_book_requests_statusFieldRefInput<$PrismaModel> = FieldRefIn
  * Reference to a field of type 'lib_books_status'
  */
 export type Enumlib_books_statusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'lib_books_status'>
+    
+
+
+/**
+ * Reference to a field of type 'lib_download_permission_status'
+ */
+export type Enumlib_download_permission_statusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'lib_download_permission_status'>
     
 
 
@@ -1256,7 +1520,7 @@ export type PrismaClientOptions = ({
    *  { emit: 'stdout', level: 'error' }
    * 
    * ```
-   * Read more in our [docs](https://pris.ly/d/logging).
+   * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/logging#the-log-option).
    */
   log?: (LogLevel | LogDefinition)[]
   /**
@@ -1284,22 +1548,6 @@ export type PrismaClientOptions = ({
    * ```
    */
   omit?: GlobalOmitConfig
-  /**
-   * SQL commenter plugins that add metadata to SQL queries as comments.
-   * Comments follow the sqlcommenter format: https://google.github.io/sqlcommenter/
-   * 
-   * @example
-   * ```
-   * const prisma = new PrismaClient({
-   *   adapter,
-   *   comments: [
-   *     traceContext(),
-   *     queryInsights(),
-   *   ],
-   * })
-   * ```
-   */
-  comments?: runtime.SqlCommenterPlugin[]
 }
 export type GlobalOmitConfig = {
   lib_users?: Prisma.lib_usersOmit
@@ -1307,6 +1555,9 @@ export type GlobalOmitConfig = {
   lib_thesis_documents?: Prisma.lib_thesis_documentsOmit
   lib_book_requests?: Prisma.lib_book_requestsOmit
   lib_books?: Prisma.lib_booksOmit
+  lib_document_reading_sessions?: Prisma.lib_document_reading_sessionsOmit
+  lib_document_access_cooldowns?: Prisma.lib_document_access_cooldownsOmit
+  lib_document_download_permissions?: Prisma.lib_document_download_permissionsOmit
   lib_book_fines?: Prisma.lib_book_finesOmit
 }
 
