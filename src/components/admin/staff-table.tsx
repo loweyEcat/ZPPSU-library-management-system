@@ -33,6 +33,7 @@ import {
 import { EditStaffDialog } from "@/components/admin/edit-staff-dialog";
 import { getStaffById } from "@/app/admin/staff/add/actions";
 import { toast } from "sonner";
+import type { lib_users_staff_category, lib_users_status } from "@/generated/prisma/enums";
 
 interface StaffMember {
   id: number;
@@ -40,9 +41,9 @@ interface StaffMember {
   email: string;
   contact_number: string | null;
   profile_image: string | null;
-  staff_category: "Intern" | "Working_Student" | "Regular_Employee" | null;
+  staff_category: lib_users_staff_category | null;
   assigned_role: string | null;
-  status: "Active" | "Inactive" | "Suspended";
+  status: lib_users_status;
   date_registered: string;
 }
 

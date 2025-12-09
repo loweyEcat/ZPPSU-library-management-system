@@ -19,7 +19,7 @@ export function Logo({ size = "md", className, showText = false }: LogoProps) {
     <div className={cn("flex items-center gap-3", className)}>
       <div className={cn("relative flex-shrink-0", sizeClasses[size])}>
         <Image
-          src="/images/tfoe-pe-logo.png"
+          src="/images/logo.png"
           alt="The Fraternal Order Of Eagles - Philippine Eagles International, Inc."
           width={96}
           height={96}
@@ -40,4 +40,3 @@ export function Logo({ size = "md", className, showText = false }: LogoProps) {
     </div>
   );
 }
-

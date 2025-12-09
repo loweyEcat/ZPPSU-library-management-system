@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
+import { Loader2, Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -29,6 +29,7 @@ export function LibraryLoginForm() {
   const router = useRouter();
   const [error, setError] = React.useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [showPassword, setShowPassword] = React.useState(false);
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginFormSchema),
@@ -101,23 +102,13 @@ export function LibraryLoginForm() {
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-6 rounded-xl border border-border bg-card/60 p-8 shadow-lg shadow-black/5 backdrop-blur"
-      >
-        <div className="space-y-2">
-          <h2 className="text-2xl font-bold">Library Management System</h2>
-          <p className="text-sm text-muted-foreground">
-            Sign in to your account
-          </p>
-        </div>
-
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <FormField
           control={form.control}
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel className="text-white drop-shadow-md">Email</FormLabel>
               <FormControl>
                 <Input
                   {...field}
@@ -125,6 +116,7 @@ export function LibraryLoginForm() {
                   autoComplete="email"
                   placeholder="you@example.com"
                   disabled={isSubmitting}
+                  className="bg-white/90 backdrop-blur-sm border-white/30"
                 />
               </FormControl>
               <FormMessage />
@@ -137,15 +129,35 @@ export function LibraryLoginForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              <FormLabel className="text-white drop-shadow-md">
+                Password
+              </FormLabel>
               <FormControl>
-                <Input
-                  {...field}
-                  type="password"
-                  autoComplete="current-password"
-                  placeholder="Enter your password"
-                  disabled={isSubmitting}
-                />
+                <div className="relative">
+                  <Input
+                    {...field}
+                    type={showPassword ? "text" : "password"}
+                    autoComplete="current-password"
+                    placeholder="Enter your password"
+                    disabled={isSubmitting}
+                    className="bg-white/90 backdrop-blur-sm border-white/30 pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none disabled:opacity-50"
+                    disabled={isSubmitting}
+                    aria-label={
+                      showPassword ? "Hide password" : "Show password"
+                    }
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </button>
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>

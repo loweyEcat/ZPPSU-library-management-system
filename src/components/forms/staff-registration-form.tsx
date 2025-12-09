@@ -162,6 +162,11 @@ export function StaffRegistrationForm({
       setError(null);
       setIsSubmitting(true);
 
+      // Determine if student fields should be sent based on the submitted values
+      const isInternOrWorkingStudent =
+        values.staffCategory === "Intern" ||
+        values.staffCategory === "Working_Student";
+
       try {
         const response = await fetch("/api/library/staff/register", {
           method: "POST",
@@ -177,16 +182,16 @@ export function StaffRegistrationForm({
             contactNumber: values.contactNumber || undefined,
             staffCategory: values.staffCategory || undefined,
             assignedRole: values.assignedRole || undefined,
-            studentId: showStudentFields
+            studentId: isInternOrWorkingStudent
               ? values.studentId || undefined
               : undefined,
-            section: showStudentFields
+            section: isInternOrWorkingStudent
               ? values.section || undefined
               : undefined,
-            department: showStudentFields
+            department: isInternOrWorkingStudent
               ? values.department || undefined
               : undefined,
-            yearLevel: showStudentFields
+            yearLevel: isInternOrWorkingStudent
               ? values.yearLevel || undefined
               : undefined,
           }),

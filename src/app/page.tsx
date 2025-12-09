@@ -24,7 +24,7 @@ export default async function Home() {
   }
 
   // Check if super admin exists
-  // @ts-expect-error - TypeScript cache issue: lib_users exists in generated Prisma client
+
   const existingSuperAdmin = await prisma.lib_users.findFirst({
     where: { user_role: "Super_Admin" },
     select: { id: true },

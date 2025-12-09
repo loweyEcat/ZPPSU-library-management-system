@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, Upload } from "lucide-react";
+import { Loader2, Upload, Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -65,6 +65,8 @@ export function StudentRegistrationForm() {
   const [error, setError] = React.useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [uploadingFile, setUploadingFile] = React.useState(false);
+  const [showPassword, setShowPassword] = React.useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
 
   const form = useForm<StudentRegistrationFormValues>({
     resolver: zodResolver(studentRegistrationFormSchema),
@@ -171,27 +173,21 @@ export function StudentRegistrationForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-6 rounded-xl border border-border bg-card/60 p-8 shadow-lg shadow-black/5 backdrop-blur"
+        className="space-y-6"
       >
-        <div className="space-y-2">
-          <h2 className="text-2xl font-bold">Student Registration</h2>
-          <p className="text-sm text-muted-foreground">
-            Create your student account to access the library system
-          </p>
-        </div>
-
         <div className="grid gap-4 md:grid-cols-2">
           <FormField
             control={form.control}
             name="firstName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>First Name *</FormLabel>
+                <FormLabel className="text-white drop-shadow-md">First Name *</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
                     placeholder="John"
                     disabled={isSubmitting}
+                    className="bg-white/90 backdrop-blur-sm border-white/30"
                   />
                 </FormControl>
                 <FormMessage />
@@ -204,12 +200,13 @@ export function StudentRegistrationForm() {
             name="lastName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Last Name *</FormLabel>
+                <FormLabel className="text-white drop-shadow-md">Last Name *</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
                     placeholder="Doe"
                     disabled={isSubmitting}
+                    className="bg-white/90 backdrop-blur-sm border-white/30"
                   />
                 </FormControl>
                 <FormMessage />
@@ -224,7 +221,7 @@ export function StudentRegistrationForm() {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email *</FormLabel>
+                <FormLabel className="text-white drop-shadow-md">Email *</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
@@ -232,6 +229,7 @@ export function StudentRegistrationForm() {
                     autoComplete="email"
                     placeholder="student@example.com"
                     disabled={isSubmitting}
+                    className="bg-white/90 backdrop-blur-sm border-white/30"
                   />
                 </FormControl>
                 <FormMessage />
@@ -244,13 +242,14 @@ export function StudentRegistrationForm() {
             name="contactNumber"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Contact Number *</FormLabel>
+                <FormLabel className="text-white drop-shadow-md">Contact Number *</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
                     type="tel"
                     placeholder="+1234567890"
                     disabled={isSubmitting}
+                    className="bg-white/90 backdrop-blur-sm border-white/30"
                   />
                 </FormControl>
                 <FormMessage />
@@ -264,14 +263,14 @@ export function StudentRegistrationForm() {
           name="sex"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Sex *</FormLabel>
+              <FormLabel className="text-white drop-shadow-md">Sex *</FormLabel>
               <Select
                 onValueChange={field.onChange}
                 value={field.value}
                 disabled={isSubmitting}
               >
                 <FormControl>
-                  <SelectTrigger>
+                  <SelectTrigger className="bg-white/90 backdrop-blur-sm border-white/30">
                     <SelectValue placeholder="Select sex" />
                   </SelectTrigger>
                 </FormControl>
@@ -291,12 +290,13 @@ export function StudentRegistrationForm() {
           name="studentId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Student ID *</FormLabel>
+              <FormLabel className="text-white drop-shadow-md">Student ID *</FormLabel>
               <FormControl>
                 <Input
                   {...field}
                   placeholder="2024-00123"
                   disabled={isSubmitting}
+                  className="bg-white/90 backdrop-blur-sm border-white/30"
                 />
               </FormControl>
               <FormMessage />
@@ -310,12 +310,13 @@ export function StudentRegistrationForm() {
             name="section"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Section *</FormLabel>
+                <FormLabel className="text-white drop-shadow-md">Section *</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
                     placeholder="A"
                     disabled={isSubmitting}
+                    className="bg-white/90 backdrop-blur-sm border-white/30"
                   />
                 </FormControl>
                 <FormMessage />
@@ -328,12 +329,13 @@ export function StudentRegistrationForm() {
             name="department"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Department *</FormLabel>
+                <FormLabel className="text-white drop-shadow-md">Department *</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
                     placeholder="Computer Science"
                     disabled={isSubmitting}
+                    className="bg-white/90 backdrop-blur-sm border-white/30"
                   />
                 </FormControl>
                 <FormMessage />
@@ -347,12 +349,13 @@ export function StudentRegistrationForm() {
           name="yearLevel"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Year Level *</FormLabel>
+              <FormLabel className="text-white drop-shadow-md">Year Level *</FormLabel>
               <FormControl>
                 <Input
                   {...field}
                   placeholder="1st Year"
                   disabled={isSubmitting}
+                  className="bg-white/90 backdrop-blur-sm border-white/30"
                 />
               </FormControl>
               <FormMessage />
@@ -365,7 +368,7 @@ export function StudentRegistrationForm() {
           name="schoolIdFile"
           render={({ field: { value, onChange, ...fieldProps } }) => (
             <FormItem>
-              <FormLabel>Upload School ID</FormLabel>
+              <FormLabel className="text-white drop-shadow-md">Upload School ID</FormLabel>
               <FormControl>
                 <div className="flex items-center gap-2">
                   <Input
@@ -379,7 +382,7 @@ export function StudentRegistrationForm() {
                         onChange(file);
                       }
                     }}
-                    className="cursor-pointer"
+                    className="cursor-pointer bg-white/90 backdrop-blur-sm border-white/30"
                   />
                   {value && (
                     <span className="text-xs text-muted-foreground truncate max-w-[200px]">
@@ -398,15 +401,31 @@ export function StudentRegistrationForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password *</FormLabel>
+              <FormLabel className="text-white drop-shadow-md">Password *</FormLabel>
               <FormControl>
-                <Input
-                  {...field}
-                  type="password"
-                  autoComplete="new-password"
-                  placeholder="Enter a strong password"
-                  disabled={isSubmitting}
-                />
+                <div className="relative">
+                  <Input
+                    {...field}
+                    type={showPassword ? "text" : "password"}
+                    autoComplete="new-password"
+                    placeholder="Enter a strong password"
+                    disabled={isSubmitting}
+                    className="bg-white/90 backdrop-blur-sm border-white/30 pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none disabled:opacity-50"
+                    disabled={isSubmitting}
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </button>
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -418,15 +437,31 @@ export function StudentRegistrationForm() {
           name="confirmPassword"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Confirm Password *</FormLabel>
+              <FormLabel className="text-white drop-shadow-md">Confirm Password *</FormLabel>
               <FormControl>
-                <Input
-                  {...field}
-                  type="password"
-                  autoComplete="new-password"
-                  placeholder="Confirm your password"
-                  disabled={isSubmitting}
-                />
+                <div className="relative">
+                  <Input
+                    {...field}
+                    type={showConfirmPassword ? "text" : "password"}
+                    autoComplete="new-password"
+                    placeholder="Confirm your password"
+                    disabled={isSubmitting}
+                    className="bg-white/90 backdrop-blur-sm border-white/30 pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none disabled:opacity-50"
+                    disabled={isSubmitting}
+                    aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
+                  >
+                    {showConfirmPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </button>
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>

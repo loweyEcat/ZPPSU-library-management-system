@@ -5,6 +5,7 @@ import { hashPassword } from "@/lib/password";
 import { prisma } from "@/lib/prisma";
 import { sanitizeInput } from "@/lib/sanitize";
 import { requireAdminOrSuperAdmin } from "@/lib/auth-library";
+import type { lib_users_staff_category } from "@/generated/prisma/enums";
 
 const staffRegistrationSchema = z
   .object({
@@ -137,21 +138,8 @@ export async function POST(request: Request) {
     lastName
   )}`.trim();
 
-  // For Intern and Working Student, store student info (section, department) in assigned_role as JSON
-  // along with assignedRole if provided
-  // Format: { section: "...", department: "...", assignedRole: "..." }
-  // For Regular Employee, just store assignedRole as string
-  let finalAssignedRole: string | null = null;
-  if (staffCategory === "Intern" || staffCategory === "Working_Student") {
-    const studentInfo: any = {};
-    if (section) studentInfo.section = sanitizeInput(section);
-    if (department) studentInfo.department = sanitizeInput(department);
-    if (assignedRole) studentInfo.assignedRole = sanitizeInput(assignedRole);
-    finalAssignedRole =
-      Object.keys(studentInfo).length > 0 ? JSON.stringify(studentInfo) : null;
-  } else {
-    finalAssignedRole = assignedRole ? sanitizeInput(assignedRole) : null;
-  }
+  // Store assigned_role as plain string for all staff categories (not JSON)
+  const finalAssignedRole = assignedRole ? sanitizeInput(assignedRole) : null;
 
   // Check if email already exists
   const existingUser = await prisma.lib_users.findUnique({
@@ -171,6 +159,10 @@ export async function POST(request: Request) {
   try {
     const hashedPassword = await hashPassword(password);
 
+    // Determine if this is an Intern or Working Student
+    const isInternOrWorkingStudent =
+      staffCategory === "Intern" || staffCategory === "Working_Student";
+
     const newUser = await prisma.lib_users.create({
       data: {
         full_name: fullName,
@@ -178,17 +170,22 @@ export async function POST(request: Request) {
         password: hashedPassword,
         contact_number: contactNumber ? sanitizeInput(contactNumber) : null,
         user_role: "Staff",
-        staff_category: staffCategory || null,
+        // Use staffCategory directly - Prisma handles @map transformation for database storage
+        staff_category: (staffCategory as lib_users_staff_category) || null,
         assigned_role: finalAssignedRole,
         student_id:
-          (staffCategory === "Intern" || staffCategory === "Working_Student") &&
-          studentId
+          isInternOrWorkingStudent && studentId
             ? sanitizeInput(studentId)
             : null,
         year_level:
-          (staffCategory === "Intern" || staffCategory === "Working_Student") &&
-          yearLevel
+          isInternOrWorkingStudent && yearLevel
             ? sanitizeInput(yearLevel)
+            : null,
+        section:
+          isInternOrWorkingStudent && section ? sanitizeInput(section) : null,
+        department:
+          isInternOrWorkingStudent && department
+            ? sanitizeInput(department)
             : null,
         status: "Active",
       },
