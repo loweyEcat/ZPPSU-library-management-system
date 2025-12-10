@@ -115,7 +115,9 @@ function getPaymentStatus(fines: Array<{ status: string }> | undefined): {
 
   const allPaid = fines.every((f) => f.status === "Paid");
   const allUnpaid = fines.every((f) => f.status === "Unpaid");
-  const hasPartiallyPaid = fines.some((f) => f.status === "Partially_Paid" || f.status === "Partially Paid");
+  const hasPartiallyPaid = fines.some(
+    (f) => f.status === "Partially_Paid" || f.status === "Partially Paid"
+  );
   const hasWaived = fines.some((f) => f.status === "Waived");
 
   if (hasWaived) {
@@ -156,11 +158,11 @@ export function AdminBooksTabs({ books, requests }: AdminBooksTabsProps) {
   const allBooks = books.filter(
     (book) => book.status !== "Damaged" && book.status !== "Lost"
   );
-  const damagedBooks = books.filter((book) => 
-    book.status === "Damaged" || damagedBookIds.has(book.id)
+  const damagedBooks = books.filter(
+    (book) => book.status === "Damaged" || damagedBookIds.has(book.id)
   );
-  const lostBooks = books.filter((book) => 
-    book.status === "Lost" || lostBookIds.has(book.id)
+  const lostBooks = books.filter(
+    (book) => book.status === "Lost" || lostBookIds.has(book.id)
   );
 
   // Remove duplicates
@@ -195,24 +197,41 @@ export function AdminBooksTabs({ books, requests }: AdminBooksTabsProps) {
             </TabsTrigger>
             <TabsTrigger value="damaged" className="flex items-center gap-2">
               <AlertTriangle className="h-4 w-4" />
-              Damaged ({requests.filter((r) => r.lib_book_fines?.some((f) => f.reason === "Damaged")).length})
+              Damaged (
+              {
+                requests.filter((r) =>
+                  r.lib_book_fines?.some((f) => f.reason === "Damaged")
+                ).length
+              }
+              )
             </TabsTrigger>
             <TabsTrigger value="lost" className="flex items-center gap-2">
               <AlertTriangle className="h-4 w-4" />
-              Lost ({requests.filter((r) => r.lib_book_fines?.some((f) => f.reason === "Lost")).length})
+              Lost (
+              {
+                requests.filter((r) =>
+                  r.lib_book_fines?.some((f) => f.reason === "Lost")
+                ).length
+              }
+              )
             </TabsTrigger>
           </TabsList>
           <TabsContent value="all" className="space-y-4 mt-0">
-            <AdminBooksTable books={allBooks} showDamagedLostQuantity={false} />
+            <AdminBooksTable books={allBooks} />
           </TabsContent>
           <TabsContent value="damaged" className="space-y-4 mt-0">
             {(() => {
               // Filter requests that have damaged fines
               const damagedRequests = requests.filter((request) => {
-                if (!request.lib_book_fines || request.lib_book_fines.length === 0) {
+                if (
+                  !request.lib_book_fines ||
+                  request.lib_book_fines.length === 0
+                ) {
                   return false;
                 }
-                return request.lib_book_fines.some((fine) => fine.reason === "Damaged");
+                return request.lib_book_fines.some(
+                  (fine) => fine.reason === "Damaged"
+                );
               });
 
               if (damagedRequests.length === 0) {
@@ -235,32 +254,56 @@ export function AdminBooksTabs({ books, requests }: AdminBooksTabsProps) {
                     <Table>
                       <TableHeader>
                         <TableRow className="bg-muted/50 hover:bg-muted/50">
-                          <TableHead className="font-semibold">Tracking #</TableHead>
-                          <TableHead className="font-semibold">Book Name</TableHead>
-                          <TableHead className="font-semibold">Student</TableHead>
-                          <TableHead className="text-center font-semibold">Quantity Borrowed</TableHead>
-                          <TableHead className="text-center font-semibold">Damaged Quantity</TableHead>
-                          <TableHead className="text-center font-semibold">Received Quantity</TableHead>
-                          <TableHead className="font-semibold">Payment Status</TableHead>
-                          <TableHead className="font-semibold">Status</TableHead>
+                          <TableHead className="font-semibold">
+                            Tracking #
+                          </TableHead>
+                          <TableHead className="font-semibold">
+                            Book Name
+                          </TableHead>
+                          <TableHead className="font-semibold">
+                            Student
+                          </TableHead>
+                          <TableHead className="text-center font-semibold">
+                            Quantity Borrowed
+                          </TableHead>
+                          <TableHead className="text-center font-semibold">
+                            Damaged Quantity
+                          </TableHead>
+                          <TableHead className="text-center font-semibold">
+                            Received Quantity
+                          </TableHead>
+                          <TableHead className="font-semibold">
+                            Payment Status
+                          </TableHead>
+                          <TableHead className="font-semibold">
+                            Status
+                          </TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
                         {damagedRequests.map((request) => {
-                          const damagedFines = request.lib_book_fines?.filter(
-                            (f) => f.reason === "Damaged"
-                          ) || [];
+                          const damagedFines =
+                            request.lib_book_fines?.filter(
+                              (f) => f.reason === "Damaged"
+                            ) || [];
                           const damagedQty = damagedFines.reduce(
-                            (sum, f) => sum + extractQuantityFromDescription(f.description),
+                            (sum, f) =>
+                              sum +
+                              extractQuantityFromDescription(f.description),
                             0
                           );
                           const totalQty = request.quantity || 1;
                           const allFines = request.lib_book_fines || [];
                           const totalDamagedLostQty = allFines.reduce(
-                            (sum, f) => sum + extractQuantityFromDescription(f.description),
+                            (sum, f) =>
+                              sum +
+                              extractQuantityFromDescription(f.description),
                             0
                           );
-                          const receivedQty = Math.max(0, totalQty - totalDamagedLostQty);
+                          const receivedQty = Math.max(
+                            0,
+                            totalQty - totalDamagedLostQty
+                          );
                           const paymentStatus = getPaymentStatus(damagedFines);
 
                           return (
@@ -331,10 +374,15 @@ export function AdminBooksTabs({ books, requests }: AdminBooksTabsProps) {
             {(() => {
               // Filter requests that have lost fines
               const lostRequests = requests.filter((request) => {
-                if (!request.lib_book_fines || request.lib_book_fines.length === 0) {
+                if (
+                  !request.lib_book_fines ||
+                  request.lib_book_fines.length === 0
+                ) {
                   return false;
                 }
-                return request.lib_book_fines.some((fine) => fine.reason === "Lost");
+                return request.lib_book_fines.some(
+                  (fine) => fine.reason === "Lost"
+                );
               });
 
               if (lostRequests.length === 0) {
@@ -357,32 +405,56 @@ export function AdminBooksTabs({ books, requests }: AdminBooksTabsProps) {
                     <Table>
                       <TableHeader>
                         <TableRow className="bg-muted/50 hover:bg-muted/50">
-                          <TableHead className="font-semibold">Tracking #</TableHead>
-                          <TableHead className="font-semibold">Book Name</TableHead>
-                          <TableHead className="font-semibold">Student</TableHead>
-                          <TableHead className="text-center font-semibold">Quantity Borrowed</TableHead>
-                          <TableHead className="text-center font-semibold">Lost Quantity</TableHead>
-                          <TableHead className="text-center font-semibold">Received Quantity</TableHead>
-                          <TableHead className="font-semibold">Payment Status</TableHead>
-                          <TableHead className="font-semibold">Status</TableHead>
+                          <TableHead className="font-semibold">
+                            Tracking #
+                          </TableHead>
+                          <TableHead className="font-semibold">
+                            Book Name
+                          </TableHead>
+                          <TableHead className="font-semibold">
+                            Student
+                          </TableHead>
+                          <TableHead className="text-center font-semibold">
+                            Quantity Borrowed
+                          </TableHead>
+                          <TableHead className="text-center font-semibold">
+                            Lost Quantity
+                          </TableHead>
+                          <TableHead className="text-center font-semibold">
+                            Received Quantity
+                          </TableHead>
+                          <TableHead className="font-semibold">
+                            Payment Status
+                          </TableHead>
+                          <TableHead className="font-semibold">
+                            Status
+                          </TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
                         {lostRequests.map((request) => {
-                          const lostFines = request.lib_book_fines?.filter(
-                            (f) => f.reason === "Lost"
-                          ) || [];
+                          const lostFines =
+                            request.lib_book_fines?.filter(
+                              (f) => f.reason === "Lost"
+                            ) || [];
                           const lostQty = lostFines.reduce(
-                            (sum, f) => sum + extractQuantityFromDescription(f.description),
+                            (sum, f) =>
+                              sum +
+                              extractQuantityFromDescription(f.description),
                             0
                           );
                           const totalQty = request.quantity || 1;
                           const allFines = request.lib_book_fines || [];
                           const totalDamagedLostQty = allFines.reduce(
-                            (sum, f) => sum + extractQuantityFromDescription(f.description),
+                            (sum, f) =>
+                              sum +
+                              extractQuantityFromDescription(f.description),
                             0
                           );
-                          const receivedQty = Math.max(0, totalQty - totalDamagedLostQty);
+                          const receivedQty = Math.max(
+                            0,
+                            totalQty - totalDamagedLostQty
+                          );
                           const paymentStatus = getPaymentStatus(lostFines);
 
                           return (
@@ -454,4 +526,3 @@ export function AdminBooksTabs({ books, requests }: AdminBooksTabsProps) {
     </Tabs>
   );
 }
-

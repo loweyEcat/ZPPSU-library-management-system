@@ -656,6 +656,11 @@ export function AdminThesisVerificationTable({
                         variant={getStatusBadgeVariant(
                           document.submission_status
                         )}
+                        className={
+                          document.submission_status === "Published"
+                            ? "bg-blue-600 hover:bg-blue-700 text-white"
+                            : ""
+                        }
                       >
                         {getStatusLabel(
                           document.status,

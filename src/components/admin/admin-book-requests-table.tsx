@@ -66,6 +66,7 @@ interface BookRequest {
     | "Approved"
     | "Borrowed"
     | "Returned"
+    | "Under_Review"
     | "Received"
     | "Overdue"
     | "Rejected"
@@ -221,7 +222,8 @@ export function AdminBookRequestsTable({
   const [currentPage, setCurrentPage] = React.useState(1);
   const [statusFilter, setStatusFilter] = React.useState<string>("all");
   const [approveDialogOpen, setApproveDialogOpen] = React.useState(false);
-  const [viewDetailsDialogOpen, setViewDetailsDialogOpen] = React.useState(false);
+  const [viewDetailsDialogOpen, setViewDetailsDialogOpen] =
+    React.useState(false);
   const [selectedRequest, setSelectedRequest] =
     React.useState<BookRequest | null>(null);
 
@@ -297,18 +299,94 @@ export function AdminBookRequestsTable({
     const pending = requests.filter((r) => r.status === "Pending").length;
     const approved = requests.filter((r) => r.status === "Approved").length;
     const borrowed = requests.filter((r) => r.status === "Borrowed").length;
-    const overdue = requests.filter((r) => r.status === "Overdue").length;
-    const received = requests.filter((r) => r.status === "Received").length;
-    const damaged = requests.filter(
-      (r) =>
-        r.has_fine && r.fine_reason === "Damaged" && r.fine_status !== "Paid"
-    ).length;
-    const lost = requests.filter(
-      (r) => r.has_fine && r.fine_reason === "Lost" && r.fine_status !== "Paid"
-    ).length;
-    const settled = requests.filter(
-      (r) => r.has_fine && r.fine_status === "Paid"
-    ).length;
+
+    // Count books (quantity) instead of requests
+    const overdue = requests
+      .filter((r) => r.status === "Overdue")
+      .reduce((sum, r) => sum + (r.quantity || 1), 0);
+
+    const received = requests
+      .filter((r) => r.status === "Received")
+      .reduce((sum, r) => {
+        // For received, calculate received quantity (total - damaged/lost)
+        if (r.lib_book_fines && r.lib_book_fines.length > 0) {
+          const damagedLostQty = r.lib_book_fines.reduce(
+            (fineSum, f) =>
+              fineSum + extractQuantityFromDescription(f.description),
+            0
+          );
+          const totalQty = r.quantity || 1;
+          const receivedQty = Math.max(0, totalQty - damagedLostQty);
+          return sum + receivedQty;
+        }
+        return sum + (r.quantity || 1);
+      }, 0);
+
+    const damaged = requests
+      .filter(
+        (r) =>
+          r.has_fine && r.fine_reason === "Damaged" && r.fine_status !== "Paid"
+      )
+      .reduce((sum, r) => {
+        if (r.lib_book_fines) {
+          const damagedFines = r.lib_book_fines.filter(
+            (f) => f.reason === "Damaged" && f.status !== "Paid"
+          );
+          return (
+            sum +
+            damagedFines.reduce(
+              (fineSum, f) =>
+                fineSum + extractQuantityFromDescription(f.description),
+              0
+            )
+          );
+        }
+        return sum + (r.quantity || 1);
+      }, 0);
+
+    const lost = requests
+      .filter(
+        (r) =>
+          r.has_fine && r.fine_reason === "Lost" && r.fine_status !== "Paid"
+      )
+      .reduce((sum, r) => {
+        if (r.lib_book_fines) {
+          const lostFines = r.lib_book_fines.filter(
+            (f) => f.reason === "Lost" && f.status !== "Paid"
+          );
+          return (
+            sum +
+            lostFines.reduce(
+              (fineSum, f) =>
+                fineSum + extractQuantityFromDescription(f.description),
+              0
+            )
+          );
+        }
+        return sum + (r.quantity || 1);
+      }, 0);
+
+    const settled = requests
+      .filter((r) => r.has_fine && r.fine_status === "Paid")
+      .reduce((sum, r) => {
+        if (r.lib_book_fines) {
+          const paidFines = r.lib_book_fines.filter((f) => f.status === "Paid");
+          return (
+            sum +
+            paidFines.reduce(
+              (fineSum, f) =>
+                fineSum + extractQuantityFromDescription(f.description),
+              0
+            )
+          );
+        }
+        return sum + (r.quantity || 1);
+      }, 0);
+
+    // Total books from approved requests (approved by admin, ready to be borrowed)
+    const totalApprovedBooks = requests
+      .filter((r) => r.status === "Approved")
+      .reduce((sum, r) => sum + (r.quantity || 1), 0);
 
     return {
       total,
@@ -320,6 +398,7 @@ export function AdminBookRequestsTable({
       damaged,
       lost,
       settled,
+      totalApprovedBooks,
     };
   }, [requests]);
 
@@ -352,7 +431,7 @@ export function AdminBookRequestsTable({
         <Card>
           <CardContent className="pt-6">
             <div className="text-2xl font-bold text-green-600">
-              {stats.borrowed}
+              {stats.totalApprovedBooks}
             </div>
             <p className="text-xs text-muted-foreground">Borrowed</p>
           </CardContent>
@@ -362,7 +441,7 @@ export function AdminBookRequestsTable({
             <div className="text-2xl font-bold text-green-600">
               {stats.received}
             </div>
-            <p className="text-xs text-muted-foreground">Received</p>
+            <p className="text-xs text-muted-foreground">Received Books</p>
           </CardContent>
         </Card>
         <Card>
@@ -370,7 +449,7 @@ export function AdminBookRequestsTable({
             <div className="text-2xl font-bold text-blue-600">
               {stats.settled}
             </div>
-            <p className="text-xs text-muted-foreground">Settled</p>
+            <p className="text-xs text-muted-foreground">Settled Books</p>
           </CardContent>
         </Card>
         <Card>
@@ -378,13 +457,13 @@ export function AdminBookRequestsTable({
             <div className="text-2xl font-bold text-orange-600">
               {stats.damaged}
             </div>
-            <p className="text-xs text-muted-foreground">Damaged</p>
+            <p className="text-xs text-muted-foreground">Damaged Books</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-6">
             <div className="text-2xl font-bold text-red-600">{stats.lost}</div>
-            <p className="text-xs text-muted-foreground">Lost</p>
+            <p className="text-xs text-muted-foreground">Lost Books</p>
           </CardContent>
         </Card>
         <Card>
@@ -392,7 +471,7 @@ export function AdminBookRequestsTable({
             <div className="text-2xl font-bold text-red-600">
               {stats.overdue}
             </div>
-            <p className="text-xs text-muted-foreground">Overdue</p>
+            <p className="text-xs text-muted-foreground">Overdue Books</p>
           </CardContent>
         </Card>
       </div>

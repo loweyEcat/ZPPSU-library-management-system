@@ -1,7 +1,21 @@
 import { requireSuperAdmin } from "@/lib/auth-library";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import Link from "next/link";
-import { FileCheck, Users, UserPlus, Library, BookOpen, FileText, Settings } from "lucide-react";
+import {
+  FileCheck,
+  Users,
+  UserPlus,
+  Library,
+  BookOpen,
+  FileText,
+  Settings,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default async function AdminPage() {
@@ -23,7 +37,9 @@ export default async function AdminPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">0</div>
-            <p className="text-xs text-muted-foreground">All registered users</p>
+            <p className="text-xs text-muted-foreground">
+              All registered users
+            </p>
           </CardContent>
         </Card>
         <Card>
@@ -64,10 +80,15 @@ export default async function AdminPage() {
           <CardContent>
             <div className="grid gap-3">
               <Link href="/admin/thesis-verification">
-                <Button variant="outline" className="w-full justify-start h-auto py-3">
+                <Button
+                  variant="outline"
+                  className="w-full justify-start h-auto py-3"
+                >
                   <FileCheck className="mr-3 h-5 w-5" />
                   <div className="text-left">
-                    <div className="font-semibold">Thesis Verification Panel</div>
+                    <div className="font-semibold">
+                      Documents Verification Panel
+                    </div>
                     <div className="text-xs text-muted-foreground font-normal">
                       Review and verify student thesis documents
                     </div>
@@ -75,7 +96,10 @@ export default async function AdminPage() {
                 </Button>
               </Link>
               <Link href="/admin/users">
-                <Button variant="outline" className="w-full justify-start h-auto py-3">
+                <Button
+                  variant="outline"
+                  className="w-full justify-start h-auto py-3"
+                >
                   <Users className="mr-3 h-5 w-5" />
                   <div className="text-left">
                     <div className="font-semibold">Users</div>
@@ -86,7 +110,10 @@ export default async function AdminPage() {
                 </Button>
               </Link>
               <Link href="/admin/staff/add">
-                <Button variant="outline" className="w-full justify-start h-auto py-3">
+                <Button
+                  variant="outline"
+                  className="w-full justify-start h-auto py-3"
+                >
                   <UserPlus className="mr-3 h-5 w-5" />
                   <div className="text-left">
                     <div className="font-semibold">Add Staff</div>
@@ -121,4 +148,3 @@ export default async function AdminPage() {
     </div>
   );
 }
-

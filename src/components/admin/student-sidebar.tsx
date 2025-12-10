@@ -46,16 +46,16 @@ const menuItems = [
     url: "/dashboard/student/upload-documents",
     icon: FileText,
   },
-  {
-    title: "Thesis Archive",
-    url: "/dashboard/student/thesis-archive",
-    icon: Archive,
-  },
-  {
-    title: "Books",
-    url: "/dashboard/student/books",
-    icon: BookOpen,
-  },
+  // {
+  //   title: "Thesis Archive",
+  //   url: "/dashboard/student/thesis-archive",
+  //   icon: Archive,
+  // },
+  // {
+  //   title: "Books",
+  //   url: "/dashboard/student/books",
+  //   icon: BookOpen,
+  // },
   {
     title: "Resources",
     url: "/dashboard/student/resources",
@@ -94,10 +94,13 @@ export function StudentSidebar() {
   const fetchNotificationCount = React.useCallback(async () => {
     try {
       const readIds = isMounted ? getReadNotificationIds() : [];
-      const url = readIds.length > 0
-        ? `/api/library/notifications/count?readIds=${encodeURIComponent(JSON.stringify(readIds))}`
-        : "/api/library/notifications/count";
-      
+      const url =
+        readIds.length > 0
+          ? `/api/library/notifications/count?readIds=${encodeURIComponent(
+              JSON.stringify(readIds)
+            )}`
+          : "/api/library/notifications/count";
+
       const response = await fetch(url);
       if (response.ok) {
         const data = await response.json();
@@ -113,16 +116,19 @@ export function StudentSidebar() {
     fetchNotificationCount();
     // Refresh count every 30 seconds
     const interval = setInterval(fetchNotificationCount, 30000);
-    
+
     // Listen for custom event when notifications are marked as read
     const handleNotificationUpdate = () => {
       fetchNotificationCount();
     };
     window.addEventListener("notifications-updated", handleNotificationUpdate);
-    
+
     return () => {
       clearInterval(interval);
-      window.removeEventListener("notifications-updated", handleNotificationUpdate);
+      window.removeEventListener(
+        "notifications-updated",
+        handleNotificationUpdate
+      );
     };
   }, [fetchNotificationCount]);
 
@@ -148,7 +154,7 @@ export function StudentSidebar() {
   }, [router]);
 
   return (
-    <Sidebar 
+    <Sidebar
       collapsible="icon"
       className="sidebar-maroon-gradient border-r sidebar-gold-border"
     >
@@ -161,9 +167,7 @@ export function StudentSidebar() {
                   <Logo size="sm" />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">
-                    Library System
-                  </span>
+                  <span className="truncate font-semibold">Library System</span>
                   <span className="truncate text-xs">Student Panel</span>
                 </div>
               </Link>
@@ -183,7 +187,8 @@ export function StudentSidebar() {
                   item.url === "/dashboard/student"
                     ? pathname === item.url
                     : pathname.startsWith(item.url);
-                const isNotificationItem = item.url === "/dashboard/student/notifications";
+                const isNotificationItem =
+                  item.url === "/dashboard/student/notifications";
                 return (
                   <SidebarMenuItem key={item.url}>
                     <SidebarMenuButton
@@ -224,4 +229,3 @@ export function StudentSidebar() {
     </Sidebar>
   );
 }
-

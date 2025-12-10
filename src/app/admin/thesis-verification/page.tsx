@@ -14,10 +14,13 @@ export default async function AdminThesisVerificationPage() {
         <div className="space-y-1">
           <div className="flex items-center gap-2">
             <FileCheck className="h-8 w-8 text-primary" />
-            <h2 className="text-3xl font-bold tracking-tight">Thesis Verification Panel</h2>
+            <h2 className="text-3xl font-bold tracking-tight">
+              Documents Verification Panel
+            </h2>
           </div>
           <p className="text-muted-foreground">
-            Review and verify all student thesis documents. Approve, reject, or publish documents as needed.
+            Review and verify all student thesis documents. Approve, reject, or
+            publish documents as needed.
           </p>
         </div>
       </div>
@@ -29,4 +32,3 @@ export default async function AdminThesisVerificationPage() {
     </div>
   );
 }
-

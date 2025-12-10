@@ -37,7 +37,7 @@ const menuItems = [
     icon: LayoutDashboard,
   },
   {
-    title: "Thesis Verification Panel",
+    title: "Documents Verification Panel",
     url: "/admin/thesis-verification",
     icon: FileCheck,
   },
@@ -56,11 +56,11 @@ const menuItems = [
     url: "/admin/resources",
     icon: Library,
   },
-  {
-    title: "Books",
-    url: "/admin/books",
-    icon: BookOpen,
-  },
+  // {
+  //   title: "Books",
+  //   url: "/admin/books",
+  //   icon: BookOpen,
+  // },
   {
     title: "Download Request Panel",
     url: "/admin/documents",
@@ -92,7 +92,7 @@ export function AdminSidebar() {
   }, [router]);
 
   return (
-    <Sidebar 
+    <Sidebar
       collapsible="icon"
       className="sidebar-maroon-gradient border-r sidebar-gold-border"
     >
@@ -105,9 +105,7 @@ export function AdminSidebar() {
                   <Logo size="sm" />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">
-                    Library System
-                  </span>
+                  <span className="truncate font-semibold">Library System</span>
                   <span className="truncate text-xs">Admin Panel</span>
                 </div>
               </Link>
@@ -162,4 +160,3 @@ export function AdminSidebar() {
     </Sidebar>
   );
 }
-

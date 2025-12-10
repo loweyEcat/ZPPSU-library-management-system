@@ -34,20 +34,20 @@ const menuItems = [
     icon: LayoutDashboard,
   },
   {
-    title: "Thesis Verification Panel",
+    title: "Documents Verification Panel",
     url: "/dashboard/staff/thesis-verification",
     icon: FileCheck,
   },
-  {
-    title: "Students Inquiries",
-    url: "/dashboard/staff/inquiries",
-    icon: MessageSquare,
-  },
-  {
-    title: "Books Requested",
-    url: "/dashboard/staff/books-requested",
-    icon: BookOpen,
-  },
+  // {
+  //   title: "Students Inquiries",
+  //   url: "/dashboard/staff/inquiries",
+  //   icon: MessageSquare,
+  // },
+  // {
+  //   title: "Books Requested",
+  //   url: "/dashboard/staff/books-requested",
+  //   icon: BookOpen,
+  // },
   {
     title: "Settings",
     url: "/dashboard/staff/settings",
@@ -74,7 +74,7 @@ export function StaffSidebar() {
   }, [router]);
 
   return (
-    <Sidebar 
+    <Sidebar
       collapsible="icon"
       className="sidebar-maroon-gradient border-r sidebar-gold-border"
     >
@@ -87,9 +87,7 @@ export function StaffSidebar() {
                   <Logo size="sm" />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">
-                    Library System
-                  </span>
+                  <span className="truncate font-semibold">Library System</span>
                   <span className="truncate text-xs">Staff Panel</span>
                 </div>
               </Link>
@@ -144,4 +142,3 @@ export function StaffSidebar() {
     </Sidebar>
   );
 }
-

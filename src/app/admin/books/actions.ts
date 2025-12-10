@@ -180,11 +180,25 @@ export async function getAllBookRequests() {
     const { lib_book_fines, ...rest } = request;
     const latestFine = lib_book_fines.length > 0 ? lib_book_fines[0] : null;
 
+    // Normalize fine_status: Prisma returns "Partially Paid" but we need "Partially_Paid"
+    let normalizedFineStatus: "Unpaid" | "Paid" | "Waived" | "Partially_Paid" | null = null;
+    if (latestFine?.status) {
+      if (latestFine.status === "Partially Paid") {
+        normalizedFineStatus = "Partially_Paid";
+      } else if (
+        latestFine.status === "Unpaid" ||
+        latestFine.status === "Paid" ||
+        latestFine.status === "Waived"
+      ) {
+        normalizedFineStatus = latestFine.status;
+      }
+    }
+
     return {
       ...rest,
       has_fine: latestFine !== null,
-      fine_reason: latestFine?.reason || null,
-      fine_status: latestFine?.status || null,
+      fine_reason: (latestFine?.reason as "Damaged" | "Lost" | null) || null,
+      fine_status: normalizedFineStatus,
       lib_book_fines: lib_book_fines.map((fine) => ({
         id: fine.id,
         reason: fine.reason,
@@ -198,6 +212,58 @@ export async function getAllBookRequests() {
       return_date: request.return_date?.toISOString() || null,
       created_at: request.created_at?.toISOString() || null,
       updated_at: request.updated_at?.toISOString() || null,
+    } as {
+      id: number;
+      student_id: number;
+      staff_id: number | null;
+      book_id: number;
+      tracking_number: string;
+      quantity: number | null;
+      request_date: string | null;
+      approved_date: string | null;
+      borrow_date: string | null;
+      due_date: string | null;
+      return_date: string | null;
+      status:
+        | "Pending"
+        | "Approved"
+        | "Borrowed"
+        | "Returned"
+        | "Under_Review"
+        | "Received"
+        | "Overdue"
+        | "Rejected"
+        | null;
+      has_fine: boolean;
+      fine_reason: "Damaged" | "Lost" | null;
+      fine_status: "Unpaid" | "Paid" | "Waived" | "Partially_Paid" | null;
+      lib_book_fines: Array<{
+        id: number;
+        reason: string;
+        status: string;
+        description: string | null;
+      }>;
+      created_at: string | null;
+      updated_at: string | null;
+      student: {
+        id: number;
+        full_name: string;
+        email: string;
+        student_id: string | null;
+        year_level: string | null;
+        department: string | null;
+      };
+      staff: {
+        id: number;
+        full_name: string;
+        email: string;
+      } | null;
+      book: {
+        id: number;
+        books_name: string;
+        author_name: string;
+        isbn: string;
+      };
     };
   });
 }

@@ -1,5 +1,11 @@
 import { requireStaffOrAbove } from "@/lib/auth-library";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import Link from "next/link";
 import { FileCheck, MessageSquare, BookOpen, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -32,7 +38,9 @@ export default async function StaffDashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {session.user.userRole === "Staff" ? "Staff" : session.user.userRole}
+              {session.user.userRole === "Staff"
+                ? "Staff"
+                : session.user.userRole}
             </div>
             <p className="text-xs text-muted-foreground">Your position</p>
           </CardContent>
@@ -66,10 +74,15 @@ export default async function StaffDashboardPage() {
           <CardContent>
             <div className="grid gap-3">
               <Link href="/dashboard/staff/thesis-verification">
-                <Button variant="outline" className="w-full justify-start h-auto py-3">
+                <Button
+                  variant="outline"
+                  className="w-full justify-start h-auto py-3"
+                >
                   <FileCheck className="mr-3 h-5 w-5" />
                   <div className="text-left">
-                    <div className="font-semibold">Thesis Verification Panel</div>
+                    <div className="font-semibold">
+                      Documents Verification Panel
+                    </div>
                     <div className="text-xs text-muted-foreground font-normal">
                       Review and verify student thesis documents
                     </div>
@@ -77,7 +90,10 @@ export default async function StaffDashboardPage() {
                 </Button>
               </Link>
               <Link href="/dashboard/staff/inquiries">
-                <Button variant="outline" className="w-full justify-start h-auto py-3">
+                <Button
+                  variant="outline"
+                  className="w-full justify-start h-auto py-3"
+                >
                   <MessageSquare className="mr-3 h-5 w-5" />
                   <div className="text-left">
                     <div className="font-semibold">Students Inquiries</div>
@@ -88,7 +104,10 @@ export default async function StaffDashboardPage() {
                 </Button>
               </Link>
               <Link href="/dashboard/staff/books-requested">
-                <Button variant="outline" className="w-full justify-start h-auto py-3">
+                <Button
+                  variant="outline"
+                  className="w-full justify-start h-auto py-3"
+                >
                   <BookOpen className="mr-3 h-5 w-5" />
                   <div className="text-left">
                     <div className="font-semibold">Books Requested</div>
@@ -127,4 +146,3 @@ export default async function StaffDashboardPage() {
     </div>
   );
 }
-
