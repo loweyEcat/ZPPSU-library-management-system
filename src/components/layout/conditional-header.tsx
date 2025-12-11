@@ -24,7 +24,7 @@ export function ConditionalHeader() {
           <Logo size="md" />
           <div className="hidden flex-col sm:flex">
             <span className="text-sm font-bold uppercase tracking-wider text-primary">
-              Library Management System
+              Digital Library Management System
             </span>
           </div>
         </Link>

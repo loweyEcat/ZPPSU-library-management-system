@@ -18,9 +18,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Library Management System",
+  title: "Digital Library Management System",
   description:
-    "School Library Management System for managing books, documents, and resources",
+    "Digital Library Management System for managing books, documents, and resources",
 };
 
 export default function RootLayout({

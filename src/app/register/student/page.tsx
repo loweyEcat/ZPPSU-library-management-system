@@ -50,7 +50,7 @@ export default async function StudentRegisterPage() {
             <div className="flex flex-col items-center gap-4">
               <div className="space-y-2">
                 <h1 className="text-2xl font-bold tracking-tight text-white drop-shadow-lg sm:text-3xl">
-                  Library Management System
+                  Digital Library Management System
                 </h1>
                 <p className="text-sm text-white/90 drop-shadow-md">
                   Register as a student to get started

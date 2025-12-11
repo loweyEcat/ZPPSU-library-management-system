@@ -10,6 +10,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   FileText,
@@ -20,6 +28,7 @@ import {
   File,
   Lock,
   Clock,
+  X,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { checkDocumentAccessForStudent } from "@/app/dashboard/student/resources/actions";
@@ -54,6 +63,8 @@ interface PublishedDocument {
   project_type?: string | null;
   capstone_category?: string | null;
   program?: string | null;
+  ebook_cover_image?: string | null;
+  epub_url?: string | null;
   is_restricted?: boolean;
   time_limit_minutes?: number | null;
   max_attempts?: number | null;
@@ -107,6 +118,12 @@ function getDocumentTypeBadge(type: string | null): React.ReactElement {
           Capstone
         </Badge>
       );
+    case "Ebooks":
+      return (
+        <Badge variant="outline" className="bg-orange-500">
+          Ebooks
+        </Badge>
+      );
     default:
       return <Badge variant="outline">Unknown</Badge>;
   }
@@ -120,6 +137,8 @@ function getDocumentTypeIcon(type: string | null) {
       return <BookOpen className="h-5 w-5 text-purple-500" />;
     case "Capstone":
       return <File className="h-5 w-5 text-green-500" />;
+    case "Ebooks":
+      return <BookOpen className="h-5 w-5 text-orange-500" />;
     default:
       return <FileText className="h-5 w-5" />;
   }
@@ -136,23 +155,123 @@ export function StudentResourcesTable({
   const [searchQuery, setSearchQuery] = React.useState("");
   const [documentTypeFilter, setDocumentTypeFilter] =
     React.useState<string>("all");
+  const [currentPage, setCurrentPage] = React.useState(1);
 
   const router = useRouter();
+
+  // Pagination constants: 3 rows × 5 columns = 15 items per page
+  const ITEMS_PER_PAGE = 15;
 
   // Filter documents
   const filteredDocuments = React.useMemo(() => {
     let filtered = documents;
 
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(
-        (doc) =>
-          doc.title.toLowerCase().includes(query) ||
-          doc.researcher_name.toLowerCase().includes(query) ||
-          doc.student.full_name.toLowerCase().includes(query) ||
-          doc.department?.toLowerCase().includes(query) ||
-          doc.abstract?.toLowerCase().includes(query)
-      );
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase().trim();
+      const queryWords = query.split(/\s+/).filter((word) => word.length > 0);
+
+      filtered = filtered.filter((doc) => {
+        // Search in title (book title, research title)
+        const titleMatch = doc.title?.toLowerCase().includes(query);
+
+        // Search in author name (researcher_name)
+        const authorMatch = doc.researcher_name?.toLowerCase().includes(query);
+
+        // Search in abstract
+        const abstractMatch = doc.abstract?.toLowerCase().includes(query);
+
+        // Search in keywords
+        const keywordsMatch = doc.keywords?.toLowerCase().includes(query);
+
+        // Search in co_authors (for journals and ebooks)
+        const coAuthorsMatch = doc.co_authors?.toLowerCase().includes(query);
+
+        // Search in journal name
+        const journalNameMatch = doc.journal_name?.toLowerCase().includes(query);
+
+        // Search in adviser name
+        const adviserNameMatch = doc.adviser_name?.toLowerCase().includes(query);
+
+        // For ebooks, parse co_authors JSON to search ISBN and other metadata
+        let isbnMatch = false;
+        let ebookMetadataMatch = false;
+        if (doc.document_type === "Ebooks" && doc.co_authors) {
+          try {
+            const ebookData = JSON.parse(doc.co_authors);
+            if (ebookData.isbn) {
+              isbnMatch = ebookData.isbn.toLowerCase().includes(query);
+            }
+            // Also search in other ebook metadata fields
+            const ebookFields = [
+              ebookData.publisher,
+              ebookData.publication_date,
+              ebookData.edition,
+              ebookData.language,
+              ebookData.category,
+            ]
+              .filter(Boolean)
+              .join(" ")
+              .toLowerCase();
+            ebookMetadataMatch = ebookFields.includes(query);
+          } catch (e) {
+            // If parsing fails, ignore
+          }
+        }
+
+        // If multiple words, check if all words appear somewhere (AND logic)
+        if (queryWords.length > 1) {
+          let allFields = [
+            doc.title?.toLowerCase() || "",
+            doc.researcher_name?.toLowerCase() || "",
+            doc.abstract?.toLowerCase() || "",
+            doc.keywords?.toLowerCase() || "",
+            doc.co_authors?.toLowerCase() || "",
+            doc.journal_name?.toLowerCase() || "",
+            doc.adviser_name?.toLowerCase() || "",
+          ].join(" ");
+
+          // For ebooks, also include ISBN and other metadata in search
+          if (doc.document_type === "Ebooks" && doc.co_authors) {
+            try {
+              const ebookData = JSON.parse(doc.co_authors);
+              if (ebookData.isbn) {
+                allFields = allFields + " " + ebookData.isbn.toLowerCase();
+              }
+              // Add other ebook metadata
+              const ebookFields = [
+                ebookData.publisher,
+                ebookData.publication_date,
+                ebookData.edition,
+                ebookData.language,
+                ebookData.category,
+              ]
+                .filter(Boolean)
+                .join(" ")
+                .toLowerCase();
+              if (ebookFields) {
+                allFields = allFields + " " + ebookFields;
+              }
+            } catch (e) {
+              // Ignore parsing errors
+            }
+          }
+
+          return queryWords.every((word) => allFields.includes(word));
+        }
+
+        // Single word or phrase search (OR logic across fields)
+        return (
+          titleMatch ||
+          authorMatch ||
+          abstractMatch ||
+          keywordsMatch ||
+          coAuthorsMatch ||
+          journalNameMatch ||
+          adviserNameMatch ||
+          isbnMatch ||
+          ebookMetadataMatch
+        );
+      });
     }
 
     if (documentTypeFilter !== "all") {
@@ -163,6 +282,17 @@ export function StudentResourcesTable({
 
     return filtered;
   }, [documents, searchQuery, documentTypeFilter]);
+
+  // Pagination calculations
+  const totalPages = Math.ceil(filteredDocuments.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const paginatedDocuments = filteredDocuments.slice(startIndex, endIndex);
+
+  // Reset to page 1 when filters change
+  React.useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, documentTypeFilter]);
 
   const handlePreview = async (document: PublishedDocument) => {
     // Check if in cooldown
@@ -230,7 +360,7 @@ export function StudentResourcesTable({
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search by title, researcher, student, department, or abstract..."
+            placeholder="Search by book title, research title, keywords, abstract, author, co-authors, ISBN, journal name, or adviser name..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-10"
@@ -265,8 +395,8 @@ export function StudentResourcesTable({
           </CardContent>
         </Card>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-          {filteredDocuments.map((doc) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+          {paginatedDocuments.map((doc) => (
                 <div
                   key={doc.id}
                   className={`group ${
@@ -287,9 +417,11 @@ export function StudentResourcesTable({
                 >
                   {/* Front Side - Book Cover */}
                   <div
-                    className={`book-flip-front absolute inset-0 ${getBookCoverColor(
-                      doc.document_type
-                    )} rounded-r-lg shadow-2xl border-2 backface-hidden`}
+                    className={`book-flip-front absolute inset-0 ${
+                      (doc.document_type === "Ebooks" || doc.document_type === "Journal") && doc.ebook_cover_image
+                        ? ""
+                        : getBookCoverColor(doc.document_type)
+                    } rounded-r-lg shadow-2xl border-2 backface-hidden`}
                     style={{
                       borderColor: "#FFD700",
                       backfaceVisibility: "hidden",
@@ -299,77 +431,160 @@ export function StudentResourcesTable({
                     {/* Book Spine Shadow */}
                     <div className="absolute left-0 top-0 bottom-0 w-1 bg-black/20 rounded-l-sm"></div>
 
-                    {/* Document Type Badge - Absolute Position */}
-                    <div className="absolute top-2 left-2 z-10">
-                      {getDocumentTypeBadge(doc.document_type)}
-                    </div>
+                    {/* Cover Image (Ebooks and Journals) */}
+                    {(doc.document_type === "Ebooks" || doc.document_type === "Journal") && doc.ebook_cover_image ? (
+                      <div className="h-full w-full relative overflow-hidden rounded-r-lg">
+                        <img
+                          src={doc.ebook_cover_image}
+                          alt={doc.title}
+                          className="w-full h-full object-cover"
+                        />
+                        {/* Overlay for better text readability */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
+                        {/* Book Cover Content Overlay */}
+                        <div className="h-full flex flex-col p-4 text-white relative">
+                          {/* Decorative Lines */}
+                          <div className="absolute top-0 left-0 right-0 h-1 bg-white/20"></div>
+                          <div className="absolute bottom-0 left-0 right-0 h-1 bg-black/20"></div>
 
-                    {/* Cooldown Overlay - Centered (shows when max attempts reached) */}
-                    {doc.isInCooldown && doc.cooldownUntil && (
-                      <div className="absolute inset-0 flex items-center justify-center z-20 bg-black/80 rounded-r-lg">
-                        <div className="bg-gradient-to-br from-red-900/90 to-red-800/90 rounded-lg p-6 backdrop-blur-sm border-2 border-red-400 shadow-2xl text-center max-w-[200px]">
-                          <Clock className="h-12 w-12 text-red-300 mx-auto mb-3" />
-                          <h4 className="text-white font-bold text-sm mb-2">
-                            Cooldown Active
-                          </h4>
-                          <p className="text-red-200 text-xs mb-2">
-                            Max attempts reached
-                          </p>
-                          <p className="text-white font-semibold text-lg">
-                            {Math.ceil(
-                              (new Date(doc.cooldownUntil).getTime() - Date.now()) /
-                                (1000 * 60 * 60)
-                            )}{" "}
-                            hour{Math.ceil(
-                              (new Date(doc.cooldownUntil).getTime() - Date.now()) /
-                                (1000 * 60 * 60)
-                            ) !== 1
-                              ? "s"
-                              : ""}{" "}
-                            remaining
-                          </p>
+                          {/* Document Type Badge - Absolute Position */}
+                          <div className="absolute top-2 left-2 z-10">
+                            {getDocumentTypeBadge(doc.document_type)}
+                          </div>
+
+                          {/* Cooldown Overlay - Centered (shows when max attempts reached) */}
+                          {doc.isInCooldown && doc.cooldownUntil && (
+                            <div className="absolute inset-0 flex items-center justify-center z-20 bg-black/80 rounded-r-lg">
+                              <div className="bg-gradient-to-br from-red-900/90 to-red-800/90 rounded-lg p-6 backdrop-blur-sm border-2 border-red-400 shadow-2xl text-center max-w-[200px]">
+                                <Clock className="h-12 w-12 text-red-300 mx-auto mb-3" />
+                                <h4 className="text-white font-bold text-sm mb-2">
+                                  Cooldown Active
+                                </h4>
+                                <p className="text-red-200 text-xs mb-2">
+                                  Max attempts reached
+                                </p>
+                                <p className="text-white font-semibold text-lg">
+                                  {Math.ceil(
+                                    (new Date(doc.cooldownUntil).getTime() - Date.now()) /
+                                      (1000 * 60 * 60)
+                                  )}{" "}
+                                  hour{Math.ceil(
+                                    (new Date(doc.cooldownUntil).getTime() - Date.now()) /
+                                      (1000 * 60 * 60)
+                                  ) !== 1
+                                    ? "s"
+                                    : ""}{" "}
+                                  remaining
+                                </p>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Restriction Lock Icon - Centered (only if not in cooldown) */}
+                          {doc.is_restricted && !doc.isInCooldown && (
+                            <div className="absolute inset-0 flex items-center justify-center z-10">
+                              <div className="bg-black/70 rounded-full p-4 backdrop-blur-sm border-2 border-yellow-400">
+                                <Lock className="h-12 w-12 text-yellow-400" />
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Book Title */}
+                          <div className="flex-1 flex flex-col justify-center items-center text-center space-y-3">
+                            <h3 className="font-bold text-sm leading-tight line-clamp-4 drop-shadow-lg">
+                              {doc.title}
+                            </h3>
+                          </div>
+
+                          {/* Book Footer Info */}
+                          <div className="mt-auto space-y-2 text-xs">
+                            <div className="flex items-center justify-center gap-1 text-white/90">
+                              <User className="h-3 w-3" />
+                              <span className="truncate text-center">
+                                {doc.researcher_name.split(" ")[0]}
+                              </span>
+                            </div>
+                            <div className="text-center text-white/70 text-[10px]">
+                              {formatDate(doc.published_at)}
+                            </div>
+                          </div>
                         </div>
                       </div>
+                    ) : (
+                      <>
+                        {/* Document Type Badge - Absolute Position */}
+                        <div className="absolute top-2 left-2 z-10">
+                          {getDocumentTypeBadge(doc.document_type)}
+                        </div>
+
+                        {/* Cooldown Overlay - Centered (shows when max attempts reached) */}
+                        {doc.isInCooldown && doc.cooldownUntil && (
+                          <div className="absolute inset-0 flex items-center justify-center z-20 bg-black/80 rounded-r-lg">
+                            <div className="bg-gradient-to-br from-red-900/90 to-red-800/90 rounded-lg p-6 backdrop-blur-sm border-2 border-red-400 shadow-2xl text-center max-w-[200px]">
+                              <Clock className="h-12 w-12 text-red-300 mx-auto mb-3" />
+                              <h4 className="text-white font-bold text-sm mb-2">
+                                Cooldown Active
+                              </h4>
+                              <p className="text-red-200 text-xs mb-2">
+                                Max attempts reached
+                              </p>
+                              <p className="text-white font-semibold text-lg">
+                                {Math.ceil(
+                                  (new Date(doc.cooldownUntil).getTime() - Date.now()) /
+                                    (1000 * 60 * 60)
+                                )}{" "}
+                                hour{Math.ceil(
+                                  (new Date(doc.cooldownUntil).getTime() - Date.now()) /
+                                    (1000 * 60 * 60)
+                                ) !== 1
+                                  ? "s"
+                                  : ""}{" "}
+                                remaining
+                              </p>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Restriction Lock Icon - Centered (only if not in cooldown) */}
+                        {doc.is_restricted && !doc.isInCooldown && (
+                          <div className="absolute inset-0 flex items-center justify-center z-10">
+                            <div className="bg-black/70 rounded-full p-4 backdrop-blur-sm border-2 border-yellow-400">
+                              <Lock className="h-12 w-12 text-yellow-400" />
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Book Cover Content */}
+                        <div className="h-full flex flex-col p-4 text-white relative overflow-hidden">
+                          {/* Decorative Lines */}
+                          <div className="absolute top-0 left-0 right-0 h-1 bg-white/20"></div>
+                          <div className="absolute bottom-0 left-0 right-0 h-1 bg-black/20"></div>
+
+                          {/* Book Title */}
+                          <div className="flex-1 flex flex-col justify-center items-center text-center space-y-3">
+                            <div className="w-12 h-12 mx-auto mb-2 bg-white/20 rounded-lg flex items-center justify-center backdrop-blur-sm">
+                              {getDocumentTypeIcon(doc.document_type)}
+                            </div>
+                            <h3 className="font-bold text-sm leading-tight line-clamp-4 drop-shadow-lg">
+                              {doc.title}
+                            </h3>
+                          </div>
+
+                          {/* Book Footer Info */}
+                          <div className="mt-auto space-y-2 text-xs">
+                            <div className="flex items-center justify-center gap-1 text-white/90">
+                              <User className="h-3 w-3" />
+                              <span className="truncate text-center">
+                                {doc.researcher_name.split(" ")[0]}
+                              </span>
+                            </div>
+                            <div className="text-center text-white/70 text-[10px]">
+                              {formatDate(doc.published_at)}
+                            </div>
+                          </div>
+                        </div>
+                      </>
                     )}
-
-                    {/* Restriction Lock Icon - Centered (only if not in cooldown) */}
-                    {doc.is_restricted && !doc.isInCooldown && (
-                      <div className="absolute inset-0 flex items-center justify-center z-10">
-                        <div className="bg-black/70 rounded-full p-4 backdrop-blur-sm border-2 border-yellow-400">
-                          <Lock className="h-12 w-12 text-yellow-400" />
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Book Cover Content */}
-                    <div className="h-full flex flex-col p-4 text-white relative overflow-hidden">
-                      {/* Decorative Lines */}
-                      <div className="absolute top-0 left-0 right-0 h-1 bg-white/20"></div>
-                      <div className="absolute bottom-0 left-0 right-0 h-1 bg-black/20"></div>
-
-                      {/* Book Title */}
-                      <div className="flex-1 flex flex-col justify-center items-center text-center space-y-3">
-                        <div className="w-12 h-12 mx-auto mb-2 bg-white/20 rounded-lg flex items-center justify-center backdrop-blur-sm">
-                          {getDocumentTypeIcon(doc.document_type)}
-                        </div>
-                        <h3 className="font-bold text-sm leading-tight line-clamp-4 drop-shadow-lg">
-                          {doc.title}
-                        </h3>
-                      </div>
-
-                      {/* Book Footer Info */}
-                      <div className="mt-auto space-y-2 text-xs">
-                        <div className="flex items-center justify-center gap-1 text-white/90">
-                          <User className="h-3 w-3" />
-                          <span className="truncate text-center">
-                            {doc.researcher_name.split(" ")[0]}
-                          </span>
-                        </div>
-                        <div className="text-center text-white/70 text-[10px]">
-                          {formatDate(doc.published_at)}
-                        </div>
-                      </div>
-                    </div>
 
                     {/* Book Pages Effect */}
                     <div className="absolute right-0 top-0 bottom-0 w-2 bg-white/10 rounded-r-lg"></div>
@@ -561,8 +776,84 @@ export function StudentResourcesTable({
         </div>
       )}
 
-      {/* Stats */}
-      {filteredDocuments.length > 0 && (
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-6 border-t">
+          <div className="text-sm text-muted-foreground font-medium text-left">
+            Showing{" "}
+            <span className="font-semibold text-foreground">
+              {startIndex + 1}
+            </span>{" "}
+            to{" "}
+            <span className="font-semibold text-foreground">
+              {Math.min(endIndex, filteredDocuments.length)}
+            </span>{" "}
+            of{" "}
+            <span className="font-semibold text-foreground">
+              {filteredDocuments.length}
+            </span>{" "}
+            {filteredDocuments.length === 1 ? "document" : "documents"}
+            {filteredDocuments.length !== documents.length && (
+              <span className="ml-2">(of {documents.length} total)</span>
+            )}
+          </div>
+          <div className="flex-shrink-0">
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (currentPage > 1) setCurrentPage(currentPage - 1);
+                    }}
+                    className={
+                      currentPage === 1
+                        ? "pointer-events-none opacity-50"
+                        : "cursor-pointer"
+                    }
+                  />
+                </PaginationItem>
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                  (page) => (
+                    <PaginationItem key={page}>
+                      <PaginationLink
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setCurrentPage(page);
+                        }}
+                        isActive={currentPage === page}
+                        className="cursor-pointer"
+                      >
+                        {page}
+                      </PaginationLink>
+                    </PaginationItem>
+                  )
+                )}
+                <PaginationItem>
+                  <PaginationNext
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (currentPage < totalPages)
+                        setCurrentPage(currentPage + 1);
+                    }}
+                    className={
+                      currentPage === totalPages
+                        ? "pointer-events-none opacity-50"
+                        : "cursor-pointer"
+                    }
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </div>
+        </div>
+      )}
+
+      {/* Stats - Only show if no pagination */}
+      {totalPages <= 1 && filteredDocuments.length > 0 && (
         <div className="text-sm text-muted-foreground text-center pt-4">
           Showing {filteredDocuments.length} of {documents.length} published
           document

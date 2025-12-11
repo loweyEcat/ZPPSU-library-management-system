@@ -42,7 +42,7 @@ export default async function Home() {
         <div className="flex flex-col items-center gap-4">
           <div className="space-y-2">
             <h1 className="text-3xl font-bold tracking-tight">
-              Library Management System
+              Digital Library Management System
             </h1>
             <p className="text-sm text-muted-foreground">
               Create the first Super Admin account to get started

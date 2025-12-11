@@ -7,7 +7,13 @@ export async function getAllThesisDocuments() {
   const session = await requireAdminOrSuperAdmin();
 
   // Get all thesis documents for admin review
+  // Only include documents uploaded by students (exclude admin-uploaded ebooks and journals)
   const documents = await prisma.lib_thesis_documents.findMany({
+    where: {
+      lib_users_lib_thesis_documents_student_idTolib_users: {
+        user_role: "Student", // Only show documents uploaded by students
+      },
+    },
     select: {
       id: true,
       title: true,

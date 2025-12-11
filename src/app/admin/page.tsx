@@ -129,7 +129,7 @@ export default async function AdminPage() {
         <Card>
           <CardHeader>
             <CardTitle>System Information</CardTitle>
-            <CardDescription>Library Management System</CardDescription>
+            <CardDescription>Digital Library Management System</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-2">

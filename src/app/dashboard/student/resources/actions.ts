@@ -6,7 +6,8 @@ import { requireStudent } from "@/lib/auth-library";
 export async function getPublishedDocumentsForStudent() {
   const session = await requireStudent();
 
-  // Get all published documents (Journals, Thesis, Capstone) that are not hidden
+  // Get all published documents (Journals, Thesis, Capstone, Ebooks) that are not hidden
+  // This includes documents uploaded by students and admins
   const documents = await prisma.lib_thesis_documents.findMany({
     where: {
       submission_status: "Published",
@@ -16,7 +17,7 @@ export async function getPublishedDocumentsForStudent() {
       // @ts-expect-error - is_hidden field exists in schema, migration needed
       is_hidden: false, // Exclude hidden documents
       document_type: {
-        in: ["Thesis", "Journal", "Capstone"],
+        in: ["Thesis", "Journal", "Capstone", "Ebooks"],
       },
     },
     select: {
@@ -48,10 +49,13 @@ export async function getPublishedDocumentsForStudent() {
       project_type: true,
       capstone_category: true,
       program: true,
+      // @ts-expect-error - Field exists in schema, Prisma types may need regeneration
+      ebook_cover_image: true,
       is_restricted: true,
       time_limit_minutes: true,
       max_attempts: true,
       student_id: true,
+      epub_url: true,
       lib_users_lib_thesis_documents_student_idTolib_users: {
         select: {
           id: true,
@@ -120,7 +124,7 @@ export async function getPublishedDocumentsForStudent() {
 export async function getPublishedDocumentByIdForStudent(documentId: number) {
   const session = await requireStudent();
 
-  // Get a single published document by ID
+  // Get a single published document by ID (including Ebooks and Journals)
   const document = await prisma.lib_thesis_documents.findFirst({
     where: {
       id: documentId,
@@ -128,6 +132,8 @@ export async function getPublishedDocumentByIdForStudent(documentId: number) {
       published_at: {
         not: null,
       },
+      // @ts-expect-error - is_hidden field exists in schema, migration needed
+      is_hidden: false, // Exclude hidden documents
     },
     select: {
       id: true,
@@ -184,7 +190,7 @@ export async function getPublishedDocumentByIdForStudent(documentId: number) {
 
   // Serialize dates to strings for client components
   const { lib_users_lib_thesis_documents_student_idTolib_users, ...rest } =
-    document;
+    document as any;
   return {
     ...rest,
     student: lib_users_lib_thesis_documents_student_idTolib_users,

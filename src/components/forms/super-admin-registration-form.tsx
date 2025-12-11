@@ -114,7 +114,7 @@ export function SuperAdminRegistrationForm() {
         <div className="space-y-2">
           <h2 className="text-2xl font-bold">Create Super Admin Account</h2>
           <p className="text-sm text-muted-foreground">
-            Create the first administrator account for the Library Management System
+            Create the first administrator account for the Digital Library Management System
           </p>
         </div>
 
