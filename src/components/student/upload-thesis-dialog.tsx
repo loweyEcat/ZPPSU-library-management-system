@@ -75,7 +75,7 @@ export function UploadThesisDialog({
           <DialogDescription className="text-base">
             {mode === "edit"
               ? "Update your document information. You can only edit documents with Pending, Rejected, or Revision Required status."
-              : "Fill in the information below to upload your document. Select the document type (Thesis, Journal, or Capstone) and fill in the required fields. The document will be reviewed by staff and admin."}
+              : "Fill in the information below to upload your document. Select the document type (Thesis, Journal, Capstone, or Ebooks) and fill in the required fields. The document will be reviewed by staff and admin."}
           </DialogDescription>
         </DialogHeader>
         <div className="pt-4">

@@ -28,7 +28,16 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { Eye, Pencil, Trash2, Download, MoreHorizontal, FileText, Search, X } from "lucide-react";
+import {
+  Eye,
+  Pencil,
+  Trash2,
+  Download,
+  MoreHorizontal,
+  FileText,
+  Search,
+  X,
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -64,7 +73,10 @@ interface ThesisDocument {
   staff_reviewed_at: string | null;
   admin_reviewed_at: string | null;
   approved_at: string | null;
+  published_at: string | null;
   document_type: string | null;
+  assigned_staff_name?: string | null;
+  remarks?: string | null;
 }
 
 interface ThesisDocumentsTableProps {
@@ -92,7 +104,9 @@ function formatFileSize(bytes: number): string {
   return (bytes / (1024 * 1024)).toFixed(2) + " MB";
 }
 
-function getStatusBadgeVariant(status: string): "default" | "secondary" | "destructive" | "outline" {
+function getStatusBadgeVariant(
+  status: string
+): "default" | "secondary" | "destructive" | "outline" {
   switch (status) {
     case "Approved":
     case "Super_Admin_Approved":
@@ -123,35 +137,23 @@ function getStatusLabel(status: string, submissionStatus: string): string {
 
 const ITEMS_PER_PAGE = 10;
 
-export function ThesisDocumentsTable({ documents, uploaderName, onRefresh }: ThesisDocumentsTableProps) {
+export function ThesisDocumentsTable({
+  documents,
+  uploaderName,
+  onRefresh,
+}: ThesisDocumentsTableProps) {
   const router = useRouter();
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
   const [editDialogOpen, setEditDialogOpen] = React.useState(false);
   const [viewDialogOpen, setViewDialogOpen] = React.useState(false);
-  const [selectedDocument, setSelectedDocument] = React.useState<ThesisDocument | null>(null);
+  const [selectedDocument, setSelectedDocument] =
+    React.useState<ThesisDocument | null>(null);
   const [isDeleting, setIsDeleting] = React.useState(false);
-  
+
   // Filter states
   const [searchQuery, setSearchQuery] = React.useState("");
   const [statusFilter, setStatusFilter] = React.useState<string>("all");
-  const [academicYearFilter, setAcademicYearFilter] = React.useState<string>("all");
-  const [semesterFilter, setSemesterFilter] = React.useState<string>("all");
   const [currentPage, setCurrentPage] = React.useState(1);
-
-  // Get unique values for filters
-  const uniqueAcademicYears = React.useMemo(() => {
-    const years = documents
-      .map((doc) => doc.academic_year)
-      .filter((year): year is string => year !== null && year !== "");
-    return Array.from(new Set(years)).sort();
-  }, [documents]);
-
-  const uniqueSemesters = React.useMemo(() => {
-    const semesters = documents
-      .map((doc) => doc.semester)
-      .filter((sem): sem is string => sem !== null && sem !== "");
-    return Array.from(new Set(semesters)).sort();
-  }, [documents]);
 
   // Filter documents
   const filteredDocuments = React.useMemo(() => {
@@ -161,12 +163,17 @@ export function ThesisDocumentsTable({ documents, uploaderName, onRefresh }: The
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter((doc) => {
-        const titleMatch = doc.title.toLowerCase().includes(query);
-        const researcherMatch = doc.researcher_name.toLowerCase().includes(query);
-        const academicYearMatch = doc.academic_year?.toLowerCase().includes(query);
-        const semesterMatch = doc.semester?.toLowerCase().includes(query);
+        const researcherMatch = doc.researcher_name
+          .toLowerCase()
+          .includes(query);
         const fileNameMatch = doc.file_name.toLowerCase().includes(query);
-        return titleMatch || researcherMatch || academicYearMatch || semesterMatch || fileNameMatch;
+        const assignedStaffMatch = doc.assigned_staff_name
+          ?.toLowerCase()
+          .includes(query);
+        const remarksMatch = doc.remarks?.toLowerCase().includes(query);
+        return (
+          researcherMatch || fileNameMatch || assignedStaffMatch || remarksMatch
+        );
       });
     }
 
@@ -194,24 +201,19 @@ export function ThesisDocumentsTable({ documents, uploaderName, onRefresh }: The
           );
         }
         if (statusFilter === "revision") {
-          return doc.submission_status === "Revision_Requested" || doc.status === "Revision_Required";
+          return (
+            doc.submission_status === "Revision_Requested" ||
+            doc.status === "Revision_Required"
+          );
         }
-        return doc.submission_status === statusFilter || doc.status === statusFilter;
+        return (
+          doc.submission_status === statusFilter || doc.status === statusFilter
+        );
       });
     }
 
-    // Academic year filter
-    if (academicYearFilter !== "all") {
-      filtered = filtered.filter((doc) => doc.academic_year === academicYearFilter);
-    }
-
-    // Semester filter
-    if (semesterFilter !== "all") {
-      filtered = filtered.filter((doc) => doc.semester === semesterFilter);
-    }
-
     return filtered;
-  }, [documents, searchQuery, statusFilter, academicYearFilter, semesterFilter]);
+  }, [documents, searchQuery, statusFilter]);
 
   // Pagination
   const totalPages = Math.ceil(filteredDocuments.length / ITEMS_PER_PAGE);
@@ -222,21 +224,15 @@ export function ThesisDocumentsTable({ documents, uploaderName, onRefresh }: The
   // Reset to page 1 when filters change
   React.useEffect(() => {
     setCurrentPage(1);
-  }, [searchQuery, statusFilter, academicYearFilter, semesterFilter]);
+  }, [searchQuery, statusFilter]);
 
   // Clear all filters
   const clearFilters = () => {
     setSearchQuery("");
     setStatusFilter("all");
-    setAcademicYearFilter("all");
-    setSemesterFilter("all");
   };
 
-  const hasActiveFilters =
-    searchQuery.trim() !== "" ||
-    statusFilter !== "all" ||
-    academicYearFilter !== "all" ||
-    semesterFilter !== "all";
+  const hasActiveFilters = searchQuery.trim() !== "" || statusFilter !== "all";
 
   const handleView = async (document: ThesisDocument) => {
     try {
@@ -298,9 +294,12 @@ export function ThesisDocumentsTable({ documents, uploaderName, onRefresh }: The
 
     setIsDeleting(true);
     try {
-      const response = await fetch(`/api/library/thesis/${selectedDocument.id}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `/api/library/thesis/${selectedDocument.id}`,
+        {
+          method: "DELETE",
+        }
+      );
 
       const data = await response.json();
 
@@ -351,7 +350,7 @@ export function ThesisDocumentsTable({ documents, uploaderName, onRefresh }: The
         <div className="relative">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
-            placeholder="Search by title, researcher name, academic year, semester, or file name..."
+            placeholder="Search by researcher name, file name, assigned staff, or remarks..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-9 h-11 bg-background border-2 focus:border-primary transition-colors"
@@ -389,53 +388,9 @@ export function ThesisDocumentsTable({ documents, uploaderName, onRefresh }: The
             </Select>
           </div>
 
-          {/* Academic Year Filter */}
-          {uniqueAcademicYears.length > 0 && (
-            <div className="flex-1 min-w-[150px]">
-              <label className="text-sm font-medium mb-2 block">Academic Year</label>
-              <Select value={academicYearFilter} onValueChange={setAcademicYearFilter}>
-                <SelectTrigger className="h-10">
-                  <SelectValue placeholder="All Years" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Years</SelectItem>
-                  {uniqueAcademicYears.map((year) => (
-                    <SelectItem key={year} value={year}>
-                      {year}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          )}
-
-          {/* Semester Filter */}
-          {uniqueSemesters.length > 0 && (
-            <div className="flex-1 min-w-[150px]">
-              <label className="text-sm font-medium mb-2 block">Semester</label>
-              <Select value={semesterFilter} onValueChange={setSemesterFilter}>
-                <SelectTrigger className="h-10">
-                  <SelectValue placeholder="All Semesters" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Semesters</SelectItem>
-                  {uniqueSemesters.map((semester) => (
-                    <SelectItem key={semester} value={semester}>
-                      {semester}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          )}
-
           {/* Clear Filters Button */}
           {hasActiveFilters && (
-            <Button
-              variant="outline"
-              onClick={clearFilters}
-              className="h-10"
-            >
+            <Button variant="outline" onClick={clearFilters} className="h-10">
               <X className="h-4 w-4 mr-2" />
               Clear Filters
             </Button>
@@ -445,12 +400,13 @@ export function ThesisDocumentsTable({ documents, uploaderName, onRefresh }: The
         {/* Results Count */}
         <div className="flex items-center justify-between text-sm text-muted-foreground">
           <span>
-            Showing <span className="font-semibold text-foreground">{filteredDocuments.length}</span>{" "}
+            Showing{" "}
+            <span className="font-semibold text-foreground">
+              {filteredDocuments.length}
+            </span>{" "}
             {filteredDocuments.length === 1 ? "document" : "documents"}
             {hasActiveFilters && (
-              <span className="ml-2">
-                (of {documents.length} total)
-              </span>
+              <span className="ml-2">(of {documents.length} total)</span>
             )}
           </span>
         </div>
@@ -460,109 +416,137 @@ export function ThesisDocumentsTable({ documents, uploaderName, onRefresh }: The
       <div className="rounded-lg border-2 overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <Table>
-          <TableHeader>
-            <TableRow className="bg-muted/50 hover:bg-muted/50">
-              <TableHead className="font-semibold">Full Name</TableHead>
-              <TableHead className="font-semibold">Research Title</TableHead>
-              <TableHead className="font-semibold">Academic Year</TableHead>
-              <TableHead className="font-semibold">Semester</TableHead>
-              <TableHead className="font-semibold">Uploaded Document</TableHead>
-              <TableHead className="font-semibold">Date Uploaded</TableHead>
-              <TableHead className="font-semibold">Document Type</TableHead>
-              <TableHead className="font-semibold">Date Approved</TableHead>
-              <TableHead className="font-semibold">Status</TableHead>
-              <TableHead className="text-right font-semibold">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {paginatedDocuments.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={10} className="text-center py-8 text-muted-foreground">
-                  {documents.length === 0
-                    ? "No thesis documents found. Upload your first document using the button above."
-                    : "No documents match your filters. Try adjusting your search criteria."}
-                </TableCell>
+            <TableHeader>
+              <TableRow className="bg-muted/50 hover:bg-muted/50">
+                <TableHead className="font-semibold">Full Name</TableHead>
+                <TableHead className="font-semibold">
+                  Uploaded Document
+                </TableHead>
+                <TableHead className="font-semibold">Assigned Staff</TableHead>
+                <TableHead className="font-semibold">Date Uploaded</TableHead>
+                <TableHead className="font-semibold">Date Reviewed</TableHead>
+                <TableHead className="font-semibold">Date Published</TableHead>
+                <TableHead className="font-semibold">Remarks</TableHead>
+                <TableHead className="font-semibold">Status</TableHead>
+                <TableHead className="text-right font-semibold">
+                  Actions
+                </TableHead>
               </TableRow>
-            ) : (
-              paginatedDocuments.map((document) => (
-                <TableRow key={document.id}>
-                  <TableCell>
-                    <span className="font-medium">{uploaderName}</span>
-                  </TableCell>
-                  <TableCell>
-                    <div className="max-w-[300px] truncate" title={document.title}>
-                      {document.title}
-                    </div>
-                  </TableCell>
-                  <TableCell>{document.academic_year || "N/A"}</TableCell>
-                  <TableCell>{document.semester || "N/A"}</TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <FileText className="h-4 w-4 text-muted-foreground" />
-                      <div className="flex flex-col">
-                        <span className="text-sm font-medium truncate max-w-[200px]">
-                          {document.file_name}
-                        </span>
-                        <span className="text-xs text-muted-foreground">
-                          {formatFileSize(document.file_size)}
-                        </span>
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>{formatDate(document.submitted_at)}</TableCell>
-                  <TableCell>
-                    <Badge variant="outline">
-                      {document.document_type || "N/A"}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    {document.approved_at ? formatDate(document.approved_at) : "N/A"}
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant={getStatusBadgeVariant(document.submission_status)}>
-                      {getStatusLabel(document.status, document.submission_status)}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon">
-                          <MoreHorizontal className="h-4 w-4" />
-                          <span className="sr-only">Open menu</span>
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => handleView(document)}>
-                          <Eye className="mr-2 h-4 w-4" />
-                          View
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleDownload(document)}>
-                          <Download className="mr-2 h-4 w-4" />
-                          Download
-                        </DropdownMenuItem>
-                        {canEdit(document) && (
-                          <DropdownMenuItem onClick={() => handleEdit(document)}>
-                            <Pencil className="mr-2 h-4 w-4" />
-                            Edit
-                          </DropdownMenuItem>
-                        )}
-                        {canDelete(document) && (
-                          <DropdownMenuItem
-                            onClick={() => handleDelete(document)}
-                            className="text-destructive"
-                          >
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            Delete
-                          </DropdownMenuItem>
-                        )}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+            </TableHeader>
+            <TableBody>
+              {paginatedDocuments.length === 0 ? (
+                <TableRow>
+                  <TableCell
+                    colSpan={9}
+                    className="text-center py-8 text-muted-foreground"
+                  >
+                    {documents.length === 0
+                      ? "No thesis documents found. Upload your first document using the button above."
+                      : "No documents match your filters. Try adjusting your search criteria."}
                   </TableCell>
                 </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
+              ) : (
+                paginatedDocuments.map((document) => (
+                  <TableRow key={document.id}>
+                    <TableCell>
+                      <span className="font-medium">{uploaderName}</span>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <FileText className="h-4 w-4 text-muted-foreground" />
+                        <div className="flex flex-col">
+                          <span
+                            className="text-sm font-medium truncate max-w-[200px]"
+                            title={document.file_name}
+                          >
+                            {document.file_name}
+                          </span>
+                          <span className="text-xs text-muted-foreground">
+                            {formatFileSize(document.file_size)}
+                          </span>
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      {document.assigned_staff_name || "N/A"}
+                    </TableCell>
+                    <TableCell>{formatDate(document.submitted_at)}</TableCell>
+                    <TableCell>
+                      {document.staff_reviewed_at
+                        ? formatDate(document.staff_reviewed_at)
+                        : "N/A"}
+                    </TableCell>
+                    <TableCell>
+                      {document.published_at
+                        ? formatDate(document.published_at)
+                        : "N/A"}
+                    </TableCell>
+                    <TableCell>
+                      <div
+                        className="max-w-[200px] truncate"
+                        title={document.remarks || undefined}
+                      >
+                        {document.remarks || "N/A"}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <Badge
+                        variant={getStatusBadgeVariant(
+                          document.submission_status
+                        )}
+                      >
+                        {getStatusLabel(
+                          document.status,
+                          document.submission_status
+                        )}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon">
+                            <MoreHorizontal className="h-4 w-4" />
+                            <span className="sr-only">Open menu</span>
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem
+                            onClick={() => handleView(document)}
+                          >
+                            <Eye className="mr-2 h-4 w-4" />
+                            View
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => handleDownload(document)}
+                          >
+                            <Download className="mr-2 h-4 w-4" />
+                            Download
+                          </DropdownMenuItem>
+                          {canEdit(document) && (
+                            <DropdownMenuItem
+                              onClick={() => handleEdit(document)}
+                            >
+                              <Pencil className="mr-2 h-4 w-4" />
+                              Edit
+                            </DropdownMenuItem>
+                          )}
+                          {canDelete(document) && (
+                            <DropdownMenuItem
+                              onClick={() => handleDelete(document)}
+                              className="text-destructive"
+                            >
+                              <Trash2 className="mr-2 h-4 w-4" />
+                              Delete
+                            </DropdownMenuItem>
+                          )}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
         </div>
       </div>
 
@@ -570,11 +554,18 @@ export function ThesisDocumentsTable({ documents, uploaderName, onRefresh }: The
       {totalPages > 1 && (
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t">
           <div className="text-sm text-muted-foreground font-medium">
-            Showing <span className="font-semibold text-foreground">{startIndex + 1}</span> to{" "}
+            Showing{" "}
+            <span className="font-semibold text-foreground">
+              {startIndex + 1}
+            </span>{" "}
+            to{" "}
             <span className="font-semibold text-foreground">
               {Math.min(endIndex, filteredDocuments.length)}
             </span>{" "}
-            of <span className="font-semibold text-foreground">{filteredDocuments.length}</span>{" "}
+            of{" "}
+            <span className="font-semibold text-foreground">
+              {filteredDocuments.length}
+            </span>{" "}
             {filteredDocuments.length === 1 ? "document" : "documents"}
           </div>
           <Pagination>
@@ -587,31 +578,36 @@ export function ThesisDocumentsTable({ documents, uploaderName, onRefresh }: The
                     if (currentPage > 1) setCurrentPage(currentPage - 1);
                   }}
                   className={
-                    currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"
+                    currentPage === 1
+                      ? "pointer-events-none opacity-50"
+                      : "cursor-pointer"
                   }
                 />
               </PaginationItem>
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                <PaginationItem key={page}>
-                  <PaginationLink
-                    href="#"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setCurrentPage(page);
-                    }}
-                    isActive={currentPage === page}
-                    className="cursor-pointer"
-                  >
-                    {page}
-                  </PaginationLink>
-                </PaginationItem>
-              ))}
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                (page) => (
+                  <PaginationItem key={page}>
+                    <PaginationLink
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setCurrentPage(page);
+                      }}
+                      isActive={currentPage === page}
+                      className="cursor-pointer"
+                    >
+                      {page}
+                    </PaginationLink>
+                  </PaginationItem>
+                )
+              )}
               <PaginationItem>
                 <PaginationNext
                   href="#"
                   onClick={(e) => {
                     e.preventDefault();
-                    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+                    if (currentPage < totalPages)
+                      setCurrentPage(currentPage + 1);
                   }}
                   className={
                     currentPage === totalPages
@@ -656,8 +652,13 @@ export function ThesisDocumentsTable({ documents, uploaderName, onRefresh }: The
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the thesis document
-              <span className="font-semibold"> "{selectedDocument?.title}"</span>.
+              This action cannot be undone. This will permanently delete the
+              thesis document
+              <span className="font-semibold">
+                {" "}
+                "{selectedDocument?.title}"
+              </span>
+              .
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -675,4 +676,3 @@ export function ThesisDocumentsTable({ documents, uploaderName, onRefresh }: The
     </>
   );
 }
-

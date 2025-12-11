@@ -1,6 +1,7 @@
 import { requireAdminOrSuperAdmin } from "@/lib/auth-library";
 import { getPublishedDocuments } from "./actions";
 import { AdminPublishedDocumentsTable } from "@/components/admin/admin-published-documents-table";
+import { AdminUploadEbookDialogTrigger } from "@/components/admin/admin-upload-ebook-dialog";
 import { Library } from "lucide-react";
 
 export default async function AdminResourcesPage() {
@@ -14,11 +15,17 @@ export default async function AdminResourcesPage() {
         <div className="space-y-1">
           <div className="flex items-center gap-2">
             <Library className="h-8 w-8 text-primary" />
-            <h2 className="text-3xl font-bold tracking-tight">Published Resources</h2>
+            <h2 className="text-3xl font-bold tracking-tight">
+              Published Resources
+            </h2>
           </div>
           <p className="text-muted-foreground">
-            View all published student documents including Journals, Thesis, and Capstone projects.
+            View all published student documents including Journals, Thesis,
+            Capstone, and Ebooks.
           </p>
+        </div>
+        <div className="flex-shrink-0">
+          <AdminUploadEbookDialogTrigger />
         </div>
       </div>
 
@@ -29,4 +36,3 @@ export default async function AdminResourcesPage() {
     </div>
   );
 }
-

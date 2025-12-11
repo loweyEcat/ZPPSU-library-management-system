@@ -48,7 +48,10 @@ export async function getPublishedDocuments() {
       project_type: true,
       capstone_category: true,
       program: true,
+      // @ts-expect-error - Field exists in schema, Prisma types may need regeneration
+      ebook_cover_image: true,
       is_restricted: true,
+      is_hidden: true,
       time_limit_minutes: true,
       max_attempts: true,
       lib_users_lib_thesis_documents_student_idTolib_users: {
@@ -66,7 +69,7 @@ export async function getPublishedDocuments() {
   });
 
   // Serialize dates to strings for client components
-  return documents.map((doc) => {
+  return documents.map((doc: any) => {
     const { lib_users_lib_thesis_documents_student_idTolib_users, ...rest } =
       doc;
     return {
@@ -120,7 +123,10 @@ export async function getPublishedDocumentById(documentId: number) {
       project_type: true,
       capstone_category: true,
       program: true,
+      // @ts-expect-error - Field exists in schema, Prisma types may need regeneration
+      ebook_cover_image: true,
       is_restricted: true,
+      is_hidden: true,
       time_limit_minutes: true,
       max_attempts: true,
       lib_users_lib_thesis_documents_student_idTolib_users: {
@@ -140,7 +146,7 @@ export async function getPublishedDocumentById(documentId: number) {
 
   // Serialize dates to strings for client components
   const { lib_users_lib_thesis_documents_student_idTolib_users, ...rest } =
-    document;
+    document as any;
   return {
     ...rest,
     student: lib_users_lib_thesis_documents_student_idTolib_users,

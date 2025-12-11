@@ -6,13 +6,15 @@ import { requireStudent } from "@/lib/auth-library";
 export async function getPublishedDocumentsForStudent() {
   const session = await requireStudent();
 
-  // Get all published documents (Journals, Thesis, Capstone)
+  // Get all published documents (Journals, Thesis, Capstone) that are not hidden
   const documents = await prisma.lib_thesis_documents.findMany({
     where: {
       submission_status: "Published",
       published_at: {
         not: null,
       },
+      // @ts-expect-error - is_hidden field exists in schema, migration needed
+      is_hidden: false, // Exclude hidden documents
       document_type: {
         in: ["Thesis", "Journal", "Capstone"],
       },
@@ -88,7 +90,7 @@ export async function getPublishedDocumentsForStudent() {
   );
 
   // Serialize dates to strings for client components
-  return documents.map((doc) => {
+  return documents.map((doc: any) => {
     const { lib_users_lib_thesis_documents_student_idTolib_users, ...rest } =
       doc;
     const cooldown = cooldowns.find((c) => c.document_id === doc.id);

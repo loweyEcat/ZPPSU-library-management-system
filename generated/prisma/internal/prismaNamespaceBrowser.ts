@@ -153,10 +153,17 @@ export const Lib_thesis_documentsScalarFieldEnum = {
   project_type: 'project_type',
   capstone_category: 'capstone_category',
   program: 'program',
+  ebook_author: 'ebook_author',
+  ebook_topic: 'ebook_topic',
+  ebook_publisher: 'ebook_publisher',
+  ebook_publication_year: 'ebook_publication_year',
+  ebook_cover_image: 'ebook_cover_image',
   assigned_staff_id: 'assigned_staff_id',
   is_restricted: 'is_restricted',
+  is_hidden: 'is_hidden',
   time_limit_minutes: 'time_limit_minutes',
-  max_attempts: 'max_attempts'
+  max_attempts: 'max_attempts',
+  epub_url: 'epub_url'
 } as const
 
 export type Lib_thesis_documentsScalarFieldEnum = (typeof Lib_thesis_documentsScalarFieldEnum)[keyof typeof Lib_thesis_documentsScalarFieldEnum]
@@ -333,7 +340,13 @@ export const lib_thesis_documentsOrderByRelevanceFieldEnum = {
   team_members: 'team_members',
   project_type: 'project_type',
   capstone_category: 'capstone_category',
-  program: 'program'
+  program: 'program',
+  ebook_author: 'ebook_author',
+  ebook_topic: 'ebook_topic',
+  ebook_publisher: 'ebook_publisher',
+  ebook_publication_year: 'ebook_publication_year',
+  ebook_cover_image: 'ebook_cover_image',
+  epub_url: 'epub_url'
 } as const
 
 export type lib_thesis_documentsOrderByRelevanceFieldEnum = (typeof lib_thesis_documentsOrderByRelevanceFieldEnum)[keyof typeof lib_thesis_documentsOrderByRelevanceFieldEnum]

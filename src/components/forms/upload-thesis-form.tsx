@@ -43,7 +43,7 @@ import {
 
 const createUploadThesisSchema = (isEdit: boolean) =>
   z.object({
-    document_type: z.enum(["Thesis", "Journal", "Capstone"], {
+    document_type: z.enum(["Thesis", "Journal", "Capstone", "Ebooks"], {
       message: "Please select a document type",
     }),
     title: z
@@ -108,6 +108,17 @@ const createUploadThesisSchema = (isEdit: boolean) =>
       .string()
       .max(100, "Program must not exceed 100 characters")
       .optional(),
+    // Ebook fields
+    isbn: z.string().max(50, "ISBN must not exceed 50 characters").optional(),
+    publisher: z.string().max(255, "Publisher must not exceed 255 characters").optional(),
+    publication_date: z.string().max(50, "Publication date must not exceed 50 characters").optional(),
+    author: z.string().max(500, "Author must not exceed 500 characters").optional(),
+    edition: z.string().max(50, "Edition must not exceed 50 characters").optional(),
+    language: z.string().max(50, "Language must not exceed 50 characters").optional(),
+    category: z.string().max(100, "Category must not exceed 100 characters").optional(),
+    cover_photo: isEdit
+      ? z.instanceof(File, { message: "Please select a cover image" }).optional()
+      : z.instanceof(File, { message: "Please select a cover image" }).optional(),
     file: isEdit
       ? z
           .instanceof(File, { message: "Please select a file to upload" })
@@ -142,6 +153,14 @@ interface UploadThesisFormProps {
     project_type?: string | null;
     capstone_category?: string | null;
     program?: string | null;
+    isbn?: string | null;
+    publisher?: string | null;
+    publication_date?: string | null;
+    author?: string | null;
+    edition?: string | null;
+    language?: string | null;
+    category?: string | null;
+    ebook_cover_image?: string | null;
   };
   isEdit?: boolean;
 }
@@ -159,8 +178,8 @@ export function UploadThesisForm({
   const uploadThesisSchema = React.useMemo(() => {
     const baseSchema = createUploadThesisSchema(isEdit);
     return baseSchema.superRefine((data, ctx) => {
-      // For Thesis and Capstone, title is required
-      if (data.document_type !== "Journal") {
+      // For Thesis and Capstone, title and researcher_names are required
+      if (data.document_type === "Thesis" || data.document_type === "Capstone") {
         if (!data.title || data.title.trim().length === 0) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
@@ -174,6 +193,23 @@ export function UploadThesisForm({
             message:
               "At least one researcher name is required for Thesis and Capstone documents",
             path: ["researcher_names"],
+          });
+        }
+      }
+      // For Ebooks, title and author are required
+      if (data.document_type === "Ebooks") {
+        if (!data.title || data.title.trim().length === 0) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Book title is required for Ebook documents",
+            path: ["title"],
+          });
+        }
+        if (!data.author || data.author.trim().length === 0) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Author is required for Ebook documents",
+            path: ["author"],
           });
         }
       }
@@ -212,6 +248,14 @@ export function UploadThesisForm({
       project_type: initialData?.project_type || "",
       capstone_category: initialData?.capstone_category || "",
       program: initialData?.program || "",
+      isbn: initialData?.isbn || "",
+      publisher: initialData?.publisher || "",
+      publication_date: initialData?.publication_date || "",
+      author: initialData?.author || "",
+      edition: initialData?.edition || "",
+      language: initialData?.language || "",
+      category: initialData?.category || "",
+      cover_photo: undefined,
       file: undefined,
     },
   });
@@ -229,6 +273,34 @@ export function UploadThesisForm({
         let fileName = "";
         let fileSize = 0;
         let fileType = "";
+        let coverImageUrl = initialData?.ebook_cover_image || "";
+
+        // Upload cover photo if provided (for Ebooks)
+        if (values.cover_photo && values.document_type === "Ebooks") {
+          setIsUploadingFile(true);
+          const coverFormData = new FormData();
+          coverFormData.append("file", values.cover_photo);
+
+          const coverUploadResponse = await fetch("/api/upload/ebook-cover", {
+            method: "POST",
+            body: coverFormData,
+          });
+
+          if (!coverUploadResponse.ok) {
+            const errorData = await coverUploadResponse.json().catch(() => ({
+              message: "Failed to upload cover image. Please try again.",
+            }));
+            setError(
+              errorData.message ?? "Failed to upload cover image. Please try again."
+            );
+            setIsSubmitting(false);
+            setIsUploadingFile(false);
+            return;
+          }
+
+          const coverUploadData = await coverUploadResponse.json();
+          coverImageUrl = coverUploadData.url;
+        }
 
         // Upload file if provided (required for new, optional for edit)
         if (values.file) {
@@ -264,16 +336,22 @@ export function UploadThesisForm({
 
         // Join researcher names with comma for storage
         const researcherNameString = values.researcher_names?.join(", ") || "";
+        // For Ebooks and Journal, use author as researcher_name
+        const finalResearcherName = values.document_type === "Ebooks" 
+          ? (values.author || researcherNameString)
+          : values.document_type === "Journal"
+          ? (values.author || values.co_authors || researcherNameString || "Journal Author")
+          : researcherNameString;
 
         // Create or update thesis document
         if (isEdit && initialData?.id) {
           // Update existing thesis
           const updateData: any = {
             document_type: values.document_type,
-            // Only include these fields for Thesis and Capstone
+            // Only include these fields for Thesis, Capstone, and Ebooks
             ...(values.document_type !== "Journal" && {
               title: values.title,
-              researcher_name: researcherNameString,
+              researcher_name: finalResearcherName,
               abstract: values.abstract || null,
               department: values.department || null,
               year_level: values.year_level || null,
@@ -299,20 +377,32 @@ export function UploadThesisForm({
                 ? values.co_authors || null
                 : null,
             adviser_name:
-              values.document_type === "Thesis"
+              values.document_type === "Thesis" || values.document_type === "Capstone"
                 ? values.adviser_name || null
                 : null,
             project_type:
-              values.document_type === "Capstone"
+              values.document_type === "Capstone" || values.document_type === "Thesis"
                 ? values.project_type || null
                 : null,
             capstone_category:
-              values.document_type === "Capstone"
+              values.document_type === "Capstone" || values.document_type === "Thesis"
                 ? values.capstone_category || null
                 : null,
             program:
-              values.document_type === "Capstone"
+              values.document_type === "Capstone" || values.document_type === "Thesis"
                 ? values.program || null
+                : null,
+            // Ebook fields - store in co_authors field for now (can be moved to separate fields later)
+            co_authors:
+              values.document_type === "Ebooks"
+                ? JSON.stringify({
+                    isbn: values.isbn || null,
+                    publisher: values.publisher || null,
+                    publication_date: values.publication_date || null,
+                    edition: values.edition || null,
+                    language: values.language || null,
+                    category: values.category || null,
+                  })
                 : null,
           };
 
@@ -349,10 +439,10 @@ export function UploadThesisForm({
             },
             body: JSON.stringify({
               document_type: values.document_type,
-              // Only include these fields for Thesis and Capstone
+              // Only include these fields for Thesis, Capstone, and Ebooks
               ...(values.document_type !== "Journal" && {
                 title: values.title,
-                researcher_name: researcherNameString,
+                researcher_name: finalResearcherName,
                 abstract: values.abstract || undefined,
                 department: values.department || undefined,
                 year_level: values.year_level || undefined,
@@ -381,20 +471,37 @@ export function UploadThesisForm({
                   ? values.co_authors || undefined
                   : undefined,
               adviser_name:
-                values.document_type === "Thesis"
+                values.document_type === "Thesis" || values.document_type === "Capstone"
                   ? values.adviser_name || undefined
                   : undefined,
               project_type:
-                values.document_type === "Capstone"
+                values.document_type === "Capstone" || values.document_type === "Thesis"
                   ? values.project_type || undefined
                   : undefined,
               capstone_category:
-                values.document_type === "Capstone"
+                values.document_type === "Capstone" || values.document_type === "Thesis"
                   ? values.capstone_category || undefined
                   : undefined,
               program:
-                values.document_type === "Capstone"
+                values.document_type === "Capstone" || values.document_type === "Thesis"
                   ? values.program || undefined
+                  : undefined,
+              // Ebook fields - store in co_authors field as JSON
+              co_authors:
+                values.document_type === "Ebooks"
+                  ? JSON.stringify({
+                      isbn: values.isbn || null,
+                      publisher: values.publisher || null,
+                      publication_date: values.publication_date || null,
+                      edition: values.edition || null,
+                      language: values.language || null,
+                      category: values.category || null,
+                    })
+                  : undefined,
+              // Ebook cover image
+              ebook_cover_image:
+                values.document_type === "Ebooks" && coverImageUrl
+                  ? coverImageUrl
                   : undefined,
               file_url: fileUrl,
               file_name: fileName,
@@ -466,6 +573,7 @@ export function UploadThesisForm({
                     <SelectItem value="Thesis">Thesis</SelectItem>
                     <SelectItem value="Journal">Journal</SelectItem>
                     <SelectItem value="Capstone">Capstone</SelectItem>
+                    <SelectItem value="Ebooks">Ebooks</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormDescription>
@@ -480,7 +588,7 @@ export function UploadThesisForm({
         <Separator />
 
         {/* Document Information Section - Only for Thesis and Capstone */}
-        {documentType !== "Journal" && (
+        {documentType !== "Journal" && documentType !== "Ebooks" && (
           <>
             <div className="space-y-4">
               <div className="flex items-center gap-2">
@@ -587,6 +695,7 @@ export function UploadThesisForm({
             <Separator />
 
             {/* Academic Information Section - Only for Thesis and Capstone */}
+            {documentType !== "Ebooks" && (
             <div className="space-y-4">
               <div className="flex items-center gap-2">
                 <GraduationCap className="h-4 w-4 text-muted-foreground" />
@@ -678,6 +787,7 @@ export function UploadThesisForm({
                 />
               </div>
             </div>
+            )}
           </>
         )}
 
@@ -707,6 +817,31 @@ export function UploadThesisForm({
                         className="h-11"
                       />
                     </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="author"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-medium flex items-center gap-2">
+                      <User className="h-3.5 w-3.5" />
+                      Author *
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder="Enter author name(s), separate multiple authors with commas"
+                        disabled={isSubmitting}
+                        className="h-11"
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Enter the primary author(s) of the journal article. Separate multiple authors with commas.
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -832,6 +967,377 @@ export function UploadThesisForm({
                   </FormItem>
                 )}
               />
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <FormField
+                  control={form.control}
+                  name="project_type"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-medium">
+                        Project Type
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="e.g., Software Development, Research"
+                          disabled={isSubmitting}
+                          className="h-11"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="capstone_category"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-medium">Category</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="e.g., Web Application, Mobile App"
+                          disabled={isSubmitting}
+                          className="h-11"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="program"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-medium">Program</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder="e.g., Computer Science, Information Technology"
+                        disabled={isSubmitting}
+                        className="h-11"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </>
+        )}
+
+        {/* Ebook Specific Fields */}
+        {documentType === "Ebooks" && (
+          <>
+            <Separator />
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <BookOpen className="h-4 w-4 text-muted-foreground" />
+                <h3 className="text-sm font-semibold text-foreground">
+                  Ebook Information
+                </h3>
+              </div>
+
+              <FormField
+                control={form.control}
+                name="title"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-medium">
+                      Book Title *
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder="Enter the book title"
+                        disabled={isSubmitting}
+                        className="h-11"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="author"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-medium flex items-center gap-2">
+                      <User className="h-3.5 w-3.5" />
+                      Author(s) *
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder="Enter author name(s), separate multiple authors with commas"
+                        disabled={isSubmitting}
+                        className="h-11"
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Enter the author(s) of the book. Separate multiple authors with commas.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <FormField
+                  control={form.control}
+                  name="isbn"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-medium">ISBN</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="e.g., 978-0-123456-78-9"
+                          disabled={isSubmitting}
+                          className="h-11"
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Optional. International Standard Book Number.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="publisher"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-medium">Publisher</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="e.g., Penguin Random House"
+                          disabled={isSubmitting}
+                          className="h-11"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <FormField
+                  control={form.control}
+                  name="publication_date"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-medium">Publication Date</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="date"
+                          {...field}
+                          value={field.value || ""}
+                          disabled={isSubmitting}
+                          className="h-11"
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Select the publication date of the book.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="edition"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-medium">Edition</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="e.g., 1st Edition, 2nd Edition"
+                          disabled={isSubmitting}
+                          className="h-11"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <FormField
+                  control={form.control}
+                  name="language"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-medium">Language</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="e.g., English, Spanish, French"
+                          disabled={isSubmitting}
+                          className="h-11"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="category"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-medium">Category/Genre</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="e.g., Fiction, Non-Fiction, Science, History"
+                          disabled={isSubmitting}
+                          className="h-11"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="abstract"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-medium">Description/Summary</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        {...field}
+                        placeholder="Enter book description or summary (optional)"
+                        disabled={isSubmitting}
+                        rows={4}
+                        className="resize-none"
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Optional. Provide a brief description or summary of the book.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="keywords"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-medium">Keywords/Tags</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder="e.g., programming, fiction, science, history"
+                        disabled={isSubmitting}
+                        className="h-11"
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Optional. Separate keywords with commas.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="cover_photo"
+                render={({ field: { value, onChange, ...fieldProps } }) => (
+                  <FormItem>
+                    <FormLabel className="font-medium">Cover Photo</FormLabel>
+                    <FormControl>
+                      <div className="space-y-4">
+                        <Input
+                          {...fieldProps}
+                          type="file"
+                          accept="image/jpeg,image/jpg,image/png,image/webp"
+                          disabled={isSubmitting || isUploadingFile}
+                          onChange={(event) => {
+                            const file = event.target.files?.[0];
+                            if (file) {
+                              // Validate file size (5MB max)
+                              const maxSize = 5 * 1024 * 1024;
+                              if (file.size > maxSize) {
+                                toast.error("Cover image size must be less than 5MB");
+                                return;
+                              }
+                              // Validate file type
+                              const allowedTypes = [
+                                "image/jpeg",
+                                "image/jpg",
+                                "image/png",
+                                "image/webp",
+                              ];
+                              if (!allowedTypes.includes(file.type)) {
+                                toast.error("Please upload an image (JPEG, PNG, or WebP)");
+                                return;
+                              }
+                              onChange(file);
+                            }
+                          }}
+                          className="cursor-pointer h-11"
+                        />
+                        {value && (
+                          <div className="flex items-center gap-4">
+                            <div className="relative w-32 h-48 border-2 border-dashed border-muted-foreground/25 rounded-lg overflow-hidden bg-muted/50">
+                              <img
+                                src={URL.createObjectURL(value)}
+                                alt="Cover preview"
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                            <div className="flex-1 text-sm text-muted-foreground">
+                              <p className="font-medium">{value.name}</p>
+                              <p>{(value.size / (1024 * 1024)).toFixed(2)} MB</p>
+                            </div>
+                          </div>
+                        )}
+                        {initialData?.ebook_cover_image && !value && (
+                          <div className="flex items-center gap-4">
+                            <div className="relative w-32 h-48 border-2 border-dashed border-muted-foreground/25 rounded-lg overflow-hidden bg-muted/50">
+                              <img
+                                src={initialData.ebook_cover_image}
+                                alt="Current cover"
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                            <div className="flex-1 text-sm text-muted-foreground">
+                              <p className="font-medium">Current cover image</p>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </FormControl>
+                    <FormDescription>
+                      Optional. Upload a cover image for the book (JPEG, PNG, or WebP, max 5MB).
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
           </>
         )}
@@ -908,6 +1414,28 @@ export function UploadThesisForm({
                   </FormItem>
                 )}
               />
+
+              <FormField
+                control={form.control}
+                name="adviser_name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-medium">Adviser Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder="Enter adviser name"
+                        disabled={isSubmitting}
+                        className="h-11"
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Optional. Name of your capstone adviser.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
           </>
         )}
@@ -934,7 +1462,7 @@ export function UploadThesisForm({
                     <Input
                       {...fieldProps}
                       type="file"
-                      accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                      accept=".pdf,.doc,.docx,.epub,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/epub+zip"
                       disabled={isSubmitting || isUploadingFile}
                       onChange={(event) => {
                         const file = event.target.files?.[0];
@@ -950,9 +1478,10 @@ export function UploadThesisForm({
                             "application/pdf",
                             "application/msword",
                             "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                            "application/epub+zip",
                           ];
                           if (!allowedTypes.includes(file.type)) {
-                            toast.error("Please upload a PDF or DOC/DOCX file");
+                            toast.error("Please upload a PDF, DOC/DOCX, or EPUB file");
                             return;
                           }
                           onChange(file);
@@ -973,8 +1502,8 @@ export function UploadThesisForm({
                 </FormControl>
                 <FormDescription>
                   {isEdit
-                    ? "Upload a new file to replace the existing one (optional)"
-                    : "Upload PDF or DOC/DOCX file (max 50MB)"}
+                    ? "Upload a new file to replace the existing one (optional). Accepted formats: PDF, DOC, DOCX, EPUB."
+                    : "Upload PDF, DOC, DOCX, or EPUB file (max 50MB)"}
                 </FormDescription>
                 <FormMessage />
               </FormItem>

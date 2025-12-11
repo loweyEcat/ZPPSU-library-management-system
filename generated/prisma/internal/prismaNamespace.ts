@@ -80,12 +80,12 @@ export type PrismaVersion = {
 }
 
 /**
- * Prisma Client JS version: 7.0.0
- * Query Engine version: 0c19ccc313cf9911a90d99d2ac2eb0280c76c513
+ * Prisma Client JS version: 7.1.0
+ * Query Engine version: ab635e6b9d606fa5c8fb8b1a7f909c3c3c1c98ba
  */
 export const prismaVersion: PrismaVersion = {
-  client: "7.0.0",
-  engine: "0c19ccc313cf9911a90d99d2ac2eb0280c76c513"
+  client: "7.1.0",
+  engine: "ab635e6b9d606fa5c8fb8b1a7f909c3c3c1c98ba"
 }
 
 /**
@@ -1120,10 +1120,17 @@ export const Lib_thesis_documentsScalarFieldEnum = {
   project_type: 'project_type',
   capstone_category: 'capstone_category',
   program: 'program',
+  ebook_author: 'ebook_author',
+  ebook_topic: 'ebook_topic',
+  ebook_publisher: 'ebook_publisher',
+  ebook_publication_year: 'ebook_publication_year',
+  ebook_cover_image: 'ebook_cover_image',
   assigned_staff_id: 'assigned_staff_id',
   is_restricted: 'is_restricted',
+  is_hidden: 'is_hidden',
   time_limit_minutes: 'time_limit_minutes',
-  max_attempts: 'max_attempts'
+  max_attempts: 'max_attempts',
+  epub_url: 'epub_url'
 } as const
 
 export type Lib_thesis_documentsScalarFieldEnum = (typeof Lib_thesis_documentsScalarFieldEnum)[keyof typeof Lib_thesis_documentsScalarFieldEnum]
@@ -1300,7 +1307,13 @@ export const lib_thesis_documentsOrderByRelevanceFieldEnum = {
   team_members: 'team_members',
   project_type: 'project_type',
   capstone_category: 'capstone_category',
-  program: 'program'
+  program: 'program',
+  ebook_author: 'ebook_author',
+  ebook_topic: 'ebook_topic',
+  ebook_publisher: 'ebook_publisher',
+  ebook_publication_year: 'ebook_publication_year',
+  ebook_cover_image: 'ebook_cover_image',
+  epub_url: 'epub_url'
 } as const
 
 export type lib_thesis_documentsOrderByRelevanceFieldEnum = (typeof lib_thesis_documentsOrderByRelevanceFieldEnum)[keyof typeof lib_thesis_documentsOrderByRelevanceFieldEnum]
@@ -1520,7 +1533,7 @@ export type PrismaClientOptions = ({
    *  { emit: 'stdout', level: 'error' }
    * 
    * ```
-   * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/logging#the-log-option).
+   * Read more in our [docs](https://pris.ly/d/logging).
    */
   log?: (LogLevel | LogDefinition)[]
   /**
@@ -1548,6 +1561,22 @@ export type PrismaClientOptions = ({
    * ```
    */
   omit?: GlobalOmitConfig
+  /**
+   * SQL commenter plugins that add metadata to SQL queries as comments.
+   * Comments follow the sqlcommenter format: https://google.github.io/sqlcommenter/
+   * 
+   * @example
+   * ```
+   * const prisma = new PrismaClient({
+   *   adapter,
+   *   comments: [
+   *     traceContext(),
+   *     queryInsights(),
+   *   ],
+   * })
+   * ```
+   */
+  comments?: runtime.SqlCommenterPlugin[]
 }
 export type GlobalOmitConfig = {
   lib_users?: Prisma.lib_usersOmit

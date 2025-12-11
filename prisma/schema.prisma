@@ -99,10 +99,17 @@ model lib_thesis_documents {
   project_type                                                   String?                                @db.VarChar(100)
   capstone_category                                              String?                                @db.VarChar(50)
   program                                                        String?                                @db.VarChar(100)
+  ebook_author                                                   String?                                @db.VarChar(255)
+  ebook_topic                                                    String?                                @db.VarChar(255)
+  ebook_publisher                                                String?                                @db.VarChar(255)
+  ebook_publication_year                                         String?                                @db.VarChar(10)
+  ebook_cover_image                                              String?                                @db.VarChar(500)
   assigned_staff_id                                              Int?
   is_restricted                                                  Boolean                                @default(false)
+  is_hidden                                                      Boolean                                @default(false)
   time_limit_minutes                                             Int?                                   @default(60)
   max_attempts                                                   Int?
+  epub_url                                                       String?                                @db.VarChar(500)
   access_cooldowns                                               lib_document_access_cooldowns[]
   download_permissions                                           lib_document_download_permissions[]
   reading_sessions                                               lib_document_reading_sessions[]
@@ -334,14 +341,15 @@ enum lib_book_requests_status {
   Under_Review
 }
 
-enum lib_thesis_documents_document_type {
-  Thesis
-  Journal
-  Capstone
-}
-
 enum lib_download_permission_status {
   Pending
   Approved
   Rejected
+}
+
+enum lib_thesis_documents_document_type {
+  Thesis
+  Journal
+  Capstone
+  Ebooks
 }

@@ -5,7 +5,7 @@ import { requireStudent, requireStaffOrAbove } from "@/lib/auth-library";
 import { sanitizeInput } from "@/lib/sanitize";
 
 const updateThesisSchema = z.object({
-  document_type: z.enum(["Thesis", "Journal", "Capstone"]).optional(),
+  document_type: z.enum(["Thesis", "Journal", "Capstone", "Ebooks"]).optional(),
   title: z.string().min(1, "Title is required").max(255, "Title must not exceed 255 characters").optional(),
   researcher_name: z.string().min(1, "At least one researcher name is required").max(500, "Total researcher names must not exceed 500 characters").refine(
     (val) => {
@@ -34,6 +34,8 @@ const updateThesisSchema = z.object({
   project_type: z.string().max(100, "Project type must not exceed 100 characters").optional().nullable(),
   capstone_category: z.string().max(50, "Capstone category must not exceed 50 characters").optional().nullable(),
   program: z.string().max(100, "Program must not exceed 100 characters").optional().nullable(),
+  // Ebook fields
+  ebook_cover_image: z.string().url("Invalid cover image URL").optional().nullable(),
 });
 
 export async function GET(
@@ -217,6 +219,7 @@ export async function PATCH(
     if (data.project_type !== undefined) updateData.project_type = data.project_type ? sanitizeInput(data.project_type) : null;
     if (data.capstone_category !== undefined) updateData.capstone_category = data.capstone_category ? sanitizeInput(data.capstone_category) : null;
     if (data.program !== undefined) updateData.program = data.program ? sanitizeInput(data.program) : null;
+    if (data.ebook_cover_image !== undefined) updateData.ebook_cover_image = data.ebook_cover_image || null;
 
     // Reset status if it was rejected or revision required
     if (existingThesis.status === "Rejected" || existingThesis.status === "Revision_Required") {

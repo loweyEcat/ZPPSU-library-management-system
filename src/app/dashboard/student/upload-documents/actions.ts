@@ -26,8 +26,33 @@ export async function getStudentThesisDocuments() {
       staff_reviewed_at: true,
       admin_reviewed_at: true,
       approved_at: true,
+      published_at: true,
       date_updated: true,
       document_type: true,
+      reviewed_by_staff_id: true,
+      reviewed_by_admin_id: true,
+      assigned_staff_id: true,
+      staff_review_notes: true,
+      admin_review_notes: true,
+      rejection_reason: true,
+      lib_users_lib_thesis_documents_reviewed_by_staff_idTolib_users: {
+        select: {
+          id: true,
+          full_name: true,
+        },
+      },
+      lib_users_lib_thesis_documents_reviewed_by_admin_idTolib_users: {
+        select: {
+          id: true,
+          full_name: true,
+        },
+      },
+      lib_users_lib_thesis_documents_assigned_staff_idTolib_users: {
+        select: {
+          id: true,
+          full_name: true,
+        },
+      },
     },
     orderBy: {
       submitted_at: "desc",
@@ -35,13 +60,24 @@ export async function getStudentThesisDocuments() {
   });
 
   // Serialize dates to strings for client components
-  return documents.map((doc) => ({
-    ...doc,
-    submitted_at: doc.submitted_at.toISOString(),
-    staff_reviewed_at: doc.staff_reviewed_at?.toISOString() || null,
-    admin_reviewed_at: doc.admin_reviewed_at?.toISOString() || null,
-    approved_at: doc.approved_at?.toISOString() || null,
-    date_updated: doc.date_updated.toISOString(),
-  }));
+  return documents.map((doc) => {
+    const { 
+      lib_users_lib_thesis_documents_reviewed_by_staff_idTolib_users, 
+      lib_users_lib_thesis_documents_reviewed_by_admin_idTolib_users,
+      lib_users_lib_thesis_documents_assigned_staff_idTolib_users,
+      ...rest 
+    } = doc;
+    return {
+      ...rest,
+      assigned_staff_name: lib_users_lib_thesis_documents_assigned_staff_idTolib_users?.full_name || null,
+      remarks: doc.admin_review_notes || doc.staff_review_notes || doc.rejection_reason || null,
+      submitted_at: doc.submitted_at.toISOString(),
+      staff_reviewed_at: doc.staff_reviewed_at?.toISOString() || null,
+      admin_reviewed_at: doc.admin_reviewed_at?.toISOString() || null,
+      approved_at: doc.approved_at?.toISOString() || null,
+      published_at: doc.published_at?.toISOString() || null,
+      date_updated: doc.date_updated.toISOString(),
+    };
+  });
 }
 

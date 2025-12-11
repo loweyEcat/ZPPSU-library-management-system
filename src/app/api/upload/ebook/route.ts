@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { put } from "@vercel/blob";
-import { requireStudent } from "@/lib/auth-library";
+import { requireAdminOrSuperAdmin } from "@/lib/auth-library";
 import { sanitizeInput } from "@/lib/sanitize";
 
 const getBlobToken = (): string => {
@@ -19,18 +19,18 @@ const normalizeFilename = (filename: string): string => {
     .slice(0, 160);
 };
 
-const generateUniqueFilename = (originalFilename: string, studentId: number): string => {
-  const sanitized = normalizeFilename(originalFilename || "thesis-document");
+const generateUniqueFilename = (originalFilename: string, userId: number): string => {
+  const sanitized = normalizeFilename(originalFilename || "ebook");
   const timestamp = Date.now();
   const randomSuffix = Math.random().toString(36).substring(2, 9);
-  const extension = sanitized.includes(".") ? sanitized.substring(sanitized.lastIndexOf(".")) : "";
+  const extension = sanitized.includes(".") ? sanitized.substring(sanitized.lastIndexOf(".")) : ".epub";
   const baseName = sanitized.includes(".") ? sanitized.substring(0, sanitized.lastIndexOf(".")) : sanitized;
-  return `thesis/${studentId}/${baseName}-${timestamp}-${randomSuffix}${extension}`;
+  return `ebooks/${userId}/${baseName}-${timestamp}-${randomSuffix}${extension}`;
 };
 
 export async function POST(request: Request) {
   try {
-    const session = await requireStudent();
+    const session = await requireAdminOrSuperAdmin();
 
     const formData = await request.formData();
     const file = formData.get("file") as File;
@@ -42,7 +42,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // Validate file size (max 50MB for thesis documents)
+    // Validate file size (max 50MB for ebooks)
     const maxSize = 50 * 1024 * 1024; // 50MB
     if (file.size > maxSize) {
       return NextResponse.json(
@@ -51,22 +51,19 @@ export async function POST(request: Request) {
       );
     }
 
-    // Validate file type (PDF, DOC/DOCX, and EPUB)
-    const allowedTypes = [
-      "application/pdf",
-      "application/msword",
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-      "application/epub+zip",
-    ];
-    if (!allowedTypes.includes(file.type)) {
+    // Validate file type - ONLY EPUB
+    const allowedTypes = ["application/epub+zip"];
+    const fileExtension = file.name.toLowerCase().endsWith(".epub");
+    
+    if (!allowedTypes.includes(file.type) && !fileExtension) {
       return NextResponse.json(
-        { message: "File type not allowed. Please upload a PDF, DOC/DOCX, or EPUB file." },
+        { message: "Only EPUB format files are allowed. Please upload an EPUB file." },
         { status: 400 }
       );
     }
 
     const originalBuffer = Buffer.from(await file.arrayBuffer());
-    const mimeType = file.type || "application/pdf";
+    const mimeType = "application/epub+zip"; // Force EPUB MIME type
 
     const fileName = generateUniqueFilename(file.name, session.user.id);
 
@@ -88,9 +85,9 @@ export async function POST(request: Request) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("Thesis file upload error:", error);
+    console.error("Ebook upload error:", error);
     return NextResponse.json(
-      { message: "Failed to upload file. Please try again." },
+      { message: "Failed to upload ebook file. Please try again." },
       { status: 500 }
     );
   }

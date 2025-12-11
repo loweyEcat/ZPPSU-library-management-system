@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { put } from "@vercel/blob";
-import { requireStudent } from "@/lib/auth-library";
+import { requireStudent, requireAdminOrSuperAdmin } from "@/lib/auth-library";
+import { compressImageLossless } from "@/lib/image-compression";
 import { sanitizeInput } from "@/lib/sanitize";
 
 const getBlobToken = (): string => {
@@ -20,17 +21,23 @@ const normalizeFilename = (filename: string): string => {
 };
 
 const generateUniqueFilename = (originalFilename: string, studentId: number): string => {
-  const sanitized = normalizeFilename(originalFilename || "thesis-document");
+  const sanitized = normalizeFilename(originalFilename || "ebook-cover");
   const timestamp = Date.now();
   const randomSuffix = Math.random().toString(36).substring(2, 9);
-  const extension = sanitized.includes(".") ? sanitized.substring(sanitized.lastIndexOf(".")) : "";
+  const extension = sanitized.includes(".") ? sanitized.substring(sanitized.lastIndexOf(".")) : ".jpg";
   const baseName = sanitized.includes(".") ? sanitized.substring(0, sanitized.lastIndexOf(".")) : sanitized;
-  return `thesis/${studentId}/${baseName}-${timestamp}-${randomSuffix}${extension}`;
+  return `ebook-covers/${studentId}/${baseName}-${timestamp}-${randomSuffix}${extension}`;
 };
 
 export async function POST(request: Request) {
   try {
-    const session = await requireStudent();
+    // Allow both students and admins to upload cover images
+    let session;
+    try {
+      session = await requireStudent();
+    } catch {
+      session = await requireAdminOrSuperAdmin();
+    }
 
     const formData = await request.formData();
     const file = formData.get("file") as File;
@@ -42,38 +49,41 @@ export async function POST(request: Request) {
       );
     }
 
-    // Validate file size (max 50MB for thesis documents)
-    const maxSize = 50 * 1024 * 1024; // 50MB
+    // Validate file size (max 5MB for cover images)
+    const maxSize = 5 * 1024 * 1024; // 5MB
     if (file.size > maxSize) {
       return NextResponse.json(
-        { message: "File size must be less than 50MB" },
+        { message: "File size must be less than 5MB" },
         { status: 400 }
       );
     }
 
-    // Validate file type (PDF, DOC/DOCX, and EPUB)
-    const allowedTypes = [
-      "application/pdf",
-      "application/msword",
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-      "application/epub+zip",
-    ];
+    // Validate file type (images only)
+    const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
     if (!allowedTypes.includes(file.type)) {
       return NextResponse.json(
-        { message: "File type not allowed. Please upload a PDF, DOC/DOCX, or EPUB file." },
+        { message: "File type not allowed. Please upload an image (JPEG, PNG, or WebP)." },
         { status: 400 }
       );
     }
 
     const originalBuffer = Buffer.from(await file.arrayBuffer());
-    const mimeType = file.type || "application/pdf";
+    const mimeType = file.type || "image/jpeg";
+
+    // Compress image
+    const { buffer: compressedBuffer, mimeType: compressedMimeType } =
+      await compressImageLossless(originalBuffer, mimeType);
+
+    const bufferToUpload =
+      compressedBuffer.length < originalBuffer.length ? compressedBuffer : originalBuffer;
+    const finalMimeType = bufferToUpload === compressedBuffer ? compressedMimeType : mimeType;
 
     const fileName = generateUniqueFilename(file.name, session.user.id);
 
-    const blob = await put(fileName, originalBuffer, {
+    const blob = await put(fileName, bufferToUpload, {
       access: "public",
       token: getBlobToken(),
-      contentType: mimeType,
+      contentType: finalMimeType,
       addRandomSuffix: false,
     });
 
@@ -81,16 +91,16 @@ export async function POST(request: Request) {
       {
         url: blob.url,
         pathname: blob.pathname,
-        contentType: mimeType,
-        size: originalBuffer.length,
+        contentType: finalMimeType,
+        size: bufferToUpload.length,
         fileName: file.name,
       },
       { status: 200 }
     );
   } catch (error) {
-    console.error("Thesis file upload error:", error);
+    console.error("Ebook cover upload error:", error);
     return NextResponse.json(
-      { message: "Failed to upload file. Please try again." },
+      { message: "Failed to upload cover image. Please try again." },
       { status: 500 }
     );
   }
