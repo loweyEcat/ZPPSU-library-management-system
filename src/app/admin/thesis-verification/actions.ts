@@ -55,6 +55,7 @@ export async function getAllThesisDocuments() {
           full_name: true,
           email: true,
           student_id: true,
+          assigned_role: true,
         },
       },
       lib_users_lib_thesis_documents_reviewed_by_staff_idTolib_users: {
@@ -84,9 +85,26 @@ export async function getAllThesisDocuments() {
       lib_users_lib_thesis_documents_assigned_staff_idTolib_users,
       ...rest
     } = doc;
+    
+    // Parse assigned_role to get college/department
+    let college: string | null = null;
+    if (lib_users_lib_thesis_documents_student_idTolib_users?.assigned_role) {
+      try {
+        const additionalInfo = JSON.parse(
+          lib_users_lib_thesis_documents_student_idTolib_users.assigned_role
+        );
+        college = additionalInfo.college || additionalInfo.department || null;
+      } catch {
+        // If parsing fails, leave as null
+      }
+    }
+    
     return {
       ...rest,
-      student: lib_users_lib_thesis_documents_student_idTolib_users,
+      student: {
+        ...lib_users_lib_thesis_documents_student_idTolib_users,
+        college,
+      },
       reviewed_by_staff:
         lib_users_lib_thesis_documents_reviewed_by_staff_idTolib_users,
       assigned_staff:

@@ -76,11 +76,16 @@ interface ThesisDocument {
   staff_reviewed_at: string | null;
   admin_reviewed_at: string | null;
   approved_at: string | null;
+  document_type: string | null;
+  admin_review_notes?: string | null;
+  staff_review_notes?: string | null;
+  rejection_reason?: string | null;
   student: {
     id: number;
     full_name: string;
     email: string;
     student_id: string | null;
+    college?: string | null;
   };
 }
 
@@ -105,6 +110,44 @@ function formatFileSize(bytes: number): string {
   if (bytes < 1024) return bytes + " B";
   if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + " KB";
   return (bytes / (1024 * 1024)).toFixed(2) + " MB";
+}
+
+function getFileFormat(fileType: string | null): string {
+  if (!fileType) return "N/A";
+
+  // Remove "application/" prefix if present
+  let format = fileType.replace(/^application\//i, "");
+
+  // Remove any path or additional prefixes
+  format = format.split("/").pop() || format;
+  format = format.split("\\").pop() || format;
+
+  // Extract just the extension/format
+  const parts = format.split(".");
+  if (parts.length > 1) {
+    format = parts[parts.length - 1];
+  }
+
+  // Common format mappings
+  const formatMap: Record<string, string> = {
+    pdf: "PDF",
+    doc: "DOC",
+    docx: "DOCX",
+    xls: "XLS",
+    xlsx: "XLSX",
+    ppt: "PPT",
+    pptx: "PPTX",
+    epub: "EPUB",
+    mobi: "MOBI",
+    txt: "TXT",
+    rtf: "RTF",
+    odt: "ODT",
+    html: "HTML",
+    xml: "XML",
+  };
+
+  const lowerFormat = format.toLowerCase();
+  return formatMap[lowerFormat] || format.toUpperCase();
 }
 
 function getStatusBadgeVariant(
@@ -139,6 +182,37 @@ function getStatusLabel(status: string, submissionStatus: string): string {
   return status.replace(/_/g, " ");
 }
 
+function getDocumentTypeBadge(type: string | null): React.ReactElement {
+  switch (type) {
+    case "Thesis":
+      return (
+        <Badge variant="default" className="bg-blue-500">
+          Thesis
+        </Badge>
+      );
+    case "Journal":
+      return (
+        <Badge variant="secondary" className="bg-purple-500">
+          Journal
+        </Badge>
+      );
+    case "Capstone":
+      return (
+        <Badge variant="outline" className="bg-green-500">
+          Capstone
+        </Badge>
+      );
+    case "Ebooks":
+      return (
+        <Badge variant="outline" className="bg-orange-500">
+          Ebooks
+        </Badge>
+      );
+    default:
+      return <Badge variant="outline">Unknown</Badge>;
+  }
+}
+
 const ITEMS_PER_PAGE = 10;
 
 export function StaffThesisVerificationTable({
@@ -162,6 +236,7 @@ export function StaffThesisVerificationTable({
   const [academicYearFilter, setAcademicYearFilter] =
     React.useState<string>("all");
   const [semesterFilter, setSemesterFilter] = React.useState<string>("all");
+  const [departmentFilter, setDepartmentFilter] = React.useState<string>("all");
   const [currentPage, setCurrentPage] = React.useState(1);
 
   // Get unique values for filters
@@ -177,6 +252,13 @@ export function StaffThesisVerificationTable({
       .map((doc) => doc.semester)
       .filter((sem): sem is string => sem !== null && sem !== "");
     return Array.from(new Set(semesters)).sort();
+  }, [documents]);
+
+  const uniqueDepartments = React.useMemo(() => {
+    const departments = documents
+      .map((doc) => doc.department)
+      .filter((dept): dept is string => dept !== null && dept !== "");
+    return Array.from(new Set(departments)).sort();
   }, [documents]);
 
   // Filter documents
@@ -198,12 +280,14 @@ export function StaffThesisVerificationTable({
           ?.toLowerCase()
           .includes(query);
         const semesterMatch = doc.semester?.toLowerCase().includes(query);
+        const departmentMatch = doc.department?.toLowerCase().includes(query);
         return (
           titleMatch ||
           researcherMatch ||
           studentMatch ||
           academicYearMatch ||
-          semesterMatch
+          semesterMatch ||
+          departmentMatch
         );
       });
     }
@@ -245,6 +329,11 @@ export function StaffThesisVerificationTable({
       filtered = filtered.filter((doc) => doc.semester === semesterFilter);
     }
 
+    // Department filter
+    if (departmentFilter !== "all") {
+      filtered = filtered.filter((doc) => doc.department === departmentFilter);
+    }
+
     return filtered;
   }, [
     documents,
@@ -252,6 +341,7 @@ export function StaffThesisVerificationTable({
     statusFilter,
     academicYearFilter,
     semesterFilter,
+    departmentFilter,
   ]);
 
   // Pagination
@@ -263,7 +353,13 @@ export function StaffThesisVerificationTable({
   // Reset to page 1 when filters change
   React.useEffect(() => {
     setCurrentPage(1);
-  }, [searchQuery, statusFilter, academicYearFilter, semesterFilter]);
+  }, [
+    searchQuery,
+    statusFilter,
+    academicYearFilter,
+    semesterFilter,
+    departmentFilter,
+  ]);
 
   // Clear all filters
   const clearFilters = () => {
@@ -271,13 +367,15 @@ export function StaffThesisVerificationTable({
     setStatusFilter("all");
     setAcademicYearFilter("all");
     setSemesterFilter("all");
+    setDepartmentFilter("all");
   };
 
   const hasActiveFilters =
     searchQuery.trim() !== "" ||
     statusFilter !== "all" ||
     academicYearFilter !== "all" ||
-    semesterFilter !== "all";
+    semesterFilter !== "all" ||
+    departmentFilter !== "all";
 
   const handleView = async (document: ThesisDocument) => {
     try {
@@ -366,15 +464,14 @@ export function StaffThesisVerificationTable({
   return (
     <>
       {/* Filters */}
-      <div className="space-y-4">
-        {/* Search Bar */}
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+      <div className="flex flex-col sm:flex-row gap-4">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search by title, researcher name, student name, academic year, or semester..."
+            placeholder="Search by title, researcher name, student name, academic year, semester, or department..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9 h-11 bg-background border-2 focus:border-primary transition-colors"
+            className="pl-10"
           />
           {searchQuery && (
             <Button
@@ -387,93 +484,90 @@ export function StaffThesisVerificationTable({
             </Button>
           )}
         </div>
+        <Select value={statusFilter} onValueChange={setStatusFilter}>
+          <SelectTrigger className="w-full sm:w-[180px]">
+            <SelectValue placeholder="Filter by status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Status</SelectItem>
+            <SelectItem value="pending">Pending/Under Review</SelectItem>
+            <SelectItem value="approved">Staff Verified</SelectItem>
+            <SelectItem value="rejected">Staff Rejected</SelectItem>
+            <SelectItem value="revision">Revision Required</SelectItem>
+          </SelectContent>
+        </Select>
+        {uniqueAcademicYears.length > 0 && (
+          <Select
+            value={academicYearFilter}
+            onValueChange={setAcademicYearFilter}
+          >
+            <SelectTrigger className="w-full sm:w-[180px]">
+              <SelectValue placeholder="Academic Year" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Years</SelectItem>
+              {uniqueAcademicYears.map((year) => (
+                <SelectItem key={year} value={year}>
+                  {year}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )}
+        {uniqueSemesters.length > 0 && (
+          <Select value={semesterFilter} onValueChange={setSemesterFilter}>
+            <SelectTrigger className="w-full sm:w-[180px]">
+              <SelectValue placeholder="Semester" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Semesters</SelectItem>
+              {uniqueSemesters.map((semester) => (
+                <SelectItem key={semester} value={semester}>
+                  {semester}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )}
+        {uniqueDepartments.length > 0 && (
+          <Select value={departmentFilter} onValueChange={setDepartmentFilter}>
+            <SelectTrigger className="w-full sm:w-[180px]">
+              <SelectValue placeholder="Department" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Departments</SelectItem>
+              {uniqueDepartments.map((dept) => (
+                <SelectItem key={dept} value={dept}>
+                  {dept}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )}
+        {hasActiveFilters && (
+          <Button
+            variant="outline"
+            onClick={clearFilters}
+            className="w-full sm:w-auto"
+          >
+            <X className="h-4 w-4 mr-2" />
+            Clear
+          </Button>
+        )}
+      </div>
 
-        {/* Filter Controls */}
-        <div className="flex flex-wrap gap-3 items-end">
-          {/* Status Filter */}
-          <div className="flex-1 min-w-[150px]">
-            <label className="text-sm font-medium mb-2 block">Status</label>
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="h-10">
-                <SelectValue placeholder="All Status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Status</SelectItem>
-                <SelectItem value="pending">Pending/Under Review</SelectItem>
-                <SelectItem value="approved">Staff Verified</SelectItem>
-                <SelectItem value="rejected">Staff Rejected</SelectItem>
-                <SelectItem value="revision">Revision Required</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Academic Year Filter */}
-          {uniqueAcademicYears.length > 0 && (
-            <div className="flex-1 min-w-[150px]">
-              <label className="text-sm font-medium mb-2 block">
-                Academic Year
-              </label>
-              <Select
-                value={academicYearFilter}
-                onValueChange={setAcademicYearFilter}
-              >
-                <SelectTrigger className="h-10">
-                  <SelectValue placeholder="All Years" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Years</SelectItem>
-                  {uniqueAcademicYears.map((year) => (
-                    <SelectItem key={year} value={year}>
-                      {year}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          )}
-
-          {/* Semester Filter */}
-          {uniqueSemesters.length > 0 && (
-            <div className="flex-1 min-w-[150px]">
-              <label className="text-sm font-medium mb-2 block">Semester</label>
-              <Select value={semesterFilter} onValueChange={setSemesterFilter}>
-                <SelectTrigger className="h-10">
-                  <SelectValue placeholder="All Semesters" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Semesters</SelectItem>
-                  {uniqueSemesters.map((semester) => (
-                    <SelectItem key={semester} value={semester}>
-                      {semester}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          )}
-
-          {/* Clear Filters Button */}
+      {/* Results Count */}
+      <div className="flex items-center justify-between text-sm text-muted-foreground">
+        <span>
+          Showing{" "}
+          <span className="font-semibold text-foreground">
+            {filteredDocuments.length}
+          </span>{" "}
+          {filteredDocuments.length === 1 ? "document" : "documents"}
           {hasActiveFilters && (
-            <Button variant="outline" onClick={clearFilters} className="h-10">
-              <X className="h-4 w-4 mr-2" />
-              Clear Filters
-            </Button>
+            <span className="ml-2">(of {documents.length} total)</span>
           )}
-        </div>
-
-        {/* Results Count */}
-        <div className="flex items-center justify-between text-sm text-muted-foreground">
-          <span>
-            Showing{" "}
-            <span className="font-semibold text-foreground">
-              {filteredDocuments.length}
-            </span>{" "}
-            {filteredDocuments.length === 1 ? "document" : "documents"}
-            {hasActiveFilters && (
-              <span className="ml-2">(of {documents.length} total)</span>
-            )}
-          </span>
-        </div>
+        </span>
       </div>
 
       {/* Table */}
@@ -481,16 +575,38 @@ export function StaffThesisVerificationTable({
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
-              <TableRow className="bg-muted/50 hover:bg-muted/50">
-                <TableHead className="font-semibold">Student Name</TableHead>
-                <TableHead className="font-semibold">Research Title</TableHead>
-                <TableHead className="font-semibold">Researchers</TableHead>
-                <TableHead className="font-semibold">Academic Year</TableHead>
-                <TableHead className="font-semibold">Semester</TableHead>
-                <TableHead className="font-semibold">Document</TableHead>
-                <TableHead className="font-semibold">Date Submitted</TableHead>
-                <TableHead className="font-semibold">Status</TableHead>
-                <TableHead className="text-right font-semibold">
+              <TableRow className="bg-[#800020] hover:bg-[#800020]">
+                <TableHead className="font-semibold text-white w-12">
+                  #
+                </TableHead>
+                <TableHead className="font-semibold text-white">
+                  Uploader Name
+                </TableHead>
+                <TableHead className="font-semibold text-white">
+                  Program
+                </TableHead>
+                <TableHead className="font-semibold text-white">
+                  File Type
+                </TableHead>
+                <TableHead className="font-semibold text-white">
+                  Research/Books Title
+                </TableHead>
+                <TableHead className="font-semibold text-white">
+                  Resources Type
+                </TableHead>
+                <TableHead className="font-semibold text-white">
+                  Date Uploaded
+                </TableHead>
+                <TableHead className="font-semibold text-white">
+                  Date Assigned
+                </TableHead>
+                <TableHead className="font-semibold text-white">
+                  Remarks
+                </TableHead>
+                <TableHead className="font-semibold text-white">
+                  Status
+                </TableHead>
+                <TableHead className="text-right font-semibold text-white">
                   Actions
                 </TableHead>
               </TableRow>
@@ -499,7 +615,7 @@ export function StaffThesisVerificationTable({
               {paginatedDocuments.length === 0 ? (
                 <TableRow>
                   <TableCell
-                    colSpan={9}
+                    colSpan={11}
                     className="text-center py-8 text-muted-foreground"
                   >
                     {documents.length === 0
@@ -508,8 +624,13 @@ export function StaffThesisVerificationTable({
                   </TableCell>
                 </TableRow>
               ) : (
-                paginatedDocuments.map((document) => (
+                paginatedDocuments.map((document, index) => (
                   <TableRow key={document.id}>
+                    {/* # */}
+                    <TableCell className="font-medium">
+                      {startIndex + index + 1}
+                    </TableCell>
+                    {/* Uploader Name */}
                     <TableCell>
                       <div>
                         <div className="font-medium">
@@ -522,6 +643,23 @@ export function StaffThesisVerificationTable({
                         )}
                       </div>
                     </TableCell>
+                    {/* College */}
+                    <TableCell>
+                      <div className="max-w-[200px]">
+                        {document.student.college || "N/A"}
+                      </div>
+                    </TableCell>
+
+                    {/* File Type */}
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <FileText className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-sm font-medium">
+                          {getFileFormat(document.file_type)}
+                        </span>
+                      </div>
+                    </TableCell>
+                    {/* Research/Books Title */}
                     <TableCell>
                       <div
                         className="max-w-[300px] truncate"
@@ -530,38 +668,43 @@ export function StaffThesisVerificationTable({
                         {document.title}
                       </div>
                     </TableCell>
+                    {/* Resources Type */}
                     <TableCell>
-                      <div className="flex flex-wrap gap-1 max-w-[200px]">
-                        {document.researcher_name
-                          ? document.researcher_name
-                              .split(",")
-                              .map((name, index) => (
-                                <span
-                                  key={index}
-                                  className="inline-flex items-center px-2 py-0.5 rounded text-xs bg-secondary text-secondary-foreground font-medium"
-                                >
-                                  {name.trim()}
-                                </span>
-                              ))
-                          : "N/A"}
-                      </div>
+                      {getDocumentTypeBadge(document.document_type)}
                     </TableCell>
-                    <TableCell>{document.academic_year || "N/A"}</TableCell>
-                    <TableCell>{document.semester || "N/A"}</TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <FileText className="h-4 w-4 text-muted-foreground" />
-                        <div className="flex flex-col">
-                          <span className="text-sm font-medium truncate max-w-[200px]">
-                            {document.file_name}
-                          </span>
-                          <span className="text-xs text-muted-foreground">
-                            {formatFileSize(document.file_size)}
-                          </span>
-                        </div>
-                      </div>
-                    </TableCell>
+                    {/* Date Uploaded */}
                     <TableCell>{formatDate(document.submitted_at)}</TableCell>
+                    {/* Date Assigned */}
+                    <TableCell>
+                      {formatDate(document.admin_reviewed_at)}
+                    </TableCell>
+                    {/* Remarks */}
+                    <TableCell>
+                      <div className="max-w-[200px]">
+                        {document.admin_review_notes ||
+                        document.staff_review_notes ||
+                        document.rejection_reason ? (
+                          <div
+                            className="text-xs text-muted-foreground truncate"
+                            title={
+                              document.admin_review_notes ||
+                              document.staff_review_notes ||
+                              document.rejection_reason ||
+                              ""
+                            }
+                          >
+                            {document.admin_review_notes ||
+                              document.staff_review_notes ||
+                              document.rejection_reason}
+                          </div>
+                        ) : (
+                          <span className="text-xs text-muted-foreground">
+                            N/A
+                          </span>
+                        )}
+                      </div>
+                    </TableCell>
+                    {/* Status */}
                     <TableCell>
                       <Badge
                         variant={getStatusBadgeVariant(
@@ -584,9 +727,19 @@ export function StaffThesisVerificationTable({
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem
-                            onClick={() => handleView(document)}
+                            onClick={() =>
+                              router.push(
+                                `/dashboard/staff/thesis-verification/${document.id}/preview`
+                              )
+                            }
                           >
                             <Eye className="mr-2 h-4 w-4" />
+                            View Document
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => handleView(document)}
+                          >
+                            <FileText className="mr-2 h-4 w-4" />
                             View Details
                           </DropdownMenuItem>
                           <DropdownMenuItem

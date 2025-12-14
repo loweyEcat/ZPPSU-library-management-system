@@ -42,7 +42,7 @@ const menuItems = [
     icon: Bell,
   },
   {
-    title: "Upload Documents",
+    title: "Upload Resources",
     url: "/dashboard/student/upload-documents",
     icon: FileText,
   },

@@ -37,7 +37,7 @@ const menuItems = [
     icon: LayoutDashboard,
   },
   {
-    title: "Documents Verification Panel",
+    title: "Resources Verification Panel",
     url: "/admin/thesis-verification",
     icon: FileCheck,
   },

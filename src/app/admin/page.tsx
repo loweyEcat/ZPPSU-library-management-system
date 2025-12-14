@@ -15,11 +15,52 @@ import {
   BookOpen,
   FileText,
   Settings,
+  TrendingUp,
+  Clock,
+  CheckCircle2,
+  XCircle,
+  Globe,
+  Book,
+  BarChart3,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  getAdminDashboardStats,
+  getDocumentTypeDistribution,
+  getStatusDistribution,
+  getMonthlySubmissions,
+  getCollegeDistribution,
+  getReadingActivity,
+} from "./actions";
+import { AdminDashboardCharts } from "@/components/admin/admin-dashboard-charts";
+
+function formatFileSize(bytes: number): string {
+  if (bytes < 1024) return bytes + " B";
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + " KB";
+  if (bytes < 1024 * 1024 * 1024)
+    return (bytes / (1024 * 1024)).toFixed(2) + " MB";
+  return (bytes / (1024 * 1024 * 1024)).toFixed(2) + " GB";
+}
 
 export default async function AdminPage() {
   const session = await requireSuperAdmin();
+
+  // Fetch all analytics data
+  const [
+    stats,
+    documentTypeDistribution,
+    statusDistribution,
+    monthlySubmissions,
+    collegeDistribution,
+    readingActivity,
+  ] = await Promise.all([
+    getAdminDashboardStats(),
+    getDocumentTypeDistribution(),
+    getStatusDistribution(),
+    getMonthlySubmissions(),
+    getCollegeDistribution(),
+    getReadingActivity(),
+  ]);
 
   return (
     <div className="space-y-6">
@@ -30,13 +71,15 @@ export default async function AdminPage() {
         </p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      {/* Stats Cards */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Users</CardTitle>
+            <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">0</div>
+            <div className="text-2xl font-bold">{stats.totalUsers}</div>
             <p className="text-xs text-muted-foreground">
               All registered users
             </p>
@@ -44,31 +87,159 @@ export default async function AdminPage() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Staff Members</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">0</div>
-            <p className="text-xs text-muted-foreground">Active staff</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Students</CardTitle>
+            <Users className="h-4 w-4 text-blue-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">0</div>
+            <div className="text-2xl font-bold text-blue-600">
+              {stats.totalStudents}
+            </div>
             <p className="text-xs text-muted-foreground">Registered students</p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Resources</CardTitle>
+            <CardTitle className="text-sm font-medium">Staff Members</CardTitle>
+            <Users className="h-4 w-4 text-purple-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">0</div>
-            <p className="text-xs text-muted-foreground">Total resources</p>
+            <div className="text-2xl font-bold text-purple-600">
+              {stats.totalStaff}
+            </div>
+            <p className="text-xs text-muted-foreground">Active staff</p>
           </CardContent>
         </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Total Documents
+            </CardTitle>
+            <FileText className="h-4 w-4 text-green-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-green-600">
+              {stats.totalDocuments}
+            </div>
+            <p className="text-xs text-muted-foreground">All documents</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Published</CardTitle>
+            <Globe className="h-4 w-4 text-indigo-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-indigo-600">
+              {stats.publishedDocuments}
+            </div>
+            <p className="text-xs text-muted-foreground">Published resources</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Pending Review
+            </CardTitle>
+            <Clock className="h-4 w-4 text-yellow-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-yellow-600">
+              {stats.pendingDocuments}
+            </div>
+            <p className="text-xs text-muted-foreground">Awaiting review</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Approved</CardTitle>
+            <CheckCircle2 className="h-4 w-4 text-green-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-green-600">
+              {stats.approvedDocuments}
+            </div>
+            <p className="text-xs text-muted-foreground">Approved documents</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Rejected</CardTitle>
+            <XCircle className="h-4 w-4 text-red-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-red-600">
+              {stats.rejectedDocuments}
+            </div>
+            <p className="text-xs text-muted-foreground">Rejected documents</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Storage</CardTitle>
+            <Library className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {formatFileSize(stats.totalFileSize)}
+            </div>
+            <p className="text-xs text-muted-foreground">Total file size</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Reading Sessions
+            </CardTitle>
+            <BookOpen className="h-4 w-4 text-blue-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-blue-600">
+              {stats.totalReadingSessions.toLocaleString()}
+            </div>
+            <p className="text-xs text-muted-foreground">Total sessions</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Reading Hours</CardTitle>
+            <TrendingUp className="h-4 w-4 text-purple-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-purple-600">
+              {Math.round(stats.totalReadingMinutes / 60).toLocaleString()}
+            </div>
+            <p className="text-xs text-muted-foreground">Total hours read</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Admins</CardTitle>
+            <Users className="h-4 w-4 text-orange-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-orange-600">
+              {stats.totalAdmins}
+            </div>
+            <p className="text-xs text-muted-foreground">Admin accounts</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Analytics Charts Section */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-2">
+          <BarChart3 className="h-6 w-6 text-primary" />
+          <h3 className="text-2xl font-bold tracking-tight">
+            Analytics & Insights
+          </h3>
+        </div>
+        <AdminDashboardCharts
+          documentTypeDistribution={documentTypeDistribution}
+          statusDistribution={statusDistribution}
+          monthlySubmissions={monthlySubmissions}
+          collegeDistribution={collegeDistribution}
+          readingActivity={readingActivity}
+        />
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">

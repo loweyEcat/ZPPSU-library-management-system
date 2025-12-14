@@ -83,6 +83,7 @@ interface ThesisDocument {
     full_name: string;
     email: string;
     student_id: string | null;
+    college?: string | null;
   };
   reviewed_by_staff: {
     id: number;
@@ -164,6 +165,56 @@ function getStatusLabel(status: string, submissionStatus: string): string {
   if (submissionStatus === "Revision_Requested") return "Revision Required";
   if (submissionStatus === "Withdrawn") return "Withdrawn";
   return status.replace(/_/g, " ");
+}
+
+function getDocumentTypeBadge(type: string | null): React.ReactElement {
+  switch (type) {
+    case "Thesis":
+      return (
+        <Badge
+          variant="outline"
+          className="bg-blue-50 text-blue-700 border-blue-200"
+        >
+          Thesis
+        </Badge>
+      );
+    case "Journal":
+      return (
+        <Badge
+          variant="outline"
+          className="bg-purple-50 text-purple-700 border-purple-200"
+        >
+          Journal
+        </Badge>
+      );
+    case "Capstone":
+      return (
+        <Badge
+          variant="outline"
+          className="bg-green-50 text-green-700 border-green-200"
+        >
+          Capstone
+        </Badge>
+      );
+    case "Ebooks":
+      return (
+        <Badge
+          variant="outline"
+          className="bg-orange-50 text-orange-700 border-orange-200"
+        >
+          Ebooks
+        </Badge>
+      );
+    default:
+      return (
+        <Badge
+          variant="outline"
+          className="bg-gray-50 text-gray-600 border-gray-200"
+        >
+          {type || "N/A"}
+        </Badge>
+      );
+  }
 }
 
 const ITEMS_PER_PAGE = 10;
@@ -445,21 +496,21 @@ export function AdminThesisVerificationTable({
       <div className="space-y-4">
         {/* Search Bar */}
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
           <Input
             placeholder="Search by title, researcher name, student name, academic year, or semester..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9 h-11 bg-background border-2 focus:border-primary transition-colors"
+            className="pl-10 h-10 bg-white border border-gray-300 focus:border-[#800020] focus:ring-1 focus:ring-[#800020] transition-all"
           />
           {searchQuery && (
             <Button
               variant="ghost"
               size="icon"
-              className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8"
+              className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 hover:bg-gray-100"
               onClick={() => setSearchQuery("")}
             >
-              <X className="h-4 w-4" />
+              <X className="h-3.5 w-3.5" />
             </Button>
           )}
         </div>
@@ -467,10 +518,9 @@ export function AdminThesisVerificationTable({
         {/* Filter Controls */}
         <div className="flex flex-wrap gap-3 items-end">
           {/* Status Filter */}
-          <div className="flex-1 min-w-[150px]">
-            <label className="text-sm font-medium mb-2 block">Status</label>
+          <div className="flex-1 min-w-[160px]">
             <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="h-10">
+              <SelectTrigger className="h-10 bg-white">
                 <SelectValue placeholder="All Status" />
               </SelectTrigger>
               <SelectContent>
@@ -489,15 +539,12 @@ export function AdminThesisVerificationTable({
 
           {/* Academic Year Filter */}
           {uniqueAcademicYears.length > 0 && (
-            <div className="flex-1 min-w-[150px]">
-              <label className="text-sm font-medium mb-2 block">
-                Academic Year
-              </label>
+            <div className="flex-1 min-w-[160px]">
               <Select
                 value={academicYearFilter}
                 onValueChange={setAcademicYearFilter}
               >
-                <SelectTrigger className="h-10">
+                <SelectTrigger className="h-10 bg-white">
                   <SelectValue placeholder="All Years" />
                 </SelectTrigger>
                 <SelectContent>
@@ -514,10 +561,9 @@ export function AdminThesisVerificationTable({
 
           {/* Semester Filter */}
           {uniqueSemesters.length > 0 && (
-            <div className="flex-1 min-w-[150px]">
-              <label className="text-sm font-medium mb-2 block">Semester</label>
+            <div className="flex-1 min-w-[160px]">
               <Select value={semesterFilter} onValueChange={setSemesterFilter}>
-                <SelectTrigger className="h-10">
+                <SelectTrigger className="h-10 bg-white">
                   <SelectValue placeholder="All Semesters" />
                 </SelectTrigger>
                 <SelectContent>
@@ -536,42 +582,64 @@ export function AdminThesisVerificationTable({
           {hasActiveFilters && (
             <Button variant="outline" onClick={clearFilters} className="h-10">
               <X className="h-4 w-4 mr-2" />
-              Clear Filters
+              Clear
             </Button>
           )}
         </div>
 
         {/* Results Count */}
-        <div className="flex items-center justify-between text-sm text-muted-foreground">
-          <span>
-            Showing{" "}
-            <span className="font-semibold text-foreground">
-              {filteredDocuments.length}
-            </span>{" "}
-            {filteredDocuments.length === 1 ? "document" : "documents"}
-            {hasActiveFilters && (
-              <span className="ml-2">(of {documents.length} total)</span>
-            )}
-          </span>
+        <div className="text-sm text-gray-600">
+          Showing{" "}
+          <span className="font-medium text-gray-900">
+            {filteredDocuments.length}
+          </span>{" "}
+          {filteredDocuments.length === 1 ? "document" : "documents"}
+          {hasActiveFilters && (
+            <span className="ml-1 text-gray-500">
+              (of {documents.length} total)
+            </span>
+          )}
         </div>
       </div>
 
       {/* Table */}
-      <div className="rounded-lg border-2 overflow-hidden shadow-sm">
+      <div className="rounded-md border border-gray-200 overflow-hidden bg-white">
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
-              <TableRow className="bg-muted/50 hover:bg-muted/50">
-                <TableHead className="font-semibold">Student Name</TableHead>
-                <TableHead className="font-semibold">Research Title</TableHead>
-                <TableHead className="font-semibold">Academic Year</TableHead>
-                <TableHead className="font-semibold">Semester</TableHead>
-                <TableHead className="font-semibold">Assigned Staff</TableHead>
-                <TableHead className="font-semibold">Document</TableHead>
-                <TableHead className="font-semibold">Document Type</TableHead>
-                <TableHead className="font-semibold">Date Submitted</TableHead>
-                <TableHead className="font-semibold">Status</TableHead>
-                <TableHead className="text-right font-semibold">
+              <TableRow className="bg-[#800020] hover:bg-[#800020]">
+                <TableHead className="font-semibold text-white text-xs w-12">
+                  #
+                </TableHead>
+                <TableHead className="font-semibold text-white text-xs">
+                  Student Name
+                </TableHead>
+                <TableHead className="font-semibold text-white text-xs">
+                  Program
+                </TableHead>
+                <TableHead className="font-semibold text-white text-xs">
+                  Research/Books Title
+                </TableHead>
+
+                <TableHead className="font-semibold text-white text-xs">
+                  Resources Type
+                </TableHead>
+                <TableHead className="font-semibold text-white text-xs">
+                  Assigned Staff
+                </TableHead>
+                <TableHead className="font-semibold text-white text-xs">
+                  Date Uploaded
+                </TableHead>
+                <TableHead className="font-semibold text-white text-xs">
+                  Date Reviewed
+                </TableHead>
+                <TableHead className="font-semibold text-white text-xs">
+                  Date Published
+                </TableHead>
+                <TableHead className="font-semibold text-white text-xs">
+                  Status
+                </TableHead>
+                <TableHead className="text-right font-semibold text-white text-xs">
                   Actions
                 </TableHead>
               </TableRow>
@@ -580,7 +648,7 @@ export function AdminThesisVerificationTable({
               {paginatedDocuments.length === 0 ? (
                 <TableRow>
                   <TableCell
-                    colSpan={10}
+                    colSpan={11}
                     className="text-center py-8 text-muted-foreground"
                   >
                     {documents.length === 0
@@ -589,78 +657,73 @@ export function AdminThesisVerificationTable({
                   </TableCell>
                 </TableRow>
               ) : (
-                paginatedDocuments.map((document) => (
-                  <TableRow key={document.id}>
-                    <TableCell>
+                paginatedDocuments.map((document, index) => (
+                  <TableRow
+                    key={document.id}
+                    className="hover:bg-gray-50/50 border-b border-gray-100"
+                  >
+                    <TableCell className="py-3 text-center text-sm text-gray-600">
+                      {startIndex + index + 1}
+                    </TableCell>
+                    <TableCell className="py-3">
                       <div>
-                        <div className="font-medium">
+                        <div className="font-medium text-gray-900">
                           {document.student.full_name}
                         </div>
                         {document.student.student_id && (
-                          <div className="text-xs text-muted-foreground">
-                            ID: {document.student.student_id}
+                          <div className="text-xs text-gray-500 mt-0.5">
+                            {document.student.student_id}
                           </div>
                         )}
                       </div>
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="py-3">
+                      <div className="max-w-[200px]">
+                        {document.student.college || "N/A"}
+                      </div>
+                    </TableCell>
+                    <TableCell className="py-3">
                       <div
-                        className="max-w-[300px] truncate"
+                        className="max-w-[300px] truncate text-sm text-gray-900"
                         title={document.title}
                       >
                         {document.title}
                       </div>
                     </TableCell>
-                    <TableCell>{document.academic_year || "N/A"}</TableCell>
-                    <TableCell>{document.semester || "N/A"}</TableCell>
-                    <TableCell>
+
+                    <TableCell className="py-3">
+                      {getDocumentTypeBadge(document.document_type)}
+                    </TableCell>
+                    <TableCell className="py-3">
                       {document.assigned_staff ? (
-                        <div className="flex flex-col">
-                          <span className="text-sm font-medium">
-                            {document.assigned_staff.full_name}
-                          </span>
-                          {document.staff_reviewed_at && (
-                            <span className="text-xs text-muted-foreground">
-                              Date Reviewed:{" "}
-                              {formatDate(document.staff_reviewed_at)}
-                            </span>
-                          )}
-                        </div>
-                      ) : (
-                        <span className="text-sm text-muted-foreground">
-                          Not assigned
+                        <span className="text-sm text-gray-900">
+                          {document.assigned_staff.full_name}
                         </span>
+                      ) : (
+                        <span className="text-sm text-gray-400">—</span>
                       )}
                     </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <FileText className="h-4 w-4 text-muted-foreground" />
-                        <div className="flex flex-col">
-                          <span className="text-sm font-medium truncate max-w-[200px]">
-                            {document.file_name}
-                          </span>
-                          <span className="text-xs text-muted-foreground">
-                            {formatFileSize(document.file_size)}
-                          </span>
-                        </div>
-                      </div>
+                    <TableCell className="py-3 text-sm text-gray-600">
+                      {formatDate(document.submitted_at)}
                     </TableCell>
-                    <TableCell>
-                      <Badge variant="outline">
-                        {document.document_type || "N/A"}
-                      </Badge>
+                    <TableCell className="py-3 text-sm text-gray-600">
+                      {document.staff_reviewed_at || document.admin_reviewed_at
+                        ? formatDate(
+                            document.staff_reviewed_at ||
+                              document.admin_reviewed_at
+                          )
+                        : "—"}
                     </TableCell>
-                    <TableCell>{formatDate(document.submitted_at)}</TableCell>
-                    <TableCell>
+                    <TableCell className="py-3 text-sm text-gray-600">
+                      {document.published_at
+                        ? formatDate(document.published_at)
+                        : "—"}
+                    </TableCell>
+                    <TableCell className="py-3">
                       <Badge
                         variant={getStatusBadgeVariant(
                           document.submission_status
                         )}
-                        className={
-                          document.submission_status === "Published"
-                            ? "bg-blue-600 hover:bg-blue-700 text-white"
-                            : ""
-                        }
                       >
                         {getStatusLabel(
                           document.status,
@@ -736,8 +799,8 @@ export function AdminThesisVerificationTable({
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t">
-          <div className="text-sm text-muted-foreground font-medium">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-6 border-t">
+          <div className="text-sm text-muted-foreground font-medium text-left">
             Showing{" "}
             <span className="font-semibold text-foreground">
               {startIndex + 1}
@@ -751,57 +814,62 @@ export function AdminThesisVerificationTable({
               {filteredDocuments.length}
             </span>{" "}
             {filteredDocuments.length === 1 ? "document" : "documents"}
+            {filteredDocuments.length !== documents.length && (
+              <span className="ml-2">(of {documents.length} total)</span>
+            )}
           </div>
-          <Pagination>
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    if (currentPage > 1) setCurrentPage(currentPage - 1);
-                  }}
-                  className={
-                    currentPage === 1
-                      ? "pointer-events-none opacity-50"
-                      : "cursor-pointer"
-                  }
-                />
-              </PaginationItem>
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                (page) => (
-                  <PaginationItem key={page}>
-                    <PaginationLink
-                      href="#"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setCurrentPage(page);
-                      }}
-                      isActive={currentPage === page}
-                      className="cursor-pointer"
-                    >
-                      {page}
-                    </PaginationLink>
-                  </PaginationItem>
-                )
-              )}
-              <PaginationItem>
-                <PaginationNext
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    if (currentPage < totalPages)
-                      setCurrentPage(currentPage + 1);
-                  }}
-                  className={
-                    currentPage === totalPages
-                      ? "pointer-events-none opacity-50"
-                      : "cursor-pointer"
-                  }
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
+          <div className="flex-shrink-0">
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (currentPage > 1) setCurrentPage(currentPage - 1);
+                    }}
+                    className={
+                      currentPage === 1
+                        ? "pointer-events-none opacity-50"
+                        : "cursor-pointer"
+                    }
+                  />
+                </PaginationItem>
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                  (page) => (
+                    <PaginationItem key={page}>
+                      <PaginationLink
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setCurrentPage(page);
+                        }}
+                        isActive={currentPage === page}
+                        className="cursor-pointer"
+                      >
+                        {page}
+                      </PaginationLink>
+                    </PaginationItem>
+                  )
+                )}
+                <PaginationItem>
+                  <PaginationNext
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (currentPage < totalPages)
+                        setCurrentPage(currentPage + 1);
+                    }}
+                    className={
+                      currentPage === totalPages
+                        ? "pointer-events-none opacity-50"
+                        : "cursor-pointer"
+                    }
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </div>
         </div>
       )}
 

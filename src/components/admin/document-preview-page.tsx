@@ -7,11 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ReactReader } from "react-reader";
-import {
-  startReadingSession,
-  endReadingSession,
-  checkDocumentAccess,
-} from "@/app/admin/resources/actions";
+import { checkDocumentAccess } from "@/app/admin/resources/actions";
 import { toast } from "sonner";
 import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -121,12 +117,9 @@ export function DocumentPreviewPage({ document }: DocumentPreviewPageProps) {
   const [location, setLocation] = React.useState<string | number>(0);
   const [isLoading, setIsLoading] = React.useState(true);
   const [previewError, setPreviewError] = React.useState<string | null>(null);
-  const [readingSessionId, setReadingSessionId] = React.useState<number | null>(
-    null
-  );
   const [hasAccess, setHasAccess] = React.useState(true);
 
-  // Check access and start reading session
+  // Check access - Admins have unrestricted access (no time limits, no max attempts)
   React.useEffect(() => {
     const initializeSession = async () => {
       // Check access first
@@ -137,27 +130,12 @@ export function DocumentPreviewPage({ document }: DocumentPreviewPageProps) {
         return;
       }
 
-      // Start reading session
-      const sessionResult = await startReadingSession(document.id);
-      if (sessionResult.error) {
-        setHasAccess(false);
-        setPreviewError(sessionResult.error);
-        return;
-      }
-
-      if (sessionResult.session_id) {
-        setReadingSessionId(sessionResult.session_id);
-      }
+      // For admins, we don't need to track reading sessions (no restrictions)
+      // Just set hasAccess to true
+      setHasAccess(true);
     };
 
     initializeSession();
-
-    // Cleanup: End reading session when component unmounts
-    return () => {
-      if (readingSessionId) {
-        endReadingSession(readingSessionId).catch(console.error);
-      }
-    };
   }, [document.id]);
 
   React.useEffect(() => {
@@ -171,10 +149,7 @@ export function DocumentPreviewPage({ document }: DocumentPreviewPageProps) {
     }
   };
 
-  const handleBack = async () => {
-    if (readingSessionId) {
-      await endReadingSession(readingSessionId);
-    }
+  const handleBack = () => {
     router.push("/admin/resources");
   };
 

@@ -153,7 +153,34 @@ export function ThesisDocumentsTable({
   // Filter states
   const [searchQuery, setSearchQuery] = React.useState("");
   const [statusFilter, setStatusFilter] = React.useState<string>("all");
+  const [documentTypeFilter, setDocumentTypeFilter] =
+    React.useState<string>("all");
+  const [academicYearFilter, setAcademicYearFilter] =
+    React.useState<string>("all");
+  const [semesterFilter, setSemesterFilter] = React.useState<string>("all");
   const [currentPage, setCurrentPage] = React.useState(1);
+
+  // Get unique values for filters
+  const uniqueDocumentTypes = React.useMemo(() => {
+    const types = documents
+      .map((doc) => doc.document_type)
+      .filter((type): type is string => type !== null && type !== "");
+    return Array.from(new Set(types)).sort();
+  }, [documents]);
+
+  const uniqueAcademicYears = React.useMemo(() => {
+    const years = documents
+      .map((doc) => doc.academic_year)
+      .filter((year): year is string => year !== null && year !== "");
+    return Array.from(new Set(years)).sort();
+  }, [documents]);
+
+  const uniqueSemesters = React.useMemo(() => {
+    const semesters = documents
+      .map((doc) => doc.semester)
+      .filter((sem): sem is string => sem !== null && sem !== "");
+    return Array.from(new Set(semesters)).sort();
+  }, [documents]);
 
   // Filter documents
   const filteredDocuments = React.useMemo(() => {
@@ -171,8 +198,19 @@ export function ThesisDocumentsTable({
           ?.toLowerCase()
           .includes(query);
         const remarksMatch = doc.remarks?.toLowerCase().includes(query);
+        const titleMatch = doc.title?.toLowerCase().includes(query);
+        const academicYearMatch = doc.academic_year
+          ?.toLowerCase()
+          .includes(query);
+        const semesterMatch = doc.semester?.toLowerCase().includes(query);
         return (
-          researcherMatch || fileNameMatch || assignedStaffMatch || remarksMatch
+          researcherMatch ||
+          fileNameMatch ||
+          assignedStaffMatch ||
+          remarksMatch ||
+          titleMatch ||
+          academicYearMatch ||
+          semesterMatch
         );
       });
     }
@@ -212,8 +250,34 @@ export function ThesisDocumentsTable({
       });
     }
 
+    // Document Type filter
+    if (documentTypeFilter !== "all") {
+      filtered = filtered.filter(
+        (doc) => doc.document_type === documentTypeFilter
+      );
+    }
+
+    // Academic Year filter
+    if (academicYearFilter !== "all") {
+      filtered = filtered.filter(
+        (doc) => doc.academic_year === academicYearFilter
+      );
+    }
+
+    // Semester filter
+    if (semesterFilter !== "all") {
+      filtered = filtered.filter((doc) => doc.semester === semesterFilter);
+    }
+
     return filtered;
-  }, [documents, searchQuery, statusFilter]);
+  }, [
+    documents,
+    searchQuery,
+    statusFilter,
+    documentTypeFilter,
+    academicYearFilter,
+    semesterFilter,
+  ]);
 
   // Pagination
   const totalPages = Math.ceil(filteredDocuments.length / ITEMS_PER_PAGE);
@@ -224,15 +288,29 @@ export function ThesisDocumentsTable({
   // Reset to page 1 when filters change
   React.useEffect(() => {
     setCurrentPage(1);
-  }, [searchQuery, statusFilter]);
+  }, [
+    searchQuery,
+    statusFilter,
+    documentTypeFilter,
+    academicYearFilter,
+    semesterFilter,
+  ]);
 
   // Clear all filters
   const clearFilters = () => {
     setSearchQuery("");
     setStatusFilter("all");
+    setDocumentTypeFilter("all");
+    setAcademicYearFilter("all");
+    setSemesterFilter("all");
   };
 
-  const hasActiveFilters = searchQuery.trim() !== "" || statusFilter !== "all";
+  const hasActiveFilters =
+    searchQuery.trim() !== "" ||
+    statusFilter !== "all" ||
+    documentTypeFilter !== "all" ||
+    academicYearFilter !== "all" ||
+    semesterFilter !== "all";
 
   const handleView = async (document: ThesisDocument) => {
     try {
@@ -350,7 +428,7 @@ export function ThesisDocumentsTable({
         <div className="relative">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
-            placeholder="Search by researcher name, file name, assigned staff, or remarks..."
+            placeholder="Search by title, researcher name, file name, assigned staff, remarks, academic year, semester..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-9 h-11 bg-background border-2 focus:border-primary transition-colors"
@@ -370,7 +448,7 @@ export function ThesisDocumentsTable({
         {/* Filter Controls */}
         <div className="flex flex-wrap gap-3 items-end">
           {/* Status Filter */}
-          <div className="flex-1 min-w-[150px]">
+          <div className="flex-1 min-w-[150px] sm:w-[180px]">
             <label className="text-sm font-medium mb-2 block">Status</label>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger className="h-10">
@@ -387,6 +465,76 @@ export function ThesisDocumentsTable({
               </SelectContent>
             </Select>
           </div>
+
+          {/* Document Type Filter */}
+          {uniqueDocumentTypes.length > 0 && (
+            <div className="flex-1 min-w-[150px] sm:w-[180px]">
+              <label className="text-sm font-medium mb-2 block">
+                Document Type
+              </label>
+              <Select
+                value={documentTypeFilter}
+                onValueChange={setDocumentTypeFilter}
+              >
+                <SelectTrigger className="h-10">
+                  <SelectValue placeholder="All Types" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Types</SelectItem>
+                  {uniqueDocumentTypes.map((type) => (
+                    <SelectItem key={type} value={type}>
+                      {type}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+
+          {/* Academic Year Filter */}
+          {uniqueAcademicYears.length > 0 && (
+            <div className="flex-1 min-w-[150px] sm:w-[180px]">
+              <label className="text-sm font-medium mb-2 block">
+                Academic Year
+              </label>
+              <Select
+                value={academicYearFilter}
+                onValueChange={setAcademicYearFilter}
+              >
+                <SelectTrigger className="h-10">
+                  <SelectValue placeholder="All Years" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Years</SelectItem>
+                  {uniqueAcademicYears.map((year) => (
+                    <SelectItem key={year} value={year}>
+                      {year}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+
+          {/* Semester Filter */}
+          {uniqueSemesters.length > 0 && (
+            <div className="flex-1 min-w-[150px] sm:w-[180px]">
+              <label className="text-sm font-medium mb-2 block">Semester</label>
+              <Select value={semesterFilter} onValueChange={setSemesterFilter}>
+                <SelectTrigger className="h-10">
+                  <SelectValue placeholder="All Semesters" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Semesters</SelectItem>
+                  {uniqueSemesters.map((semester) => (
+                    <SelectItem key={semester} value={semester}>
+                      {semester}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
 
           {/* Clear Filters Button */}
           {hasActiveFilters && (
@@ -417,18 +565,33 @@ export function ThesisDocumentsTable({
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
-              <TableRow className="bg-muted/50 hover:bg-muted/50">
-                <TableHead className="font-semibold">Full Name</TableHead>
-                <TableHead className="font-semibold">
+              <TableRow className="bg-[#800020] hover:bg-[#800020]">
+                <TableHead className="font-semibold text-white">#</TableHead>
+                <TableHead className="font-semibold text-white">
+                  Full Name
+                </TableHead>
+                <TableHead className="font-semibold text-white">
                   Uploaded Document
                 </TableHead>
-                <TableHead className="font-semibold">Assigned Staff</TableHead>
-                <TableHead className="font-semibold">Date Uploaded</TableHead>
-                <TableHead className="font-semibold">Date Reviewed</TableHead>
-                <TableHead className="font-semibold">Date Published</TableHead>
-                <TableHead className="font-semibold">Remarks</TableHead>
-                <TableHead className="font-semibold">Status</TableHead>
-                <TableHead className="text-right font-semibold">
+                <TableHead className="font-semibold text-white">
+                  Assigned Staff
+                </TableHead>
+                <TableHead className="font-semibold text-white">
+                  Date Uploaded
+                </TableHead>
+                <TableHead className="font-semibold text-white">
+                  Date Reviewed
+                </TableHead>
+                <TableHead className="font-semibold text-white">
+                  Date Published
+                </TableHead>
+                <TableHead className="font-semibold text-white">
+                  Remarks
+                </TableHead>
+                <TableHead className="font-semibold text-white">
+                  Status
+                </TableHead>
+                <TableHead className="text-right font-semibold text-white">
                   Actions
                 </TableHead>
               </TableRow>
@@ -437,7 +600,7 @@ export function ThesisDocumentsTable({
               {paginatedDocuments.length === 0 ? (
                 <TableRow>
                   <TableCell
-                    colSpan={9}
+                    colSpan={10}
                     className="text-center py-8 text-muted-foreground"
                   >
                     {documents.length === 0
@@ -446,8 +609,11 @@ export function ThesisDocumentsTable({
                   </TableCell>
                 </TableRow>
               ) : (
-                paginatedDocuments.map((document) => (
+                paginatedDocuments.map((document, index) => (
                   <TableRow key={document.id}>
+                    <TableCell className="text-center text-sm text-gray-600">
+                      {startIndex + index + 1}
+                    </TableCell>
                     <TableCell>
                       <span className="font-medium">{uploaderName}</span>
                     </TableCell>
@@ -553,7 +719,7 @@ export function ThesisDocumentsTable({
       {/* Pagination */}
       {totalPages > 1 && (
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t">
-          <div className="text-sm text-muted-foreground font-medium">
+          <div className="text-sm text-muted-foreground font-medium text-left">
             Showing{" "}
             <span className="font-semibold text-foreground">
               {startIndex + 1}
@@ -568,56 +734,58 @@ export function ThesisDocumentsTable({
             </span>{" "}
             {filteredDocuments.length === 1 ? "document" : "documents"}
           </div>
-          <Pagination>
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    if (currentPage > 1) setCurrentPage(currentPage - 1);
-                  }}
-                  className={
-                    currentPage === 1
-                      ? "pointer-events-none opacity-50"
-                      : "cursor-pointer"
-                  }
-                />
-              </PaginationItem>
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                (page) => (
-                  <PaginationItem key={page}>
-                    <PaginationLink
-                      href="#"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setCurrentPage(page);
-                      }}
-                      isActive={currentPage === page}
-                      className="cursor-pointer"
-                    >
-                      {page}
-                    </PaginationLink>
-                  </PaginationItem>
-                )
-              )}
-              <PaginationItem>
-                <PaginationNext
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    if (currentPage < totalPages)
-                      setCurrentPage(currentPage + 1);
-                  }}
-                  className={
-                    currentPage === totalPages
-                      ? "pointer-events-none opacity-50"
-                      : "cursor-pointer"
-                  }
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
+          <div className="flex-shrink-0">
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (currentPage > 1) setCurrentPage(currentPage - 1);
+                    }}
+                    className={
+                      currentPage === 1
+                        ? "pointer-events-none opacity-50"
+                        : "cursor-pointer"
+                    }
+                  />
+                </PaginationItem>
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                  (page) => (
+                    <PaginationItem key={page}>
+                      <PaginationLink
+                        href="#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setCurrentPage(page);
+                        }}
+                        isActive={currentPage === page}
+                        className="cursor-pointer"
+                      >
+                        {page}
+                      </PaginationLink>
+                    </PaginationItem>
+                  )
+                )}
+                <PaginationItem>
+                  <PaginationNext
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (currentPage < totalPages)
+                        setCurrentPage(currentPage + 1);
+                    }}
+                    className={
+                      currentPage === totalPages
+                        ? "pointer-events-none opacity-50"
+                        : "cursor-pointer"
+                    }
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </div>
         </div>
       )}
 

@@ -90,7 +90,11 @@ export function UploadThesisDialog({
   );
 }
 
-export function UploadThesisDialogTrigger({ onSuccess }: { onSuccess?: () => void }) {
+export function UploadThesisDialogTrigger({
+  onSuccess,
+}: {
+  onSuccess?: () => void;
+}) {
   const [open, setOpen] = React.useState(false);
 
   return (
@@ -98,7 +102,7 @@ export function UploadThesisDialogTrigger({ onSuccess }: { onSuccess?: () => voi
       <DialogTrigger asChild>
         <Button>
           <Upload className="mr-2 h-4 w-4" />
-          Upload Thesis Document
+          Upload Resources
         </Button>
       </DialogTrigger>
       <UploadThesisDialog
@@ -113,4 +117,3 @@ export function UploadThesisDialogTrigger({ onSuccess }: { onSuccess?: () => voi
     </Dialog>
   );
 }
-
