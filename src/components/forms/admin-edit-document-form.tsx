@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "sonner";
-import { Loader2, BookOpen, User, Calendar } from "lucide-react";
+import { Loader2, BookOpen, User, Calendar, Image, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -74,6 +74,7 @@ const adminEditDocumentSchema = z.object({
     .string()
     .max(500, "Keywords must not exceed 500 characters")
     .optional(),
+  cover_photo: z.instanceof(File).optional(),
 });
 
 type AdminEditDocumentFormValues = z.infer<typeof adminEditDocumentSchema>;
@@ -106,6 +107,11 @@ export function AdminEditDocumentForm({
   const router = useRouter();
   const [error, setError] = React.useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [isUploadingCover, setIsUploadingCover] = React.useState(false);
+  const [coverPreview, setCoverPreview] = React.useState<string | null>(
+    document.ebook_cover_image || null
+  );
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   // Parse ebook metadata from co_authors if it's JSON
   let ebookData: any = {};
@@ -152,6 +158,34 @@ export function AdminEditDocumentForm({
       setError(null);
 
       try {
+        let coverImageUrl = document.ebook_cover_image || null;
+
+        // Upload cover photo if provided (for both Ebooks and Journals)
+        if (values.cover_photo && (documentType === "Ebooks" || documentType === "Journal")) {
+          setIsUploadingCover(true);
+          const coverFormData = new FormData();
+          coverFormData.append("file", values.cover_photo);
+
+          const coverUploadResponse = await fetch("/api/upload/ebook-cover", {
+            method: "POST",
+            body: coverFormData,
+          });
+
+          if (!coverUploadResponse.ok) {
+            const errorData = await coverUploadResponse.json().catch(() => ({
+              message: "Failed to upload cover image. Please try again.",
+            }));
+            setError(errorData.message ?? "Failed to upload cover image. Please try again.");
+            setIsSubmitting(false);
+            setIsUploadingCover(false);
+            return;
+          }
+
+          const coverUploadData = await coverUploadResponse.json();
+          coverImageUrl = coverUploadData.url;
+          setIsUploadingCover(false);
+        }
+
         // Prepare update data
         let updateData: any = {
           title: values.title,
@@ -159,6 +193,11 @@ export function AdminEditDocumentForm({
           abstract: values.abstract || null,
           keywords: values.keywords || null,
         };
+
+        // Add cover image URL if uploaded or if it already exists
+        if (coverImageUrl) {
+          updateData.ebook_cover_image = coverImageUrl;
+        }
 
         if (documentType === "Ebooks") {
           // For ebooks, store metadata in co_authors as JSON
@@ -205,9 +244,10 @@ export function AdminEditDocumentForm({
         console.error("Failed to update document:", error);
         setError("Network error. Please try again.");
         setIsSubmitting(false);
+        setIsUploadingCover(false);
       }
     },
-    [document.id, documentType, router, onSuccess]
+    [document.id, document.ebook_cover_image, documentType, router, onSuccess]
   );
 
   return (
@@ -555,6 +595,109 @@ export function AdminEditDocumentForm({
               </FormItem>
             )}
           />
+
+          {/* Cover Photo Upload - For both Ebooks and Journals */}
+          {(documentType === "Ebooks" || documentType === "Journal") && (
+            <FormField
+              control={form.control}
+              name="cover_photo"
+              render={({ field: { value, onChange, ...fieldProps } }) => (
+                <FormItem>
+                  <FormLabel className="font-medium flex items-center gap-2">
+                    <Image className="h-4 w-4" />
+                    Cover Photo
+                  </FormLabel>
+                  <FormControl>
+                    <div className="space-y-4">
+                      <Input
+                        {...fieldProps}
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/jpeg,image/jpg,image/png,image/webp"
+                        disabled={isSubmitting || isUploadingCover}
+                        onChange={(event) => {
+                          const file = event.target.files?.[0];
+                          if (file) {
+                            const maxSize = 5 * 1024 * 1024; // 5MB
+                            if (file.size > maxSize) {
+                              toast.error(
+                                "Cover image size must be less than 5MB"
+                              );
+                              return;
+                            }
+                            const allowedTypes = [
+                              "image/jpeg",
+                              "image/jpg",
+                              "image/png",
+                              "image/webp",
+                            ];
+                            if (!allowedTypes.includes(file.type)) {
+                              toast.error(
+                                "Please upload an image (JPEG, PNG, or WebP)"
+                              );
+                              return;
+                            }
+                            onChange(file);
+                            // Create preview
+                            const reader = new FileReader();
+                            reader.onloadend = () => {
+                              setCoverPreview(reader.result as string);
+                            };
+                            reader.readAsDataURL(file);
+                          }
+                        }}
+                        className="cursor-pointer h-11"
+                      />
+                      {(coverPreview || document.ebook_cover_image) && (
+                        <div className="flex items-center gap-4">
+                          <div className="relative w-32 h-48 border rounded-md overflow-hidden bg-muted">
+                            <img
+                              src={coverPreview || document.ebook_cover_image || ""}
+                              alt="Cover preview"
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <div className="flex-1">
+                            <p className="text-sm text-muted-foreground">
+                              {coverPreview
+                                ? "New cover image selected"
+                                : "Current cover image"}
+                            </p>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              className="mt-2"
+                              onClick={() => {
+                                onChange(undefined);
+                                setCoverPreview(document.ebook_cover_image || null);
+                                // Reset file input
+                                if (fileInputRef.current) {
+                                  fileInputRef.current.value = "";
+                                }
+                              }}
+                              disabled={isSubmitting || isUploadingCover}
+                            >
+                              <X className="h-4 w-4 mr-2" />
+                              {coverPreview && coverPreview !== document.ebook_cover_image
+                                ? "Remove New Image"
+                                : "Remove"}
+                            </Button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </FormControl>
+                  <FormDescription>
+                    Optional. Upload a cover image for the{" "}
+                    {documentType === "Ebooks" ? "ebook" : "journal"}. Maximum
+                    size: 5MB. Supported formats: JPEG, PNG, WebP.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
         </div>
 
         <Separator />
@@ -568,11 +711,11 @@ export function AdminEditDocumentForm({
           >
             Reset
           </Button>
-          <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? (
+          <Button type="submit" disabled={isSubmitting || isUploadingCover}>
+            {isSubmitting || isUploadingCover ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Updating...
+                {isUploadingCover ? "Uploading Cover..." : "Updating..."}
               </>
             ) : (
               <>

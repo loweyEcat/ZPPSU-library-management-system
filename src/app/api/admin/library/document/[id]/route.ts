@@ -9,6 +9,8 @@ const updateDocumentSchema = z.object({
   researcher_name: z.string().min(1, "Author is required").max(500, "Author must not exceed 500 characters"),
   abstract: z.string().optional().nullable(),
   keywords: z.string().max(500, "Keywords must not exceed 500 characters").optional().nullable(),
+  // Cover image (for both Ebooks and Journals)
+  ebook_cover_image: z.string().optional().nullable(),
   // Ebook fields (stored in co_authors as JSON)
   co_authors: z.string().optional().nullable(),
   // Journal fields
@@ -82,6 +84,11 @@ export async function PATCH(
       abstract: data.abstract ? sanitizeInput(data.abstract) : null,
       keywords: data.keywords ? sanitizeInput(data.keywords) : null,
     };
+
+    // Add cover image if provided (for both Ebooks and Journals)
+    if (data.ebook_cover_image !== undefined) {
+      updateData.ebook_cover_image = data.ebook_cover_image || null;
+    }
 
     if (existingDocument.document_type === "Ebooks") {
       // For ebooks, co_authors contains JSON metadata

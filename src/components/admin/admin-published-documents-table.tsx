@@ -726,7 +726,7 @@ export function AdminPublishedDocumentsTable({
             <SelectValue placeholder="Filter by type" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">Resources Types</SelectItem>
+            <SelectItem value="all">All Resources</SelectItem>
             <SelectItem value="Thesis">Thesis</SelectItem>
             <SelectItem value="Journal">Journal</SelectItem>
             <SelectItem value="Capstone">Capstone</SelectItem>
