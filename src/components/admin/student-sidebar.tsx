@@ -51,11 +51,11 @@ const menuItems = [
   //   url: "/dashboard/student/thesis-archive",
   //   icon: Archive,
   // },
-  // {
-  //   title: "Books",
-  //   url: "/dashboard/student/books",
-  //   icon: BookOpen,
-  // },
+  {
+    title: "Books",
+    url: "/dashboard/student/books",
+    icon: BookOpen,
+  },
   {
     title: "Resources",
     url: "/dashboard/student/resources",
