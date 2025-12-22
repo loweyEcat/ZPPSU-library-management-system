@@ -113,10 +113,10 @@ model lib_thesis_documents {
   access_cooldowns                                               lib_document_access_cooldowns[]
   download_permissions                                           lib_document_download_permissions[]
   reading_sessions                                               lib_document_reading_sessions[]
-  lib_users_lib_thesis_documents_assigned_staff_idTolib_users    lib_users?                             @relation("lib_thesis_documents_assigned_staff_idTolib_users", fields: [assigned_staff_id], references: [id], onUpdate: Restrict, map: "fk_thesis_assigned_staff")
-  lib_users_lib_thesis_documents_reviewed_by_admin_idTolib_users lib_users?                             @relation("lib_thesis_documents_reviewed_by_admin_idTolib_users", fields: [reviewed_by_admin_id], references: [id], onUpdate: Restrict, map: "fk_thesis_reviewed_by_admin")
-  lib_users_lib_thesis_documents_reviewed_by_staff_idTolib_users lib_users?                             @relation("lib_thesis_documents_reviewed_by_staff_idTolib_users", fields: [reviewed_by_staff_id], references: [id], onUpdate: Restrict, map: "fk_thesis_reviewed_by_staff")
-  lib_users_lib_thesis_documents_student_idTolib_users           lib_users                              @relation("lib_thesis_documents_student_idTolib_users", fields: [student_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_thesis_student")
+  lib_users_lib_thesis_documents_assigned_staff_idTolib_users    lib_users?                             @relation("lib_thesis_documents_assigned_staff_idTolib_users", fields: [assigned_staff_id], references: [id], onUpdate: NoAction, map: "fk_thesis_assigned_staff")
+  lib_users_lib_thesis_documents_reviewed_by_admin_idTolib_users lib_users?                             @relation("lib_thesis_documents_reviewed_by_admin_idTolib_users", fields: [reviewed_by_admin_id], references: [id], onUpdate: NoAction, map: "fk_thesis_reviewed_by_admin")
+  lib_users_lib_thesis_documents_reviewed_by_staff_idTolib_users lib_users?                             @relation("lib_thesis_documents_reviewed_by_staff_idTolib_users", fields: [reviewed_by_staff_id], references: [id], onUpdate: NoAction, map: "fk_thesis_reviewed_by_staff")
+  lib_users_lib_thesis_documents_student_idTolib_users           lib_users                              @relation("lib_thesis_documents_student_idTolib_users", fields: [student_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_thesis_student")
 
   @@index([academic_year], map: "idx_academic_year")
   @@index([department], map: "idx_department")
@@ -199,8 +199,8 @@ model lib_document_reading_sessions {
   duration_minutes        Int?                 @default(0)
   time_limit_minutes      Int?
   was_time_limit_exceeded Boolean              @default(false)
-  document                lib_thesis_documents @relation(fields: [document_id], references: [id], onDelete: Cascade, onUpdate: Restrict)
-  user                    lib_users            @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Restrict)
+  document                lib_thesis_documents @relation(fields: [document_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  user                    lib_users            @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@index([document_id])
   @@index([user_id])
@@ -232,7 +232,7 @@ model lib_document_download_permissions {
   reviewed_by_id Int?
   reviewed_at    DateTime?                      @db.DateTime(0)
   document       lib_thesis_documents           @relation(fields: [document_id], references: [id], onDelete: Cascade, map: "fk_download_permission_document")
-  reviewed_by    lib_users?                     @relation("download_permissions_as_reviewer", fields: [reviewed_by_id], references: [id], onUpdate: Restrict, map: "fk_download_permission_reviewer")
+  reviewed_by    lib_users?                     @relation("download_permissions_as_reviewer", fields: [reviewed_by_id], references: [id], onUpdate: NoAction, map: "fk_download_permission_reviewer")
   student        lib_users                      @relation("download_permissions_as_student", fields: [student_id], references: [id], onDelete: Cascade, map: "fk_download_permission_student")
 
   @@index([document_id], map: "idx_download_permission_document_id")
@@ -256,10 +256,10 @@ model lib_book_fines {
   created_by_staff_id                                     Int
   created_at                                              DateTime              @default(now()) @db.DateTime(0)
   updated_at                                              DateTime              @default(now()) @db.DateTime(0)
-  lib_books                                               lib_books             @relation(fields: [book_id], references: [id], onUpdate: Restrict, map: "fk_fine_book")
-  lib_users_lib_book_fines_created_by_staff_idTolib_users lib_users             @relation("lib_book_fines_created_by_staff_idTolib_users", fields: [created_by_staff_id], references: [id], onUpdate: Restrict, map: "fk_fine_created_by_staff")
-  lib_book_requests                                       lib_book_requests     @relation(fields: [request_id], references: [id], onUpdate: Restrict, map: "fk_fine_request")
-  lib_users_lib_book_fines_student_idTolib_users          lib_users             @relation("lib_book_fines_student_idTolib_users", fields: [student_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_fine_student")
+  lib_books                                               lib_books             @relation(fields: [book_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_fine_book")
+  lib_users_lib_book_fines_created_by_staff_idTolib_users lib_users             @relation("lib_book_fines_created_by_staff_idTolib_users", fields: [created_by_staff_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_fine_created_by_staff")
+  lib_book_requests                                       lib_book_requests     @relation(fields: [request_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_fine_request")
+  lib_users_lib_book_fines_student_idTolib_users          lib_users             @relation("lib_book_fines_student_idTolib_users", fields: [student_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_fine_student")
 
   @@index([book_id], map: "idx_fine_book_id")
   @@index([created_by_staff_id], map: "idx_fine_created_by_staff_id")
