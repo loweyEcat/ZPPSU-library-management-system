@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { Badge } from "@/components/ui/badge";
+import { lib_books_status } from "../../../generated/prisma/enums";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -73,7 +74,7 @@ interface Book {
   format: string | null;
   total_copies: number | null;
   available_copies: number | null;
-  status: "Available" | "Not_Available" | "Lost" | "Damaged";
+  status: lib_books_status;
   created_at: string | null;
   updated_at: string | null;
   total_requests: number;
@@ -85,17 +86,15 @@ interface AdminBooksTableProps {
   onRefresh?: () => void;
 }
 
-function formatStatus(
-  status: "Available" | "Not_Available" | "Lost" | "Damaged"
-): string {
-  return status.replace(/_/g, " ");
+function formatStatus(status: lib_books_status): string {
+  return status;
 }
 
 function getStatusVariant(
-  status: "Available" | "Not_Available" | "Lost" | "Damaged"
+  status: lib_books_status
 ): "default" | "secondary" | "destructive" {
   if (status === "Available") return "default";
-  if (status === "Not_Available") return "secondary";
+  if (status === "Not Available") return "secondary";
   return "destructive";
 }
 
@@ -212,7 +211,7 @@ export function AdminBooksTable({ books, onRefresh }: AdminBooksTableProps) {
     const total = books.length;
     const available = books.filter((b) => b.status === "Available").length;
     const notAvailable = books.filter(
-      (b) => b.status === "Not_Available"
+      (b) => b.status === "Not Available"
     ).length;
     const totalCopies = books.reduce(
       (sum, b) => sum + (b.total_copies || 0),
@@ -292,7 +291,7 @@ export function AdminBooksTable({ books, onRefresh }: AdminBooksTableProps) {
           <SelectContent>
             <SelectItem value="all">All Status</SelectItem>
             <SelectItem value="Available">Available</SelectItem>
-            <SelectItem value="Not_Available">Not Available</SelectItem>
+            <SelectItem value="Not Available">Not Available</SelectItem>
             <SelectItem value="Lost">Lost</SelectItem>
             <SelectItem value="Damaged">Damaged</SelectItem>
           </SelectContent>
@@ -341,7 +340,7 @@ export function AdminBooksTable({ books, onRefresh }: AdminBooksTableProps) {
                   className={`absolute top-0 left-0 right-0 h-1 ${
                     book.status === "Available"
                       ? "bg-green-500"
-                      : book.status === "Not_Available"
+                      : book.status === "Not Available"
                       ? "bg-orange-500"
                       : "bg-red-500"
                   }`}

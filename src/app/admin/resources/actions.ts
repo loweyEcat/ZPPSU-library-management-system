@@ -48,7 +48,7 @@ export async function getPublishedDocuments() {
       project_type: true,
       capstone_category: true,
       program: true,
-      // @ts-expect-error - Field exists in schema, Prisma types may need regeneration
+
       ebook_cover_image: true,
       is_restricted: true,
       is_hidden: true,
@@ -123,7 +123,7 @@ export async function getPublishedDocumentById(documentId: number) {
       project_type: true,
       capstone_category: true,
       program: true,
-      // @ts-expect-error - Field exists in schema, Prisma types may need regeneration
+
       ebook_cover_image: true,
       is_restricted: true,
       is_hidden: true,

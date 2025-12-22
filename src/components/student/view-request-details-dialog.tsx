@@ -10,15 +10,9 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { lib_books_status } from "../../../generated/prisma/enums";
 import { Separator } from "@/components/ui/separator";
-import {
-  Package,
-  Hash,
-  Calendar,
-  User,
-  BookOpen,
-  X,
-} from "lucide-react";
+import { Package, Hash, Calendar, User, BookOpen, X } from "lucide-react";
 
 interface BookRequest {
   id: number;
@@ -29,7 +23,16 @@ interface BookRequest {
   borrow_date: string | null;
   due_date: string | null;
   return_date: string | null;
-  status: "Pending" | "Approved" | "Borrowed" | "Returned" | "Under_Review" | "Received" | "Overdue" | "Rejected" | null;
+  status:
+    | "Pending"
+    | "Approved"
+    | "Borrowed"
+    | "Returned"
+    | "Under_Review"
+    | "Received"
+    | "Overdue"
+    | "Rejected"
+    | null;
   created_at: string | null;
   updated_at: string | null;
   staff_receiver: string | null;
@@ -52,7 +55,7 @@ interface BookRequest {
     format: string | null;
     total_copies: number | null;
     available_copies: number | null;
-    status: "Available" | "Not_Available" | "Lost" | "Damaged";
+    status: lib_books_status;
   };
 }
 
@@ -99,7 +102,9 @@ export function ViewRequestDetailsDialog({
           {/* Header Section with Status */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 bg-gradient-to-r from-primary/5 to-primary/10 rounded-lg border border-primary/20">
             <div className="flex-1">
-              <h2 className="text-xl font-bold mb-1">{request.book.books_name}</h2>
+              <h2 className="text-xl font-bold mb-1">
+                {request.book.books_name}
+              </h2>
               <div className="flex items-center gap-2 text-muted-foreground">
                 <User className="h-4 w-4" />
                 <span className="text-sm">{request.book.author_name}</span>
@@ -126,11 +131,13 @@ export function ViewRequestDetailsDialog({
                   <Hash className="h-4 w-4" />
                   Tracking Number
                 </label>
-                <p className={`text-sm bg-muted p-2 rounded-md ${
-                  request.status === "Pending" || !request.tracking_number
-                    ? "text-muted-foreground italic"
-                    : "font-mono"
-                }`}>
+                <p
+                  className={`text-sm bg-muted p-2 rounded-md ${
+                    request.status === "Pending" || !request.tracking_number
+                      ? "text-muted-foreground italic"
+                      : "font-mono"
+                  }`}
+                >
                   {request.status === "Pending" || !request.tracking_number
                     ? "N/A"
                     : request.tracking_number}
@@ -273,4 +280,3 @@ export function ViewRequestDetailsDialog({
     </Dialog>
   );
 }
-

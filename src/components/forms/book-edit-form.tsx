@@ -2,15 +2,11 @@
 
 import * as React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Loader2,
-  BookOpen,
-  Hash,
-  Building,
-} from "lucide-react";
+import { Loader2, BookOpen, Hash, Building } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "sonner";
+import { lib_books_status } from "../../../generated/prisma/enums";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -128,7 +124,14 @@ const bookEditFormSchema = z.object({
         message: "Available copies must be a non-negative number",
       }
     ),
-  status: z.enum(["Available", "Not_Available", "Lost", "Damaged"]).optional(),
+  status: z
+    .enum([
+      lib_books_status.Available,
+      "Not Available",
+      lib_books_status.Lost,
+      lib_books_status.Damaged,
+    ])
+    .optional(),
 });
 
 type BookEditFormValues = z.infer<typeof bookEditFormSchema>;
@@ -153,7 +156,7 @@ interface BookEditFormProps {
     format: string | null;
     total_copies: number | null;
     available_copies: number | null;
-    status: "Available" | "Not_Available" | "Lost" | "Damaged" | null;
+    status: lib_books_status | null;
   };
   onSuccess?: () => void;
 }
@@ -234,7 +237,9 @@ export function BookEditForm({
         });
 
         if (!result.success) {
-          setError(result.message || "Failed to update book. Please try again.");
+          setError(
+            result.message || "Failed to update book. Please try again."
+          );
           return;
         }
 
@@ -634,7 +639,7 @@ export function BookEditForm({
                     </FormControl>
                     <SelectContent>
                       <SelectItem value="Available">Available</SelectItem>
-                      <SelectItem value="Not_Available">
+                      <SelectItem value="Not Available">
                         Not Available
                       </SelectItem>
                       <SelectItem value="Lost">Lost</SelectItem>
@@ -700,4 +705,3 @@ export function BookEditForm({
     </Form>
   );
 }
-

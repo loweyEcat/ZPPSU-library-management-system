@@ -22,6 +22,7 @@ import { ViewBookDialogForStudent } from "./view-book-dialog";
 import { ViewRequestDetailsDialog } from "./view-request-details-dialog";
 import { CancelRequestDialog } from "./cancel-request-dialog";
 import { ReturnBookDialog } from "./return-book-dialog";
+import { lib_books_status } from "../../../generated/prisma/enums";
 
 interface BookRequest {
   id: number;
@@ -67,7 +68,7 @@ interface BookRequest {
     format: string | null;
     total_copies: number | null;
     available_copies: number | null;
-    status: "Available" | "Not_Available" | "Lost" | "Damaged";
+    status: lib_books_status;
   };
 }
 

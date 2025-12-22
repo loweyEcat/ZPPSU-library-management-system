@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { requireAdminOrSuperAdmin } from "@/lib/auth-library";
+import { lib_books_status } from "../../../../generated/prisma/enums";
 
 export async function getAllBooks() {
   await requireAdminOrSuperAdmin();
@@ -55,19 +56,9 @@ export async function getAllBooks() {
   });
 
   return books.map((book) => {
-    // Normalize status: Prisma returns "Not Available" but we need "Not_Available"
+    // Use status directly since Prisma returns enum values
     // Default to "Available" if status is null (per schema default)
-    let normalizedStatus: "Available" | "Not_Available" | "Lost" | "Damaged" =
-      "Available";
-    if (book.status === "Not Available") {
-      normalizedStatus = "Not_Available";
-    } else if (
-      book.status === "Available" ||
-      book.status === "Lost" ||
-      book.status === "Damaged"
-    ) {
-      normalizedStatus = book.status;
-    }
+    let normalizedStatus: lib_books_status = book.status || "Available";
 
     return {
       id: book.id,
@@ -181,7 +172,12 @@ export async function getAllBookRequests() {
     const latestFine = lib_book_fines.length > 0 ? lib_book_fines[0] : null;
 
     // Normalize fine_status: Prisma returns "Partially Paid" but we need "Partially_Paid"
-    let normalizedFineStatus: "Unpaid" | "Paid" | "Waived" | "Partially_Paid" | null = null;
+    let normalizedFineStatus:
+      | "Unpaid"
+      | "Paid"
+      | "Waived"
+      | "Partially_Paid"
+      | null = null;
     if (latestFine?.status) {
       if (latestFine.status === "Partially Paid") {
         normalizedFineStatus = "Partially_Paid";
@@ -302,19 +298,9 @@ export async function getBookById(bookId: number) {
     return null;
   }
 
-  // Normalize status: Prisma returns "Not Available" but we need "Not_Available"
+  // Use status directly since Prisma returns enum values
   // Default to "Available" if status is null (per schema default)
-  let normalizedStatus: "Available" | "Not_Available" | "Lost" | "Damaged" =
-    "Available";
-  if (book.status === "Not Available") {
-    normalizedStatus = "Not_Available";
-  } else if (
-    book.status === "Available" ||
-    book.status === "Lost" ||
-    book.status === "Damaged"
-  ) {
-    normalizedStatus = book.status;
-  }
+  let normalizedStatus: lib_books_status = book.status || "Available";
 
   return {
     ...book,
@@ -342,7 +328,7 @@ export async function createBook(data: {
   format: string | null;
   total_copies: number;
   available_copies: number;
-  status: "Available" | "Not_Available" | "Lost" | "Damaged";
+  status: lib_books_status;
 }) {
   await requireAdminOrSuperAdmin();
 
@@ -432,7 +418,7 @@ export async function updateBook(
     format?: string | null;
     total_copies?: number;
     available_copies?: number;
-    status?: "Available" | "Not_Available" | "Lost" | "Damaged";
+    status?: lib_books_status;
   }
 ) {
   await requireAdminOrSuperAdmin();
@@ -712,25 +698,15 @@ export async function approveBookRequest(
       // Calculate new available copies after decrement
       const newAvailableCopies = availableCopies - requestedQuantity;
 
-      // Normalize book status for Prisma (convert "Not Available" to "Not_Available")
-      let bookStatus: "Available" | "Not_Available" | "Lost" | "Damaged" =
-        "Available";
-      if (request.book.status === "Not Available") {
-        bookStatus = "Not_Available";
-      } else if (
-        request.book.status === "Available" ||
-        request.book.status === "Lost" ||
-        request.book.status === "Damaged"
-      ) {
-        bookStatus = request.book.status;
-      }
+      // Use book status directly since Prisma returns enum values
+      let bookStatus: lib_books_status = request.book.status || "Available";
 
-      // Update book: decrease available copies and set status to "Not_Available" if no copies left
+      // Update book: decrease available copies and set status to "Not Available" if no copies left
       await tx.lib_books.update({
         where: { id: request.book_id },
         data: {
           available_copies: newAvailableCopies,
-          status: newAvailableCopies <= 0 ? "Not_Available" : bookStatus,
+          status: newAvailableCopies <= 0 ? "Not Available" : bookStatus,
           updated_at: new Date(),
         },
       });

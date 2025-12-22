@@ -96,10 +96,10 @@ export type Lib_thesis_documentsMinAggregateOutputType = {
   ebook_cover_image: string | null
   assigned_staff_id: number | null
   is_restricted: boolean | null
-  is_hidden: boolean | null
   time_limit_minutes: number | null
   max_attempts: number | null
   epub_url: string | null
+  is_hidden: boolean | null
 }
 
 export type Lib_thesis_documentsMaxAggregateOutputType = {
@@ -150,10 +150,10 @@ export type Lib_thesis_documentsMaxAggregateOutputType = {
   ebook_cover_image: string | null
   assigned_staff_id: number | null
   is_restricted: boolean | null
-  is_hidden: boolean | null
   time_limit_minutes: number | null
   max_attempts: number | null
   epub_url: string | null
+  is_hidden: boolean | null
 }
 
 export type Lib_thesis_documentsCountAggregateOutputType = {
@@ -204,10 +204,10 @@ export type Lib_thesis_documentsCountAggregateOutputType = {
   ebook_cover_image: number
   assigned_staff_id: number
   is_restricted: number
-  is_hidden: number
   time_limit_minutes: number
   max_attempts: number
   epub_url: number
+  is_hidden: number
   _all: number
 }
 
@@ -282,10 +282,10 @@ export type Lib_thesis_documentsMinAggregateInputType = {
   ebook_cover_image?: true
   assigned_staff_id?: true
   is_restricted?: true
-  is_hidden?: true
   time_limit_minutes?: true
   max_attempts?: true
   epub_url?: true
+  is_hidden?: true
 }
 
 export type Lib_thesis_documentsMaxAggregateInputType = {
@@ -336,10 +336,10 @@ export type Lib_thesis_documentsMaxAggregateInputType = {
   ebook_cover_image?: true
   assigned_staff_id?: true
   is_restricted?: true
-  is_hidden?: true
   time_limit_minutes?: true
   max_attempts?: true
   epub_url?: true
+  is_hidden?: true
 }
 
 export type Lib_thesis_documentsCountAggregateInputType = {
@@ -390,10 +390,10 @@ export type Lib_thesis_documentsCountAggregateInputType = {
   ebook_cover_image?: true
   assigned_staff_id?: true
   is_restricted?: true
-  is_hidden?: true
   time_limit_minutes?: true
   max_attempts?: true
   epub_url?: true
+  is_hidden?: true
   _all?: true
 }
 
@@ -531,10 +531,10 @@ export type Lib_thesis_documentsGroupByOutputType = {
   ebook_cover_image: string | null
   assigned_staff_id: number | null
   is_restricted: boolean
-  is_hidden: boolean
   time_limit_minutes: number | null
   max_attempts: number | null
   epub_url: string | null
+  is_hidden: boolean
   _count: Lib_thesis_documentsCountAggregateOutputType | null
   _avg: Lib_thesis_documentsAvgAggregateOutputType | null
   _sum: Lib_thesis_documentsSumAggregateOutputType | null
@@ -608,10 +608,10 @@ export type lib_thesis_documentsWhereInput = {
   ebook_cover_image?: Prisma.StringNullableFilter<"lib_thesis_documents"> | string | null
   assigned_staff_id?: Prisma.IntNullableFilter<"lib_thesis_documents"> | number | null
   is_restricted?: Prisma.BoolFilter<"lib_thesis_documents"> | boolean
-  is_hidden?: Prisma.BoolFilter<"lib_thesis_documents"> | boolean
   time_limit_minutes?: Prisma.IntNullableFilter<"lib_thesis_documents"> | number | null
   max_attempts?: Prisma.IntNullableFilter<"lib_thesis_documents"> | number | null
   epub_url?: Prisma.StringNullableFilter<"lib_thesis_documents"> | string | null
+  is_hidden?: Prisma.BoolFilter<"lib_thesis_documents"> | boolean
   access_cooldowns?: Prisma.Lib_document_access_cooldownsListRelationFilter
   download_permissions?: Prisma.Lib_document_download_permissionsListRelationFilter
   reading_sessions?: Prisma.Lib_document_reading_sessionsListRelationFilter
@@ -669,10 +669,10 @@ export type lib_thesis_documentsOrderByWithRelationInput = {
   ebook_cover_image?: Prisma.SortOrderInput | Prisma.SortOrder
   assigned_staff_id?: Prisma.SortOrderInput | Prisma.SortOrder
   is_restricted?: Prisma.SortOrder
-  is_hidden?: Prisma.SortOrder
   time_limit_minutes?: Prisma.SortOrderInput | Prisma.SortOrder
   max_attempts?: Prisma.SortOrderInput | Prisma.SortOrder
   epub_url?: Prisma.SortOrderInput | Prisma.SortOrder
+  is_hidden?: Prisma.SortOrder
   access_cooldowns?: Prisma.lib_document_access_cooldownsOrderByRelationAggregateInput
   download_permissions?: Prisma.lib_document_download_permissionsOrderByRelationAggregateInput
   reading_sessions?: Prisma.lib_document_reading_sessionsOrderByRelationAggregateInput
@@ -734,10 +734,10 @@ export type lib_thesis_documentsWhereUniqueInput = Prisma.AtLeast<{
   ebook_cover_image?: Prisma.StringNullableFilter<"lib_thesis_documents"> | string | null
   assigned_staff_id?: Prisma.IntNullableFilter<"lib_thesis_documents"> | number | null
   is_restricted?: Prisma.BoolFilter<"lib_thesis_documents"> | boolean
-  is_hidden?: Prisma.BoolFilter<"lib_thesis_documents"> | boolean
   time_limit_minutes?: Prisma.IntNullableFilter<"lib_thesis_documents"> | number | null
   max_attempts?: Prisma.IntNullableFilter<"lib_thesis_documents"> | number | null
   epub_url?: Prisma.StringNullableFilter<"lib_thesis_documents"> | string | null
+  is_hidden?: Prisma.BoolFilter<"lib_thesis_documents"> | boolean
   access_cooldowns?: Prisma.Lib_document_access_cooldownsListRelationFilter
   download_permissions?: Prisma.Lib_document_download_permissionsListRelationFilter
   reading_sessions?: Prisma.Lib_document_reading_sessionsListRelationFilter
@@ -795,10 +795,10 @@ export type lib_thesis_documentsOrderByWithAggregationInput = {
   ebook_cover_image?: Prisma.SortOrderInput | Prisma.SortOrder
   assigned_staff_id?: Prisma.SortOrderInput | Prisma.SortOrder
   is_restricted?: Prisma.SortOrder
-  is_hidden?: Prisma.SortOrder
   time_limit_minutes?: Prisma.SortOrderInput | Prisma.SortOrder
   max_attempts?: Prisma.SortOrderInput | Prisma.SortOrder
   epub_url?: Prisma.SortOrderInput | Prisma.SortOrder
+  is_hidden?: Prisma.SortOrder
   _count?: Prisma.lib_thesis_documentsCountOrderByAggregateInput
   _avg?: Prisma.lib_thesis_documentsAvgOrderByAggregateInput
   _max?: Prisma.lib_thesis_documentsMaxOrderByAggregateInput
@@ -857,10 +857,10 @@ export type lib_thesis_documentsScalarWhereWithAggregatesInput = {
   ebook_cover_image?: Prisma.StringNullableWithAggregatesFilter<"lib_thesis_documents"> | string | null
   assigned_staff_id?: Prisma.IntNullableWithAggregatesFilter<"lib_thesis_documents"> | number | null
   is_restricted?: Prisma.BoolWithAggregatesFilter<"lib_thesis_documents"> | boolean
-  is_hidden?: Prisma.BoolWithAggregatesFilter<"lib_thesis_documents"> | boolean
   time_limit_minutes?: Prisma.IntNullableWithAggregatesFilter<"lib_thesis_documents"> | number | null
   max_attempts?: Prisma.IntNullableWithAggregatesFilter<"lib_thesis_documents"> | number | null
   epub_url?: Prisma.StringNullableWithAggregatesFilter<"lib_thesis_documents"> | string | null
+  is_hidden?: Prisma.BoolWithAggregatesFilter<"lib_thesis_documents"> | boolean
 }
 
 export type lib_thesis_documentsCreateInput = {
@@ -906,10 +906,10 @@ export type lib_thesis_documentsCreateInput = {
   ebook_publication_year?: string | null
   ebook_cover_image?: string | null
   is_restricted?: boolean
-  is_hidden?: boolean
   time_limit_minutes?: number | null
   max_attempts?: number | null
   epub_url?: string | null
+  is_hidden?: boolean
   access_cooldowns?: Prisma.lib_document_access_cooldownsCreateNestedManyWithoutDocumentInput
   download_permissions?: Prisma.lib_document_download_permissionsCreateNestedManyWithoutDocumentInput
   reading_sessions?: Prisma.lib_document_reading_sessionsCreateNestedManyWithoutDocumentInput
@@ -967,10 +967,10 @@ export type lib_thesis_documentsUncheckedCreateInput = {
   ebook_cover_image?: string | null
   assigned_staff_id?: number | null
   is_restricted?: boolean
-  is_hidden?: boolean
   time_limit_minutes?: number | null
   max_attempts?: number | null
   epub_url?: string | null
+  is_hidden?: boolean
   access_cooldowns?: Prisma.lib_document_access_cooldownsUncheckedCreateNestedManyWithoutDocumentInput
   download_permissions?: Prisma.lib_document_download_permissionsUncheckedCreateNestedManyWithoutDocumentInput
   reading_sessions?: Prisma.lib_document_reading_sessionsUncheckedCreateNestedManyWithoutDocumentInput
@@ -1019,10 +1019,10 @@ export type lib_thesis_documentsUpdateInput = {
   ebook_publication_year?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ebook_cover_image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   is_restricted?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  is_hidden?: Prisma.BoolFieldUpdateOperationsInput | boolean
   time_limit_minutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   max_attempts?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   epub_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_hidden?: Prisma.BoolFieldUpdateOperationsInput | boolean
   access_cooldowns?: Prisma.lib_document_access_cooldownsUpdateManyWithoutDocumentNestedInput
   download_permissions?: Prisma.lib_document_download_permissionsUpdateManyWithoutDocumentNestedInput
   reading_sessions?: Prisma.lib_document_reading_sessionsUpdateManyWithoutDocumentNestedInput
@@ -1080,10 +1080,10 @@ export type lib_thesis_documentsUncheckedUpdateInput = {
   ebook_cover_image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assigned_staff_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   is_restricted?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  is_hidden?: Prisma.BoolFieldUpdateOperationsInput | boolean
   time_limit_minutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   max_attempts?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   epub_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_hidden?: Prisma.BoolFieldUpdateOperationsInput | boolean
   access_cooldowns?: Prisma.lib_document_access_cooldownsUncheckedUpdateManyWithoutDocumentNestedInput
   download_permissions?: Prisma.lib_document_download_permissionsUncheckedUpdateManyWithoutDocumentNestedInput
   reading_sessions?: Prisma.lib_document_reading_sessionsUncheckedUpdateManyWithoutDocumentNestedInput
@@ -1137,10 +1137,10 @@ export type lib_thesis_documentsCreateManyInput = {
   ebook_cover_image?: string | null
   assigned_staff_id?: number | null
   is_restricted?: boolean
-  is_hidden?: boolean
   time_limit_minutes?: number | null
   max_attempts?: number | null
   epub_url?: string | null
+  is_hidden?: boolean
 }
 
 export type lib_thesis_documentsUpdateManyMutationInput = {
@@ -1186,10 +1186,10 @@ export type lib_thesis_documentsUpdateManyMutationInput = {
   ebook_publication_year?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ebook_cover_image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   is_restricted?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  is_hidden?: Prisma.BoolFieldUpdateOperationsInput | boolean
   time_limit_minutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   max_attempts?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   epub_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_hidden?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type lib_thesis_documentsUncheckedUpdateManyInput = {
@@ -1240,10 +1240,10 @@ export type lib_thesis_documentsUncheckedUpdateManyInput = {
   ebook_cover_image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assigned_staff_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   is_restricted?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  is_hidden?: Prisma.BoolFieldUpdateOperationsInput | boolean
   time_limit_minutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   max_attempts?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   epub_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_hidden?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type Lib_thesis_documentsListRelationFilter = {
@@ -1310,10 +1310,10 @@ export type lib_thesis_documentsCountOrderByAggregateInput = {
   ebook_cover_image?: Prisma.SortOrder
   assigned_staff_id?: Prisma.SortOrder
   is_restricted?: Prisma.SortOrder
-  is_hidden?: Prisma.SortOrder
   time_limit_minutes?: Prisma.SortOrder
   max_attempts?: Prisma.SortOrder
   epub_url?: Prisma.SortOrder
+  is_hidden?: Prisma.SortOrder
 }
 
 export type lib_thesis_documentsAvgOrderByAggregateInput = {
@@ -1375,10 +1375,10 @@ export type lib_thesis_documentsMaxOrderByAggregateInput = {
   ebook_cover_image?: Prisma.SortOrder
   assigned_staff_id?: Prisma.SortOrder
   is_restricted?: Prisma.SortOrder
-  is_hidden?: Prisma.SortOrder
   time_limit_minutes?: Prisma.SortOrder
   max_attempts?: Prisma.SortOrder
   epub_url?: Prisma.SortOrder
+  is_hidden?: Prisma.SortOrder
 }
 
 export type lib_thesis_documentsMinOrderByAggregateInput = {
@@ -1429,10 +1429,10 @@ export type lib_thesis_documentsMinOrderByAggregateInput = {
   ebook_cover_image?: Prisma.SortOrder
   assigned_staff_id?: Prisma.SortOrder
   is_restricted?: Prisma.SortOrder
-  is_hidden?: Prisma.SortOrder
   time_limit_minutes?: Prisma.SortOrder
   max_attempts?: Prisma.SortOrder
   epub_url?: Prisma.SortOrder
+  is_hidden?: Prisma.SortOrder
 }
 
 export type lib_thesis_documentsSumOrderByAggregateInput = {
@@ -1732,10 +1732,10 @@ export type lib_thesis_documentsCreateWithoutLib_users_lib_thesis_documents_assi
   ebook_publication_year?: string | null
   ebook_cover_image?: string | null
   is_restricted?: boolean
-  is_hidden?: boolean
   time_limit_minutes?: number | null
   max_attempts?: number | null
   epub_url?: string | null
+  is_hidden?: boolean
   access_cooldowns?: Prisma.lib_document_access_cooldownsCreateNestedManyWithoutDocumentInput
   download_permissions?: Prisma.lib_document_download_permissionsCreateNestedManyWithoutDocumentInput
   reading_sessions?: Prisma.lib_document_reading_sessionsCreateNestedManyWithoutDocumentInput
@@ -1791,10 +1791,10 @@ export type lib_thesis_documentsUncheckedCreateWithoutLib_users_lib_thesis_docum
   ebook_publication_year?: string | null
   ebook_cover_image?: string | null
   is_restricted?: boolean
-  is_hidden?: boolean
   time_limit_minutes?: number | null
   max_attempts?: number | null
   epub_url?: string | null
+  is_hidden?: boolean
   access_cooldowns?: Prisma.lib_document_access_cooldownsUncheckedCreateNestedManyWithoutDocumentInput
   download_permissions?: Prisma.lib_document_download_permissionsUncheckedCreateNestedManyWithoutDocumentInput
   reading_sessions?: Prisma.lib_document_reading_sessionsUncheckedCreateNestedManyWithoutDocumentInput
@@ -1853,10 +1853,10 @@ export type lib_thesis_documentsCreateWithoutLib_users_lib_thesis_documents_revi
   ebook_publication_year?: string | null
   ebook_cover_image?: string | null
   is_restricted?: boolean
-  is_hidden?: boolean
   time_limit_minutes?: number | null
   max_attempts?: number | null
   epub_url?: string | null
+  is_hidden?: boolean
   access_cooldowns?: Prisma.lib_document_access_cooldownsCreateNestedManyWithoutDocumentInput
   download_permissions?: Prisma.lib_document_download_permissionsCreateNestedManyWithoutDocumentInput
   reading_sessions?: Prisma.lib_document_reading_sessionsCreateNestedManyWithoutDocumentInput
@@ -1912,10 +1912,10 @@ export type lib_thesis_documentsUncheckedCreateWithoutLib_users_lib_thesis_docum
   ebook_cover_image?: string | null
   assigned_staff_id?: number | null
   is_restricted?: boolean
-  is_hidden?: boolean
   time_limit_minutes?: number | null
   max_attempts?: number | null
   epub_url?: string | null
+  is_hidden?: boolean
   access_cooldowns?: Prisma.lib_document_access_cooldownsUncheckedCreateNestedManyWithoutDocumentInput
   download_permissions?: Prisma.lib_document_download_permissionsUncheckedCreateNestedManyWithoutDocumentInput
   reading_sessions?: Prisma.lib_document_reading_sessionsUncheckedCreateNestedManyWithoutDocumentInput
@@ -1974,10 +1974,10 @@ export type lib_thesis_documentsCreateWithoutLib_users_lib_thesis_documents_revi
   ebook_publication_year?: string | null
   ebook_cover_image?: string | null
   is_restricted?: boolean
-  is_hidden?: boolean
   time_limit_minutes?: number | null
   max_attempts?: number | null
   epub_url?: string | null
+  is_hidden?: boolean
   access_cooldowns?: Prisma.lib_document_access_cooldownsCreateNestedManyWithoutDocumentInput
   download_permissions?: Prisma.lib_document_download_permissionsCreateNestedManyWithoutDocumentInput
   reading_sessions?: Prisma.lib_document_reading_sessionsCreateNestedManyWithoutDocumentInput
@@ -2033,10 +2033,10 @@ export type lib_thesis_documentsUncheckedCreateWithoutLib_users_lib_thesis_docum
   ebook_cover_image?: string | null
   assigned_staff_id?: number | null
   is_restricted?: boolean
-  is_hidden?: boolean
   time_limit_minutes?: number | null
   max_attempts?: number | null
   epub_url?: string | null
+  is_hidden?: boolean
   access_cooldowns?: Prisma.lib_document_access_cooldownsUncheckedCreateNestedManyWithoutDocumentInput
   download_permissions?: Prisma.lib_document_download_permissionsUncheckedCreateNestedManyWithoutDocumentInput
   reading_sessions?: Prisma.lib_document_reading_sessionsUncheckedCreateNestedManyWithoutDocumentInput
@@ -2095,10 +2095,10 @@ export type lib_thesis_documentsCreateWithoutLib_users_lib_thesis_documents_stud
   ebook_publication_year?: string | null
   ebook_cover_image?: string | null
   is_restricted?: boolean
-  is_hidden?: boolean
   time_limit_minutes?: number | null
   max_attempts?: number | null
   epub_url?: string | null
+  is_hidden?: boolean
   access_cooldowns?: Prisma.lib_document_access_cooldownsCreateNestedManyWithoutDocumentInput
   download_permissions?: Prisma.lib_document_download_permissionsCreateNestedManyWithoutDocumentInput
   reading_sessions?: Prisma.lib_document_reading_sessionsCreateNestedManyWithoutDocumentInput
@@ -2154,10 +2154,10 @@ export type lib_thesis_documentsUncheckedCreateWithoutLib_users_lib_thesis_docum
   ebook_cover_image?: string | null
   assigned_staff_id?: number | null
   is_restricted?: boolean
-  is_hidden?: boolean
   time_limit_minutes?: number | null
   max_attempts?: number | null
   epub_url?: string | null
+  is_hidden?: boolean
   access_cooldowns?: Prisma.lib_document_access_cooldownsUncheckedCreateNestedManyWithoutDocumentInput
   download_permissions?: Prisma.lib_document_download_permissionsUncheckedCreateNestedManyWithoutDocumentInput
   reading_sessions?: Prisma.lib_document_reading_sessionsUncheckedCreateNestedManyWithoutDocumentInput
@@ -2240,10 +2240,10 @@ export type lib_thesis_documentsScalarWhereInput = {
   ebook_cover_image?: Prisma.StringNullableFilter<"lib_thesis_documents"> | string | null
   assigned_staff_id?: Prisma.IntNullableFilter<"lib_thesis_documents"> | number | null
   is_restricted?: Prisma.BoolFilter<"lib_thesis_documents"> | boolean
-  is_hidden?: Prisma.BoolFilter<"lib_thesis_documents"> | boolean
   time_limit_minutes?: Prisma.IntNullableFilter<"lib_thesis_documents"> | number | null
   max_attempts?: Prisma.IntNullableFilter<"lib_thesis_documents"> | number | null
   epub_url?: Prisma.StringNullableFilter<"lib_thesis_documents"> | string | null
+  is_hidden?: Prisma.BoolFilter<"lib_thesis_documents"> | boolean
 }
 
 export type lib_thesis_documentsUpsertWithWhereUniqueWithoutLib_users_lib_thesis_documents_reviewed_by_admin_idTolib_usersInput = {
@@ -2337,10 +2337,10 @@ export type lib_thesis_documentsCreateWithoutReading_sessionsInput = {
   ebook_publication_year?: string | null
   ebook_cover_image?: string | null
   is_restricted?: boolean
-  is_hidden?: boolean
   time_limit_minutes?: number | null
   max_attempts?: number | null
   epub_url?: string | null
+  is_hidden?: boolean
   access_cooldowns?: Prisma.lib_document_access_cooldownsCreateNestedManyWithoutDocumentInput
   download_permissions?: Prisma.lib_document_download_permissionsCreateNestedManyWithoutDocumentInput
   lib_users_lib_thesis_documents_assigned_staff_idTolib_users?: Prisma.lib_usersCreateNestedOneWithoutLib_thesis_documents_lib_thesis_documents_assigned_staff_idTolib_usersInput
@@ -2397,10 +2397,10 @@ export type lib_thesis_documentsUncheckedCreateWithoutReading_sessionsInput = {
   ebook_cover_image?: string | null
   assigned_staff_id?: number | null
   is_restricted?: boolean
-  is_hidden?: boolean
   time_limit_minutes?: number | null
   max_attempts?: number | null
   epub_url?: string | null
+  is_hidden?: boolean
   access_cooldowns?: Prisma.lib_document_access_cooldownsUncheckedCreateNestedManyWithoutDocumentInput
   download_permissions?: Prisma.lib_document_download_permissionsUncheckedCreateNestedManyWithoutDocumentInput
 }
@@ -2464,10 +2464,10 @@ export type lib_thesis_documentsUpdateWithoutReading_sessionsInput = {
   ebook_publication_year?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ebook_cover_image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   is_restricted?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  is_hidden?: Prisma.BoolFieldUpdateOperationsInput | boolean
   time_limit_minutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   max_attempts?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   epub_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_hidden?: Prisma.BoolFieldUpdateOperationsInput | boolean
   access_cooldowns?: Prisma.lib_document_access_cooldownsUpdateManyWithoutDocumentNestedInput
   download_permissions?: Prisma.lib_document_download_permissionsUpdateManyWithoutDocumentNestedInput
   lib_users_lib_thesis_documents_assigned_staff_idTolib_users?: Prisma.lib_usersUpdateOneWithoutLib_thesis_documents_lib_thesis_documents_assigned_staff_idTolib_usersNestedInput
@@ -2524,10 +2524,10 @@ export type lib_thesis_documentsUncheckedUpdateWithoutReading_sessionsInput = {
   ebook_cover_image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assigned_staff_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   is_restricted?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  is_hidden?: Prisma.BoolFieldUpdateOperationsInput | boolean
   time_limit_minutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   max_attempts?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   epub_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_hidden?: Prisma.BoolFieldUpdateOperationsInput | boolean
   access_cooldowns?: Prisma.lib_document_access_cooldownsUncheckedUpdateManyWithoutDocumentNestedInput
   download_permissions?: Prisma.lib_document_download_permissionsUncheckedUpdateManyWithoutDocumentNestedInput
 }
@@ -2575,10 +2575,10 @@ export type lib_thesis_documentsCreateWithoutAccess_cooldownsInput = {
   ebook_publication_year?: string | null
   ebook_cover_image?: string | null
   is_restricted?: boolean
-  is_hidden?: boolean
   time_limit_minutes?: number | null
   max_attempts?: number | null
   epub_url?: string | null
+  is_hidden?: boolean
   download_permissions?: Prisma.lib_document_download_permissionsCreateNestedManyWithoutDocumentInput
   reading_sessions?: Prisma.lib_document_reading_sessionsCreateNestedManyWithoutDocumentInput
   lib_users_lib_thesis_documents_assigned_staff_idTolib_users?: Prisma.lib_usersCreateNestedOneWithoutLib_thesis_documents_lib_thesis_documents_assigned_staff_idTolib_usersInput
@@ -2635,10 +2635,10 @@ export type lib_thesis_documentsUncheckedCreateWithoutAccess_cooldownsInput = {
   ebook_cover_image?: string | null
   assigned_staff_id?: number | null
   is_restricted?: boolean
-  is_hidden?: boolean
   time_limit_minutes?: number | null
   max_attempts?: number | null
   epub_url?: string | null
+  is_hidden?: boolean
   download_permissions?: Prisma.lib_document_download_permissionsUncheckedCreateNestedManyWithoutDocumentInput
   reading_sessions?: Prisma.lib_document_reading_sessionsUncheckedCreateNestedManyWithoutDocumentInput
 }
@@ -2702,10 +2702,10 @@ export type lib_thesis_documentsUpdateWithoutAccess_cooldownsInput = {
   ebook_publication_year?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ebook_cover_image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   is_restricted?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  is_hidden?: Prisma.BoolFieldUpdateOperationsInput | boolean
   time_limit_minutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   max_attempts?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   epub_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_hidden?: Prisma.BoolFieldUpdateOperationsInput | boolean
   download_permissions?: Prisma.lib_document_download_permissionsUpdateManyWithoutDocumentNestedInput
   reading_sessions?: Prisma.lib_document_reading_sessionsUpdateManyWithoutDocumentNestedInput
   lib_users_lib_thesis_documents_assigned_staff_idTolib_users?: Prisma.lib_usersUpdateOneWithoutLib_thesis_documents_lib_thesis_documents_assigned_staff_idTolib_usersNestedInput
@@ -2762,10 +2762,10 @@ export type lib_thesis_documentsUncheckedUpdateWithoutAccess_cooldownsInput = {
   ebook_cover_image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assigned_staff_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   is_restricted?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  is_hidden?: Prisma.BoolFieldUpdateOperationsInput | boolean
   time_limit_minutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   max_attempts?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   epub_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_hidden?: Prisma.BoolFieldUpdateOperationsInput | boolean
   download_permissions?: Prisma.lib_document_download_permissionsUncheckedUpdateManyWithoutDocumentNestedInput
   reading_sessions?: Prisma.lib_document_reading_sessionsUncheckedUpdateManyWithoutDocumentNestedInput
 }
@@ -2813,10 +2813,10 @@ export type lib_thesis_documentsCreateWithoutDownload_permissionsInput = {
   ebook_publication_year?: string | null
   ebook_cover_image?: string | null
   is_restricted?: boolean
-  is_hidden?: boolean
   time_limit_minutes?: number | null
   max_attempts?: number | null
   epub_url?: string | null
+  is_hidden?: boolean
   access_cooldowns?: Prisma.lib_document_access_cooldownsCreateNestedManyWithoutDocumentInput
   reading_sessions?: Prisma.lib_document_reading_sessionsCreateNestedManyWithoutDocumentInput
   lib_users_lib_thesis_documents_assigned_staff_idTolib_users?: Prisma.lib_usersCreateNestedOneWithoutLib_thesis_documents_lib_thesis_documents_assigned_staff_idTolib_usersInput
@@ -2873,10 +2873,10 @@ export type lib_thesis_documentsUncheckedCreateWithoutDownload_permissionsInput 
   ebook_cover_image?: string | null
   assigned_staff_id?: number | null
   is_restricted?: boolean
-  is_hidden?: boolean
   time_limit_minutes?: number | null
   max_attempts?: number | null
   epub_url?: string | null
+  is_hidden?: boolean
   access_cooldowns?: Prisma.lib_document_access_cooldownsUncheckedCreateNestedManyWithoutDocumentInput
   reading_sessions?: Prisma.lib_document_reading_sessionsUncheckedCreateNestedManyWithoutDocumentInput
 }
@@ -2940,10 +2940,10 @@ export type lib_thesis_documentsUpdateWithoutDownload_permissionsInput = {
   ebook_publication_year?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ebook_cover_image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   is_restricted?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  is_hidden?: Prisma.BoolFieldUpdateOperationsInput | boolean
   time_limit_minutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   max_attempts?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   epub_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_hidden?: Prisma.BoolFieldUpdateOperationsInput | boolean
   access_cooldowns?: Prisma.lib_document_access_cooldownsUpdateManyWithoutDocumentNestedInput
   reading_sessions?: Prisma.lib_document_reading_sessionsUpdateManyWithoutDocumentNestedInput
   lib_users_lib_thesis_documents_assigned_staff_idTolib_users?: Prisma.lib_usersUpdateOneWithoutLib_thesis_documents_lib_thesis_documents_assigned_staff_idTolib_usersNestedInput
@@ -3000,10 +3000,10 @@ export type lib_thesis_documentsUncheckedUpdateWithoutDownload_permissionsInput 
   ebook_cover_image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assigned_staff_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   is_restricted?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  is_hidden?: Prisma.BoolFieldUpdateOperationsInput | boolean
   time_limit_minutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   max_attempts?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   epub_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_hidden?: Prisma.BoolFieldUpdateOperationsInput | boolean
   access_cooldowns?: Prisma.lib_document_access_cooldownsUncheckedUpdateManyWithoutDocumentNestedInput
   reading_sessions?: Prisma.lib_document_reading_sessionsUncheckedUpdateManyWithoutDocumentNestedInput
 }
@@ -3055,10 +3055,10 @@ export type lib_thesis_documentsCreateManyLib_users_lib_thesis_documents_assigne
   ebook_publication_year?: string | null
   ebook_cover_image?: string | null
   is_restricted?: boolean
-  is_hidden?: boolean
   time_limit_minutes?: number | null
   max_attempts?: number | null
   epub_url?: string | null
+  is_hidden?: boolean
 }
 
 export type lib_thesis_documentsCreateManyLib_users_lib_thesis_documents_reviewed_by_admin_idTolib_usersInput = {
@@ -3108,10 +3108,10 @@ export type lib_thesis_documentsCreateManyLib_users_lib_thesis_documents_reviewe
   ebook_cover_image?: string | null
   assigned_staff_id?: number | null
   is_restricted?: boolean
-  is_hidden?: boolean
   time_limit_minutes?: number | null
   max_attempts?: number | null
   epub_url?: string | null
+  is_hidden?: boolean
 }
 
 export type lib_thesis_documentsCreateManyLib_users_lib_thesis_documents_reviewed_by_staff_idTolib_usersInput = {
@@ -3161,10 +3161,10 @@ export type lib_thesis_documentsCreateManyLib_users_lib_thesis_documents_reviewe
   ebook_cover_image?: string | null
   assigned_staff_id?: number | null
   is_restricted?: boolean
-  is_hidden?: boolean
   time_limit_minutes?: number | null
   max_attempts?: number | null
   epub_url?: string | null
+  is_hidden?: boolean
 }
 
 export type lib_thesis_documentsCreateManyLib_users_lib_thesis_documents_student_idTolib_usersInput = {
@@ -3214,10 +3214,10 @@ export type lib_thesis_documentsCreateManyLib_users_lib_thesis_documents_student
   ebook_cover_image?: string | null
   assigned_staff_id?: number | null
   is_restricted?: boolean
-  is_hidden?: boolean
   time_limit_minutes?: number | null
   max_attempts?: number | null
   epub_url?: string | null
+  is_hidden?: boolean
 }
 
 export type lib_thesis_documentsUpdateWithoutLib_users_lib_thesis_documents_assigned_staff_idTolib_usersInput = {
@@ -3263,10 +3263,10 @@ export type lib_thesis_documentsUpdateWithoutLib_users_lib_thesis_documents_assi
   ebook_publication_year?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ebook_cover_image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   is_restricted?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  is_hidden?: Prisma.BoolFieldUpdateOperationsInput | boolean
   time_limit_minutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   max_attempts?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   epub_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_hidden?: Prisma.BoolFieldUpdateOperationsInput | boolean
   access_cooldowns?: Prisma.lib_document_access_cooldownsUpdateManyWithoutDocumentNestedInput
   download_permissions?: Prisma.lib_document_download_permissionsUpdateManyWithoutDocumentNestedInput
   reading_sessions?: Prisma.lib_document_reading_sessionsUpdateManyWithoutDocumentNestedInput
@@ -3322,10 +3322,10 @@ export type lib_thesis_documentsUncheckedUpdateWithoutLib_users_lib_thesis_docum
   ebook_publication_year?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ebook_cover_image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   is_restricted?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  is_hidden?: Prisma.BoolFieldUpdateOperationsInput | boolean
   time_limit_minutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   max_attempts?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   epub_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_hidden?: Prisma.BoolFieldUpdateOperationsInput | boolean
   access_cooldowns?: Prisma.lib_document_access_cooldownsUncheckedUpdateManyWithoutDocumentNestedInput
   download_permissions?: Prisma.lib_document_download_permissionsUncheckedUpdateManyWithoutDocumentNestedInput
   reading_sessions?: Prisma.lib_document_reading_sessionsUncheckedUpdateManyWithoutDocumentNestedInput
@@ -3378,10 +3378,10 @@ export type lib_thesis_documentsUncheckedUpdateManyWithoutLib_users_lib_thesis_d
   ebook_publication_year?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ebook_cover_image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   is_restricted?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  is_hidden?: Prisma.BoolFieldUpdateOperationsInput | boolean
   time_limit_minutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   max_attempts?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   epub_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_hidden?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type lib_thesis_documentsUpdateWithoutLib_users_lib_thesis_documents_reviewed_by_admin_idTolib_usersInput = {
@@ -3427,10 +3427,10 @@ export type lib_thesis_documentsUpdateWithoutLib_users_lib_thesis_documents_revi
   ebook_publication_year?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ebook_cover_image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   is_restricted?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  is_hidden?: Prisma.BoolFieldUpdateOperationsInput | boolean
   time_limit_minutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   max_attempts?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   epub_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_hidden?: Prisma.BoolFieldUpdateOperationsInput | boolean
   access_cooldowns?: Prisma.lib_document_access_cooldownsUpdateManyWithoutDocumentNestedInput
   download_permissions?: Prisma.lib_document_download_permissionsUpdateManyWithoutDocumentNestedInput
   reading_sessions?: Prisma.lib_document_reading_sessionsUpdateManyWithoutDocumentNestedInput
@@ -3486,10 +3486,10 @@ export type lib_thesis_documentsUncheckedUpdateWithoutLib_users_lib_thesis_docum
   ebook_cover_image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assigned_staff_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   is_restricted?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  is_hidden?: Prisma.BoolFieldUpdateOperationsInput | boolean
   time_limit_minutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   max_attempts?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   epub_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_hidden?: Prisma.BoolFieldUpdateOperationsInput | boolean
   access_cooldowns?: Prisma.lib_document_access_cooldownsUncheckedUpdateManyWithoutDocumentNestedInput
   download_permissions?: Prisma.lib_document_download_permissionsUncheckedUpdateManyWithoutDocumentNestedInput
   reading_sessions?: Prisma.lib_document_reading_sessionsUncheckedUpdateManyWithoutDocumentNestedInput
@@ -3542,10 +3542,10 @@ export type lib_thesis_documentsUncheckedUpdateManyWithoutLib_users_lib_thesis_d
   ebook_cover_image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assigned_staff_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   is_restricted?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  is_hidden?: Prisma.BoolFieldUpdateOperationsInput | boolean
   time_limit_minutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   max_attempts?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   epub_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_hidden?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type lib_thesis_documentsUpdateWithoutLib_users_lib_thesis_documents_reviewed_by_staff_idTolib_usersInput = {
@@ -3591,10 +3591,10 @@ export type lib_thesis_documentsUpdateWithoutLib_users_lib_thesis_documents_revi
   ebook_publication_year?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ebook_cover_image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   is_restricted?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  is_hidden?: Prisma.BoolFieldUpdateOperationsInput | boolean
   time_limit_minutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   max_attempts?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   epub_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_hidden?: Prisma.BoolFieldUpdateOperationsInput | boolean
   access_cooldowns?: Prisma.lib_document_access_cooldownsUpdateManyWithoutDocumentNestedInput
   download_permissions?: Prisma.lib_document_download_permissionsUpdateManyWithoutDocumentNestedInput
   reading_sessions?: Prisma.lib_document_reading_sessionsUpdateManyWithoutDocumentNestedInput
@@ -3650,10 +3650,10 @@ export type lib_thesis_documentsUncheckedUpdateWithoutLib_users_lib_thesis_docum
   ebook_cover_image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assigned_staff_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   is_restricted?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  is_hidden?: Prisma.BoolFieldUpdateOperationsInput | boolean
   time_limit_minutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   max_attempts?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   epub_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_hidden?: Prisma.BoolFieldUpdateOperationsInput | boolean
   access_cooldowns?: Prisma.lib_document_access_cooldownsUncheckedUpdateManyWithoutDocumentNestedInput
   download_permissions?: Prisma.lib_document_download_permissionsUncheckedUpdateManyWithoutDocumentNestedInput
   reading_sessions?: Prisma.lib_document_reading_sessionsUncheckedUpdateManyWithoutDocumentNestedInput
@@ -3706,10 +3706,10 @@ export type lib_thesis_documentsUncheckedUpdateManyWithoutLib_users_lib_thesis_d
   ebook_cover_image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assigned_staff_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   is_restricted?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  is_hidden?: Prisma.BoolFieldUpdateOperationsInput | boolean
   time_limit_minutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   max_attempts?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   epub_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_hidden?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type lib_thesis_documentsUpdateWithoutLib_users_lib_thesis_documents_student_idTolib_usersInput = {
@@ -3755,10 +3755,10 @@ export type lib_thesis_documentsUpdateWithoutLib_users_lib_thesis_documents_stud
   ebook_publication_year?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ebook_cover_image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   is_restricted?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  is_hidden?: Prisma.BoolFieldUpdateOperationsInput | boolean
   time_limit_minutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   max_attempts?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   epub_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_hidden?: Prisma.BoolFieldUpdateOperationsInput | boolean
   access_cooldowns?: Prisma.lib_document_access_cooldownsUpdateManyWithoutDocumentNestedInput
   download_permissions?: Prisma.lib_document_download_permissionsUpdateManyWithoutDocumentNestedInput
   reading_sessions?: Prisma.lib_document_reading_sessionsUpdateManyWithoutDocumentNestedInput
@@ -3814,10 +3814,10 @@ export type lib_thesis_documentsUncheckedUpdateWithoutLib_users_lib_thesis_docum
   ebook_cover_image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assigned_staff_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   is_restricted?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  is_hidden?: Prisma.BoolFieldUpdateOperationsInput | boolean
   time_limit_minutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   max_attempts?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   epub_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_hidden?: Prisma.BoolFieldUpdateOperationsInput | boolean
   access_cooldowns?: Prisma.lib_document_access_cooldownsUncheckedUpdateManyWithoutDocumentNestedInput
   download_permissions?: Prisma.lib_document_download_permissionsUncheckedUpdateManyWithoutDocumentNestedInput
   reading_sessions?: Prisma.lib_document_reading_sessionsUncheckedUpdateManyWithoutDocumentNestedInput
@@ -3870,10 +3870,10 @@ export type lib_thesis_documentsUncheckedUpdateManyWithoutLib_users_lib_thesis_d
   ebook_cover_image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assigned_staff_id?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   is_restricted?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  is_hidden?: Prisma.BoolFieldUpdateOperationsInput | boolean
   time_limit_minutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   max_attempts?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   epub_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_hidden?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 
@@ -3973,10 +3973,10 @@ export type lib_thesis_documentsSelect<ExtArgs extends runtime.Types.Extensions.
   ebook_cover_image?: boolean
   assigned_staff_id?: boolean
   is_restricted?: boolean
-  is_hidden?: boolean
   time_limit_minutes?: boolean
   max_attempts?: boolean
   epub_url?: boolean
+  is_hidden?: boolean
   access_cooldowns?: boolean | Prisma.lib_thesis_documents$access_cooldownsArgs<ExtArgs>
   download_permissions?: boolean | Prisma.lib_thesis_documents$download_permissionsArgs<ExtArgs>
   reading_sessions?: boolean | Prisma.lib_thesis_documents$reading_sessionsArgs<ExtArgs>
@@ -4037,13 +4037,13 @@ export type lib_thesis_documentsSelectScalar = {
   ebook_cover_image?: boolean
   assigned_staff_id?: boolean
   is_restricted?: boolean
-  is_hidden?: boolean
   time_limit_minutes?: boolean
   max_attempts?: boolean
   epub_url?: boolean
+  is_hidden?: boolean
 }
 
-export type lib_thesis_documentsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "student_id" | "title" | "researcher_name" | "abstract" | "keywords" | "department" | "year_level" | "academic_year" | "semester" | "file_url" | "file_name" | "file_size" | "file_type" | "file_path" | "status" | "submission_status" | "reviewed_by_staff_id" | "reviewed_by_admin_id" | "staff_review_notes" | "admin_review_notes" | "rejection_reason" | "internal_notes" | "submitted_at" | "staff_reviewed_at" | "admin_reviewed_at" | "approved_at" | "published_at" | "date_updated" | "document_type" | "journal_name" | "journal_volume" | "journal_issue" | "doi" | "co_authors" | "adviser_name" | "team_members" | "project_type" | "capstone_category" | "program" | "ebook_author" | "ebook_topic" | "ebook_publisher" | "ebook_publication_year" | "ebook_cover_image" | "assigned_staff_id" | "is_restricted" | "is_hidden" | "time_limit_minutes" | "max_attempts" | "epub_url", ExtArgs["result"]["lib_thesis_documents"]>
+export type lib_thesis_documentsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "student_id" | "title" | "researcher_name" | "abstract" | "keywords" | "department" | "year_level" | "academic_year" | "semester" | "file_url" | "file_name" | "file_size" | "file_type" | "file_path" | "status" | "submission_status" | "reviewed_by_staff_id" | "reviewed_by_admin_id" | "staff_review_notes" | "admin_review_notes" | "rejection_reason" | "internal_notes" | "submitted_at" | "staff_reviewed_at" | "admin_reviewed_at" | "approved_at" | "published_at" | "date_updated" | "document_type" | "journal_name" | "journal_volume" | "journal_issue" | "doi" | "co_authors" | "adviser_name" | "team_members" | "project_type" | "capstone_category" | "program" | "ebook_author" | "ebook_topic" | "ebook_publisher" | "ebook_publication_year" | "ebook_cover_image" | "assigned_staff_id" | "is_restricted" | "time_limit_minutes" | "max_attempts" | "epub_url" | "is_hidden", ExtArgs["result"]["lib_thesis_documents"]>
 export type lib_thesis_documentsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   access_cooldowns?: boolean | Prisma.lib_thesis_documents$access_cooldownsArgs<ExtArgs>
   download_permissions?: boolean | Prisma.lib_thesis_documents$download_permissionsArgs<ExtArgs>
@@ -4114,10 +4114,10 @@ export type $lib_thesis_documentsPayload<ExtArgs extends runtime.Types.Extension
     ebook_cover_image: string | null
     assigned_staff_id: number | null
     is_restricted: boolean
-    is_hidden: boolean
     time_limit_minutes: number | null
     max_attempts: number | null
     epub_url: string | null
+    is_hidden: boolean
   }, ExtArgs["result"]["lib_thesis_documents"]>
   composites: {}
 }
@@ -4541,10 +4541,10 @@ export interface lib_thesis_documentsFieldRefs {
   readonly ebook_cover_image: Prisma.FieldRef<"lib_thesis_documents", 'String'>
   readonly assigned_staff_id: Prisma.FieldRef<"lib_thesis_documents", 'Int'>
   readonly is_restricted: Prisma.FieldRef<"lib_thesis_documents", 'Boolean'>
-  readonly is_hidden: Prisma.FieldRef<"lib_thesis_documents", 'Boolean'>
   readonly time_limit_minutes: Prisma.FieldRef<"lib_thesis_documents", 'Int'>
   readonly max_attempts: Prisma.FieldRef<"lib_thesis_documents", 'Int'>
   readonly epub_url: Prisma.FieldRef<"lib_thesis_documents", 'String'>
+  readonly is_hidden: Prisma.FieldRef<"lib_thesis_documents", 'Boolean'>
 }
     
 

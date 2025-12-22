@@ -5,9 +5,7 @@ import { requireStudent } from "@/lib/auth-library";
 import { sanitizeInput } from "@/lib/sanitize";
 
 const createThesisSchema = z.object({
-  document_type: z.enum(["Thesis", "Journal", "Capstone", "Ebooks"], {
-    required_error: "Document type is required",
-  }),
+  document_type: z.enum(["Thesis", "Journal", "Capstone", "Ebooks"]),
   title: z.string().max(255, "Title must not exceed 255 characters").optional(),
   researcher_name: z
     .string()
@@ -158,8 +156,8 @@ export async function POST(request: Request) {
       data: {
         student_id: session.user.id,
         document_type: data.document_type,
-        title: sanitizeInput(finalTitle),
-        researcher_name: sanitizeInput(finalResearcherName),
+        title: sanitizeInput(finalTitle as string),
+        researcher_name: sanitizeInput(finalResearcherName as string),
         abstract: data.abstract ? sanitizeInput(data.abstract) : null,
         keywords: data.keywords ? sanitizeInput(data.keywords) : null,
         department: data.department

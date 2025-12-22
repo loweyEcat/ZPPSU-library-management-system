@@ -14,7 +14,7 @@ export async function getPublishedDocumentsForStudent() {
       published_at: {
         not: null,
       },
-      // @ts-expect-error - is_hidden field exists in schema, migration needed
+
       is_hidden: false, // Exclude hidden documents
       document_type: {
         in: ["Thesis", "Journal", "Capstone", "Ebooks"],
@@ -49,7 +49,7 @@ export async function getPublishedDocumentsForStudent() {
       project_type: true,
       capstone_category: true,
       program: true,
-      // @ts-expect-error - Field exists in schema, Prisma types may need regeneration
+
       ebook_cover_image: true,
       is_restricted: true,
       time_limit_minutes: true,
@@ -132,7 +132,7 @@ export async function getPublishedDocumentByIdForStudent(documentId: number) {
       published_at: {
         not: null,
       },
-      // @ts-expect-error - is_hidden field exists in schema, migration needed
+
       is_hidden: false, // Exclude hidden documents
     },
     select: {

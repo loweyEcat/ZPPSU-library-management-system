@@ -14,6 +14,7 @@ import {
 import { cancelBookRequest } from "@/app/dashboard/student/books/actions";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { lib_books_status } from "../../../generated/prisma/enums";
 
 interface BookRequest {
   id: number;
@@ -24,7 +25,16 @@ interface BookRequest {
   borrow_date: string | null;
   due_date: string | null;
   return_date: string | null;
-  status: "Pending" | "Approved" | "Borrowed" | "Returned" | "Under_Review" | "Received" | "Overdue" | "Rejected" | null;
+  status:
+    | "Pending"
+    | "Approved"
+    | "Borrowed"
+    | "Returned"
+    | "Under_Review"
+    | "Received"
+    | "Overdue"
+    | "Rejected"
+    | null;
   created_at: string | null;
   updated_at: string | null;
   staff_receiver: string | null;
@@ -47,7 +57,7 @@ interface BookRequest {
     format: string | null;
     total_copies: number | null;
     available_copies: number | null;
-    status: "Available" | "Not_Available" | "Lost" | "Damaged";
+    status: lib_books_status;
   };
 }
 
@@ -98,7 +108,8 @@ export function CancelRequestDialog({
           <AlertDialogTitle>Cancel Book Request</AlertDialogTitle>
           <AlertDialogDescription>
             Are you sure you want to cancel your request for{" "}
-            <strong>{request.book.books_name}</strong>? This action cannot be undone.
+            <strong>{request.book.books_name}</strong>? This action cannot be
+            undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -122,4 +133,3 @@ export function CancelRequestDialog({
     </AlertDialog>
   );
 }
-

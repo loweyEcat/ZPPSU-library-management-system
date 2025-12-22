@@ -23,8 +23,12 @@ const generateUniqueFilename = (originalFilename: string): string => {
   const sanitized = normalizeFilename(originalFilename || "school-id");
   const timestamp = Date.now();
   const randomSuffix = Math.random().toString(36).substring(2, 9);
-  const extension = sanitized.includes(".") ? sanitized.substring(sanitized.lastIndexOf(".")) : "";
-  const baseName = sanitized.includes(".") ? sanitized.substring(0, sanitized.lastIndexOf(".")) : sanitized;
+  const extension = sanitized.includes(".")
+    ? sanitized.substring(sanitized.lastIndexOf("."))
+    : "";
+  const baseName = sanitized.includes(".")
+    ? sanitized.substring(0, sanitized.lastIndexOf("."))
+    : sanitized;
   return `school_ids/${baseName}-${timestamp}-${randomSuffix}${extension}`;
 };
 
@@ -50,7 +54,13 @@ export async function POST(request: Request) {
     }
 
     // Validate file type
-    const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp", "application/pdf"];
+    const allowedTypes = [
+      "image/jpeg",
+      "image/jpg",
+      "image/png",
+      "image/webp",
+      "application/pdf",
+    ];
     if (!allowedTypes.includes(file.type)) {
       return NextResponse.json(
         { message: "File type not allowed. Please upload an image or PDF." },
@@ -68,9 +78,10 @@ export async function POST(request: Request) {
     if (mimeType.startsWith("image/")) {
       const { buffer: compressedBuffer, mimeType: compressedMimeType } =
         await compressImageLossless(originalBuffer, mimeType);
-      
+
       if (compressedBuffer.length < originalBuffer.length) {
-        bufferToUpload = compressedBuffer;
+        // Convert Buffer<ArrayBufferLike> to Buffer<ArrayBuffer>
+        bufferToUpload = Buffer.from(compressedBuffer);
         finalMimeType = compressedMimeType;
       }
     }
@@ -101,4 +112,3 @@ export async function POST(request: Request) {
     );
   }
 }
-

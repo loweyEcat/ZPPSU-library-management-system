@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Loader2, Package, BookOpen, Copy } from "lucide-react";
 import { createBookRequest } from "@/app/dashboard/student/books/actions";
 import { toast } from "sonner";
+import { lib_books_status } from "../../../generated/prisma/enums";
 
 interface Book {
   id: number;
@@ -23,7 +24,7 @@ interface Book {
   available_copies: number | null;
   remaining_available_copies: number;
   total_copies: number | null;
-  status: "Available" | "Not_Available" | "Lost" | "Damaged";
+  status: lib_books_status;
 }
 
 interface RequestBookDialogProps {
@@ -56,7 +57,7 @@ export function RequestBookDialog({
     if (!book) return;
 
     const qty = parseInt(quantity);
-    
+
     // Validation
     if (isNaN(qty) || qty < 1) {
       toast.error("Please enter a valid quantity (minimum 1).");
@@ -101,7 +102,8 @@ export function RequestBookDialog({
             Request to Borrow Book
           </DialogTitle>
           <DialogDescription>
-            Confirm your book request and specify the quantity you want to borrow.
+            Confirm your book request and specify the quantity you want to
+            borrow.
           </DialogDescription>
         </DialogHeader>
 
@@ -140,7 +142,9 @@ export function RequestBookDialog({
                 <span className="font-semibold">{book.total_copies ?? 0}</span>
               </div>
               <div>
-                <span className="text-muted-foreground">Available Copies: </span>
+                <span className="text-muted-foreground">
+                  Available Copies:{" "}
+                </span>
                 <span className="font-semibold text-green-600 dark:text-green-400">
                   {remainingAvailableCopies}
                 </span>
@@ -161,7 +165,10 @@ export function RequestBookDialog({
               value={quantity}
               onChange={(e) => {
                 const value = e.target.value;
-                if (value === "" || (parseInt(value) >= 1 && parseInt(value) <= maxQuantity)) {
+                if (
+                  value === "" ||
+                  (parseInt(value) >= 1 && parseInt(value) <= maxQuantity)
+                ) {
                   setQuantity(value);
                 }
               }}
@@ -173,7 +180,8 @@ export function RequestBookDialog({
               You can request up to <strong>{maxQuantity}</strong> copy/copies.
               {parseInt(quantity) === maxQuantity && maxQuantity > 0 && (
                 <span className="block mt-1 text-orange-600 dark:text-orange-400 font-medium">
-                  Note: Requesting all available copies will remove this book from the Books tab.
+                  Note: Requesting all available copies will remove this book
+                  from the Books tab.
                 </span>
               )}
             </p>
@@ -216,4 +224,3 @@ export function RequestBookDialog({
     </Dialog>
   );
 }
-

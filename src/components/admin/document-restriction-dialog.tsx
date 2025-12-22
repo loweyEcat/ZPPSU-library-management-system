@@ -72,7 +72,7 @@ export function DocumentRestrictionDialog({
       if (result.error) {
         toast.error(result.error);
       } else {
-        setRestrictionEnabled(result.is_restricted);
+        setRestrictionEnabled(result.is_restricted as boolean);
         toast.success(
           result.is_restricted
             ? "Document restriction enabled"

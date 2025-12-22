@@ -76,14 +76,26 @@ function formatFileSize(bytes: number): string {
   return (bytes / (1024 * 1024)).toFixed(2) + " MB";
 }
 
-function getDocumentTypeBadge(type: string | null): JSX.Element {
+function getDocumentTypeBadge(type: string | null): React.ReactElement {
   switch (type) {
     case "Thesis":
-      return <Badge variant="default" className="bg-blue-500">Thesis</Badge>;
+      return (
+        <Badge variant="default" className="bg-blue-500">
+          Thesis
+        </Badge>
+      );
     case "Journal":
-      return <Badge variant="secondary" className="bg-purple-500">Journal</Badge>;
+      return (
+        <Badge variant="secondary" className="bg-purple-500">
+          Journal
+        </Badge>
+      );
     case "Capstone":
-      return <Badge variant="outline" className="bg-green-500">Capstone</Badge>;
+      return (
+        <Badge variant="outline" className="bg-green-500">
+          Capstone
+        </Badge>
+      );
     default:
       return <Badge variant="outline">Unknown</Badge>;
   }
@@ -91,8 +103,7 @@ function getDocumentTypeBadge(type: string | null): JSX.Element {
 
 function isPDF(fileType: string, fileName: string): boolean {
   return (
-    fileType === "application/pdf" ||
-    fileName.toLowerCase().endsWith(".pdf")
+    fileType === "application/pdf" || fileName.toLowerCase().endsWith(".pdf")
   );
 }
 
@@ -170,25 +181,32 @@ export function DocumentPreviewDialog({
           <div className="px-6 py-4 border-b bg-muted/50">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
               <div>
-                <div className="text-muted-foreground font-medium mb-1">Researcher</div>
+                <div className="text-muted-foreground font-medium mb-1">
+                  Researcher
+                </div>
                 <div className="flex items-center gap-2">
                   <User className="h-4 w-4" />
                   <span className="truncate">{document.researcher_name}</span>
                 </div>
               </div>
               <div>
-                <div className="text-muted-foreground font-medium mb-1">Student</div>
+                <div className="text-muted-foreground font-medium mb-1">
+                  Student
+                </div>
                 <div className="flex items-center gap-2">
                   <User className="h-4 w-4" />
                   <span className="truncate">
                     {document.student.full_name}
-                    {document.student.student_id && ` (${document.student.student_id})`}
+                    {document.student.student_id &&
+                      ` (${document.student.student_id})`}
                   </span>
                 </div>
               </div>
               {document.department && (
                 <div>
-                  <div className="text-muted-foreground font-medium mb-1">Department</div>
+                  <div className="text-muted-foreground font-medium mb-1">
+                    Department
+                  </div>
                   <div className="flex items-center gap-2">
                     <FileText className="h-4 w-4" />
                     <span>{document.department}</span>
@@ -196,7 +214,9 @@ export function DocumentPreviewDialog({
                 </div>
               )}
               <div>
-                <div className="text-muted-foreground font-medium mb-1">File Size</div>
+                <div className="text-muted-foreground font-medium mb-1">
+                  File Size
+                </div>
                 <div className="flex items-center gap-2">
                   <FileText className="h-4 w-4" />
                   <span>{formatFileSize(document.file_size)}</span>
@@ -239,7 +259,9 @@ export function DocumentPreviewDialog({
                     onLoad={() => setIsLoading(false)}
                     onError={() => {
                       setIsLoading(false);
-                      setPreviewError("Failed to load PDF. Please try downloading the file.");
+                      setPreviewError(
+                        "Failed to load PDF. Please try downloading the file."
+                      );
                     }}
                   />
                 ) : isEPUBFile ? (
@@ -247,12 +269,16 @@ export function DocumentPreviewDialog({
                     <ReactReader
                       url={document.file_url}
                       location={location}
-                      locationChanged={(loc: string | number) => setLocation(loc)}
+                      locationChanged={(loc: string | number) =>
+                        setLocation(loc)
+                      }
                       loadingView={
                         <div className="flex items-center justify-center h-full">
                           <div className="text-center">
                             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-                            <p className="text-muted-foreground">Loading EPUB...</p>
+                            <p className="text-muted-foreground">
+                              Loading EPUB...
+                            </p>
                           </div>
                         </div>
                       }
@@ -262,7 +288,8 @@ export function DocumentPreviewDialog({
                       getRendition={(rendition) => {
                         rendition.themes.default({
                           body: {
-                            "font-family": "system-ui, -apple-system, sans-serif",
+                            "font-family":
+                              "system-ui, -apple-system, sans-serif",
                             "font-size": "18px",
                             "line-height": "1.6",
                           },
@@ -297,4 +324,3 @@ export function DocumentPreviewDialog({
     </Dialog>
   );
 }
-

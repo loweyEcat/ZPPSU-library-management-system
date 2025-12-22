@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { AdminBooksTable } from "./admin-books-table";
 import { AdminBookRequestsTable } from "./admin-book-requests-table";
 import { BookOpen, Package, AlertTriangle } from "lucide-react";
+import { lib_books_status } from "../../../generated/prisma/enums";
 
 interface AdminBooksTabsProps {
   books: Array<{
@@ -34,7 +35,7 @@ interface AdminBooksTabsProps {
     format: string | null;
     total_copies: number | null;
     available_copies: number | null;
-    status: "Available" | "Not_Available" | "Lost" | "Damaged";
+    status: lib_books_status;
     created_at: string | null;
     updated_at: string | null;
     total_requests: number;

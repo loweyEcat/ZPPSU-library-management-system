@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { Badge } from "@/components/ui/badge";
+import { lib_books_status } from "../../../generated/prisma/enums";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -63,7 +64,7 @@ interface Book {
   total_copies: number | null;
   available_copies: number | null;
   remaining_available_copies: number;
-  status: "Available" | "Not_Available" | "Lost" | "Damaged";
+  status: lib_books_status;
   created_at: string | null;
   updated_at: string | null;
   has_active_request: boolean;
@@ -82,17 +83,15 @@ interface StudentBooksTableProps {
   onRefresh?: () => void;
 }
 
-function formatStatus(
-  status: "Available" | "Not_Available" | "Lost" | "Damaged"
-): string {
-  return status.replace(/_/g, " ");
+function formatStatus(status: lib_books_status): string {
+  return status;
 }
 
 function getStatusVariant(
-  status: "Available" | "Not_Available" | "Lost" | "Damaged"
+  status: lib_books_status
 ): "default" | "secondary" | "destructive" {
   if (status === "Available") return "default";
-  if (status === "Not_Available") return "secondary";
+  if (status === "Not Available") return "secondary";
   return "destructive";
 }
 
@@ -257,7 +256,7 @@ export function StudentBooksTable({
           <SelectContent>
             <SelectItem value="all">All Status</SelectItem>
             <SelectItem value="Available">Available</SelectItem>
-            <SelectItem value="Not_Available">Not Available</SelectItem>
+            <SelectItem value="Not Available">Not Available</SelectItem>
             <SelectItem value="Lost">Lost</SelectItem>
             <SelectItem value="Damaged">Damaged</SelectItem>
           </SelectContent>
@@ -306,7 +305,7 @@ export function StudentBooksTable({
                   className={`absolute top-0 left-0 right-0 h-1 ${
                     book.status === "Available"
                       ? "bg-green-500"
-                      : book.status === "Not_Available"
+                      : book.status === "Not Available"
                       ? "bg-orange-500"
                       : "bg-red-500"
                   }`}

@@ -14,6 +14,7 @@ import {
 import { returnBook } from "@/app/dashboard/student/books/actions";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { lib_books_status } from "../../../generated/prisma/enums";
 
 interface BookRequest {
   id: number;
@@ -24,7 +25,16 @@ interface BookRequest {
   borrow_date: string | null;
   due_date: string | null;
   return_date: string | null;
-  status: "Pending" | "Approved" | "Borrowed" | "Returned" | "Under_Review" | "Received" | "Overdue" | "Rejected" | null;
+  status:
+    | "Pending"
+    | "Approved"
+    | "Borrowed"
+    | "Returned"
+    | "Under_Review"
+    | "Received"
+    | "Overdue"
+    | "Rejected"
+    | null;
   created_at: string | null;
   updated_at: string | null;
   staff_receiver: string | null;
@@ -47,7 +57,7 @@ interface BookRequest {
     format: string | null;
     total_copies: number | null;
     available_copies: number | null;
-    status: "Available" | "Not_Available" | "Lost" | "Damaged";
+    status: lib_books_status;
   };
 }
 
@@ -97,18 +107,16 @@ export function ReturnBookDialog({
         <AlertDialogHeader>
           <AlertDialogTitle>Return Books</AlertDialogTitle>
           <AlertDialogDescription>
-            Are you sure you want to return <strong>{request.book.books_name}</strong>?
-            {request.status === "Approved" 
+            Are you sure you want to return{" "}
+            <strong>{request.book.books_name}</strong>?
+            {request.status === "Approved"
               ? " This will cancel the approval and make the book available again."
               : " This will mark the book as returned and update the available copies."}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={isReturning}>Cancel</AlertDialogCancel>
-          <AlertDialogAction
-            onClick={handleReturn}
-            disabled={isReturning}
-          >
+          <AlertDialogAction onClick={handleReturn} disabled={isReturning}>
             {isReturning ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -123,4 +131,3 @@ export function ReturnBookDialog({
     </AlertDialog>
   );
 }
-

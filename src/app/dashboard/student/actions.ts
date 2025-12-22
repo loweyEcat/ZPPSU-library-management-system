@@ -90,7 +90,8 @@ export async function getStudentDashboardStats() {
       const days = (reviewed - submitted) / (1000 * 60 * 60 * 24);
       return sum + days;
     }, 0);
-    stats.averageReviewTime = Math.round((totalDays / reviewedDocs.length) * 10) / 10;
+    stats.averageReviewTime =
+      Math.round((totalDays / reviewedDocs.length) * 10) / 10;
   }
 
   return stats;
@@ -112,27 +113,32 @@ export async function getStatusDistribution(): Promise<StatusDistribution[]> {
   const statusMap = new Map<string, number>();
 
   documents.forEach((doc) => {
-    let status = doc.submission_status;
-    if (status === "Staff_Approved") status = "Staff Verified";
-    else if (status === "Super_Admin_Approved") status = "Approved";
-    else if (status === "Staff_Rejected" || status === "Super_Admin_Rejected")
+    let status: string;
+    if (doc.submission_status === "Staff_Approved") status = "Staff Verified";
+    else if (doc.submission_status === "Super_Admin_Approved")
+      status = "Approved";
+    else if (
+      doc.submission_status === "Staff_Rejected" ||
+      doc.submission_status === "Super_Admin_Rejected"
+    )
       status = "Rejected";
-    else if (status === "Revision_Requested") status = "Revision Required";
-    else if (status === "Published") status = "Published";
-    else if (status === "Under_Review") status = "Under Review";
+    else if (doc.submission_status === "Revision_Requested")
+      status = "Revision Required";
+    else if (doc.submission_status === "Published") status = "Published";
+    else if (doc.submission_status === "Under_Review") status = "Under Review";
     else status = doc.status.replace(/_/g, " ");
 
     statusMap.set(status, (statusMap.get(status) || 0) + 1);
   });
 
   const total = documents.length;
-  const distribution: StatusDistribution[] = Array.from(statusMap.entries()).map(
-    ([status, count]) => ({
-      status,
-      count,
-      percentage: total > 0 ? Math.round((count / total) * 100) : 0,
-    })
-  );
+  const distribution: StatusDistribution[] = Array.from(
+    statusMap.entries()
+  ).map(([status, count]) => ({
+    status,
+    count,
+    percentage: total > 0 ? Math.round((count / total) * 100) : 0,
+  }));
 
   return distribution.sort((a, b) => b.count - a.count);
 }
@@ -156,7 +162,9 @@ export async function getMonthlySubmissions(): Promise<MonthlySubmission[]> {
 
   documents.forEach((doc) => {
     const date = new Date(doc.submitted_at);
-    const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+    const monthKey = `${date.getFullYear()}-${String(
+      date.getMonth() + 1
+    ).padStart(2, "0")}`;
     monthMap.set(monthKey, (monthMap.get(monthKey) || 0) + 1);
   });
 
@@ -192,4 +200,3 @@ export async function getMonthlySubmissions(): Promise<MonthlySubmission[]> {
   // Get last 6 months
   return submissions.slice(-6);
 }
-

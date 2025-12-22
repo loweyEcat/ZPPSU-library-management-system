@@ -1,6 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { lib_books_status } from "../../../../../generated/prisma/enums";
 import { requireStudent } from "@/lib/auth-library";
 
 export async function getAllBooksForStudent() {
@@ -114,19 +115,9 @@ export async function getAllBooksForStudent() {
   });
 
   return filteredBooks.map((book) => {
-    // Normalize status: Prisma returns "Not Available" but we need "Not_Available"
+    // Use status directly since Prisma returns enum values
     // Default to "Available" if status is null (per schema default)
-    let normalizedStatus: "Available" | "Not_Available" | "Lost" | "Damaged" =
-      "Available";
-    if (book.status === "Not Available") {
-      normalizedStatus = "Not_Available";
-    } else if (
-      book.status === "Available" ||
-      book.status === "Lost" ||
-      book.status === "Damaged"
-    ) {
-      normalizedStatus = book.status;
-    }
+    let normalizedStatus: lib_books_status = book.status || "Available";
 
     // Check if student has any pending/approved/borrowed requests for this book
     const studentRequests = book.borrow_requests.filter(
@@ -309,19 +300,9 @@ export async function getBookByIdForStudent(bookId: number) {
     return null;
   }
 
-  // Normalize status: Prisma returns "Not Available" but we need "Not_Available"
+  // Use status directly since Prisma returns enum values
   // Default to "Available" if status is null (per schema default)
-  let normalizedStatus: "Available" | "Not_Available" | "Lost" | "Damaged" =
-    "Available";
-  if (book.status === "Not Available") {
-    normalizedStatus = "Not_Available";
-  } else if (
-    book.status === "Available" ||
-    book.status === "Lost" ||
-    book.status === "Damaged"
-  ) {
-    normalizedStatus = book.status;
-  }
+  let normalizedStatus: lib_books_status = book.status || "Available";
 
   return {
     ...book,
@@ -356,15 +337,8 @@ export async function createBookRequest(bookId: number, quantity: number = 1) {
     }
 
     // Check if book is available
-    // Normalize status: Prisma returns "Not Available" (with space) but enum is "Not_Available"
     // Allow both "Available" and "Not Available" statuses for borrowing
-    const normalizedBookStatus =
-      book.status === "Not Available" ? "Not_Available" : book.status;
-
-    if (
-      normalizedBookStatus !== "Available" &&
-      normalizedBookStatus !== "Not_Available"
-    ) {
+    if (book.status !== "Available" && book.status !== "Not Available") {
       return {
         success: false,
         message: "This book is not available for borrowing.",
@@ -540,26 +514,33 @@ export async function getStudentBookRequests() {
     const latestFine = lib_book_fines.length > 0 ? lib_book_fines[0] : null;
 
     // Normalize book status
-    let normalizedBookStatus:
-      | "Available"
-      | "Not_Available"
-      | "Lost"
-      | "Damaged" = "Available";
-    if (request.book.status === "Not Available") {
-      normalizedBookStatus = "Not_Available";
-    } else if (
-      request.book.status === "Available" ||
-      request.book.status === "Lost" ||
-      request.book.status === "Damaged"
-    ) {
-      normalizedBookStatus = request.book.status;
+    let normalizedBookStatus: lib_books_status =
+      request.book.status || "Available";
+
+    // Normalize fine_status: Prisma returns "Partially Paid" but we need "Partially_Paid"
+    let normalizedFineStatus:
+      | "Unpaid"
+      | "Paid"
+      | "Waived"
+      | "Partially_Paid"
+      | null = null;
+    if (latestFine?.status) {
+      if (latestFine.status === "Partially Paid") {
+        normalizedFineStatus = "Partially_Paid";
+      } else if (
+        latestFine.status === "Unpaid" ||
+        latestFine.status === "Paid" ||
+        latestFine.status === "Waived"
+      ) {
+        normalizedFineStatus = latestFine.status;
+      }
     }
 
     return {
       ...rest,
       has_fine: latestFine !== null,
       fine_reason: latestFine?.reason || null,
-      fine_status: latestFine?.status || null,
+      fine_status: normalizedFineStatus,
       request_date: request.request_date?.toISOString() || null,
       approved_date: request.approved_date?.toISOString() || null,
       borrow_date: request.borrow_date?.toISOString() || null,

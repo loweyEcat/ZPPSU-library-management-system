@@ -10,7 +10,15 @@ import {
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Loader2, Users, Calendar, Package, User, Mail, Hash } from "lucide-react";
+import {
+  Loader2,
+  Users,
+  Calendar,
+  Package,
+  User,
+  Mail,
+  Hash,
+} from "lucide-react";
 import { getBookBorrowers } from "@/app/admin/books/actions";
 import { format } from "date-fns";
 
@@ -92,8 +100,8 @@ export function ViewBookBorrowersDialog({
       getBookBorrowers(bookId)
         .then((result) => {
           if (result.success) {
-            setBook(result.book);
-            setBorrowers(result.borrowers || []);
+            setBook(result.book as Book);
+            setBorrowers(result.borrowers as Borrower[]);
           } else {
             setError(result.message || "Failed to load borrowers.");
           }
@@ -208,18 +216,24 @@ export function ViewBookBorrowersDialog({
                                 {borrower.student.student_id && (
                                   <div className="flex items-center gap-2">
                                     <Hash className="h-3.5 w-3.5" />
-                                    <span>ID: {borrower.student.student_id}</span>
+                                    <span>
+                                      ID: {borrower.student.student_id}
+                                    </span>
                                   </div>
                                 )}
                                 {borrower.student.department && (
                                   <div>
-                                    <span className="font-medium">Department: </span>
+                                    <span className="font-medium">
+                                      Department:{" "}
+                                    </span>
                                     {borrower.student.department}
                                   </div>
                                 )}
                                 {borrower.student.year_level && (
                                   <div>
-                                    <span className="font-medium">Year Level: </span>
+                                    <span className="font-medium">
+                                      Year Level:{" "}
+                                    </span>
                                     {borrower.student.year_level}
                                   </div>
                                 )}
@@ -232,13 +246,17 @@ export function ViewBookBorrowersDialog({
                         <div className="sm:w-64 space-y-2 text-sm">
                           <div className="p-3 bg-muted/50 rounded-lg space-y-2">
                             <div className="flex items-center justify-between">
-                              <span className="text-muted-foreground">Tracking #:</span>
+                              <span className="text-muted-foreground">
+                                Tracking #:
+                              </span>
                               <span className="font-mono text-xs">
                                 {borrower.tracking_number}
                               </span>
                             </div>
                             <div className="flex items-center justify-between">
-                              <span className="text-muted-foreground">Quantity:</span>
+                              <span className="text-muted-foreground">
+                                Quantity:
+                              </span>
                               <span className="font-semibold">
                                 {borrower.quantity ?? 1}
                               </span>
@@ -269,7 +287,9 @@ export function ViewBookBorrowersDialog({
                                   <Calendar className="h-3 w-3" />
                                   Approved:
                                 </span>
-                                <span>{formatDate(borrower.approved_date)}</span>
+                                <span>
+                                  {formatDate(borrower.approved_date)}
+                                </span>
                               </div>
                             )}
                             {borrower.due_date && (
@@ -314,4 +334,3 @@ export function ViewBookBorrowersDialog({
     </Dialog>
   );
 }
-

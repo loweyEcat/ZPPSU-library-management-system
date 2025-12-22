@@ -160,10 +160,10 @@ export const Lib_thesis_documentsScalarFieldEnum = {
   ebook_cover_image: 'ebook_cover_image',
   assigned_staff_id: 'assigned_staff_id',
   is_restricted: 'is_restricted',
-  is_hidden: 'is_hidden',
   time_limit_minutes: 'time_limit_minutes',
   max_attempts: 'max_attempts',
-  epub_url: 'epub_url'
+  epub_url: 'epub_url',
+  is_hidden: 'is_hidden'
 } as const
 
 export type Lib_thesis_documentsScalarFieldEnum = (typeof Lib_thesis_documentsScalarFieldEnum)[keyof typeof Lib_thesis_documentsScalarFieldEnum]

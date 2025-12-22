@@ -110,15 +110,37 @@ const createUploadThesisSchema = (isEdit: boolean) =>
       .optional(),
     // Ebook fields
     isbn: z.string().max(50, "ISBN must not exceed 50 characters").optional(),
-    publisher: z.string().max(255, "Publisher must not exceed 255 characters").optional(),
-    publication_date: z.string().max(50, "Publication date must not exceed 50 characters").optional(),
-    author: z.string().max(500, "Author must not exceed 500 characters").optional(),
-    edition: z.string().max(50, "Edition must not exceed 50 characters").optional(),
-    language: z.string().max(50, "Language must not exceed 50 characters").optional(),
-    category: z.string().max(100, "Category must not exceed 100 characters").optional(),
+    publisher: z
+      .string()
+      .max(255, "Publisher must not exceed 255 characters")
+      .optional(),
+    publication_date: z
+      .string()
+      .max(50, "Publication date must not exceed 50 characters")
+      .optional(),
+    author: z
+      .string()
+      .max(500, "Author must not exceed 500 characters")
+      .optional(),
+    edition: z
+      .string()
+      .max(50, "Edition must not exceed 50 characters")
+      .optional(),
+    language: z
+      .string()
+      .max(50, "Language must not exceed 50 characters")
+      .optional(),
+    category: z
+      .string()
+      .max(100, "Category must not exceed 100 characters")
+      .optional(),
     cover_photo: isEdit
-      ? z.instanceof(File, { message: "Please select a cover image" }).optional()
-      : z.instanceof(File, { message: "Please select a cover image" }).optional(),
+      ? z
+          .instanceof(File, { message: "Please select a cover image" })
+          .optional()
+      : z
+          .instanceof(File, { message: "Please select a cover image" })
+          .optional(),
     file: isEdit
       ? z
           .instanceof(File, { message: "Please select a file to upload" })
@@ -179,7 +201,10 @@ export function UploadThesisForm({
     const baseSchema = createUploadThesisSchema(isEdit);
     return baseSchema.superRefine((data, ctx) => {
       // For Thesis and Capstone, title and researcher_names are required
-      if (data.document_type === "Thesis" || data.document_type === "Capstone") {
+      if (
+        data.document_type === "Thesis" ||
+        data.document_type === "Capstone"
+      ) {
         if (!data.title || data.title.trim().length === 0) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
@@ -291,7 +316,8 @@ export function UploadThesisForm({
               message: "Failed to upload cover image. Please try again.",
             }));
             setError(
-              errorData.message ?? "Failed to upload cover image. Please try again."
+              errorData.message ??
+                "Failed to upload cover image. Please try again."
             );
             setIsSubmitting(false);
             setIsUploadingFile(false);
@@ -337,11 +363,15 @@ export function UploadThesisForm({
         // Join researcher names with comma for storage
         const researcherNameString = values.researcher_names?.join(", ") || "";
         // For Ebooks and Journal, use author as researcher_name
-        const finalResearcherName = values.document_type === "Ebooks" 
-          ? (values.author || researcherNameString)
-          : values.document_type === "Journal"
-          ? (values.author || values.co_authors || researcherNameString || "Journal Author")
-          : researcherNameString;
+        const finalResearcherName =
+          values.document_type === "Ebooks"
+            ? values.author || researcherNameString
+            : values.document_type === "Journal"
+            ? values.author ||
+              values.co_authors ||
+              researcherNameString ||
+              "Journal Author"
+            : researcherNameString;
 
         // Create or update thesis document
         if (isEdit && initialData?.id) {
@@ -372,29 +402,30 @@ export function UploadThesisForm({
                 ? values.journal_issue || null
                 : null,
             doi: values.document_type === "Journal" ? values.doi || null : null,
-            co_authors:
-              values.document_type === "Journal"
-                ? values.co_authors || null
-                : null,
             adviser_name:
-              values.document_type === "Thesis" || values.document_type === "Capstone"
+              values.document_type === "Thesis" ||
+              values.document_type === "Capstone"
                 ? values.adviser_name || null
                 : null,
             project_type:
-              values.document_type === "Capstone" || values.document_type === "Thesis"
+              values.document_type === "Capstone" ||
+              values.document_type === "Thesis"
                 ? values.project_type || null
                 : null,
             capstone_category:
-              values.document_type === "Capstone" || values.document_type === "Thesis"
+              values.document_type === "Capstone" ||
+              values.document_type === "Thesis"
                 ? values.capstone_category || null
                 : null,
             program:
-              values.document_type === "Capstone" || values.document_type === "Thesis"
+              values.document_type === "Capstone" ||
+              values.document_type === "Thesis"
                 ? values.program || null
                 : null,
-            // Ebook fields - store in co_authors field for now (can be moved to separate fields later)
             co_authors:
-              values.document_type === "Ebooks"
+              values.document_type === "Journal"
+                ? values.co_authors || null
+                : values.document_type === "Ebooks"
                 ? JSON.stringify({
                     isbn: values.isbn || null,
                     publisher: values.publisher || null,
@@ -466,29 +497,30 @@ export function UploadThesisForm({
                 values.document_type === "Journal"
                   ? values.doi || undefined
                   : undefined,
-              co_authors:
-                values.document_type === "Journal"
-                  ? values.co_authors || undefined
-                  : undefined,
               adviser_name:
-                values.document_type === "Thesis" || values.document_type === "Capstone"
+                values.document_type === "Thesis" ||
+                values.document_type === "Capstone"
                   ? values.adviser_name || undefined
                   : undefined,
               project_type:
-                values.document_type === "Capstone" || values.document_type === "Thesis"
+                values.document_type === "Capstone" ||
+                values.document_type === "Thesis"
                   ? values.project_type || undefined
                   : undefined,
               capstone_category:
-                values.document_type === "Capstone" || values.document_type === "Thesis"
+                values.document_type === "Capstone" ||
+                values.document_type === "Thesis"
                   ? values.capstone_category || undefined
                   : undefined,
               program:
-                values.document_type === "Capstone" || values.document_type === "Thesis"
+                values.document_type === "Capstone" ||
+                values.document_type === "Thesis"
                   ? values.program || undefined
                   : undefined,
-              // Ebook fields - store in co_authors field as JSON
               co_authors:
-                values.document_type === "Ebooks"
+                values.document_type === "Journal"
+                  ? values.co_authors || undefined
+                  : values.document_type === "Ebooks"
                   ? JSON.stringify({
                       isbn: values.isbn || null,
                       publisher: values.publisher || null,
@@ -695,7 +727,6 @@ export function UploadThesisForm({
             <Separator />
 
             {/* Academic Information Section - Only for Thesis and Capstone */}
-            {documentType !== "Ebooks" && (
             <div className="space-y-4">
               <div className="flex items-center gap-2">
                 <GraduationCap className="h-4 w-4 text-muted-foreground" />
@@ -787,7 +818,6 @@ export function UploadThesisForm({
                 />
               </div>
             </div>
-            )}
           </>
         )}
 
@@ -840,7 +870,8 @@ export function UploadThesisForm({
                       />
                     </FormControl>
                     <FormDescription>
-                      Enter the primary author(s) of the journal article. Separate multiple authors with commas.
+                      Enter the primary author(s) of the journal article.
+                      Separate multiple authors with commas.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -1049,9 +1080,7 @@ export function UploadThesisForm({
                 name="title"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="font-medium">
-                      Book Title *
-                    </FormLabel>
+                    <FormLabel className="font-medium">Book Title *</FormLabel>
                     <FormControl>
                       <Input
                         {...field}
@@ -1083,7 +1112,8 @@ export function UploadThesisForm({
                       />
                     </FormControl>
                     <FormDescription>
-                      Enter the author(s) of the book. Separate multiple authors with commas.
+                      Enter the author(s) of the book. Separate multiple authors
+                      with commas.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -1139,7 +1169,9 @@ export function UploadThesisForm({
                   name="publication_date"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="font-medium">Publication Date</FormLabel>
+                      <FormLabel className="font-medium">
+                        Publication Date
+                      </FormLabel>
                       <FormControl>
                         <Input
                           type="date"
@@ -1202,7 +1234,9 @@ export function UploadThesisForm({
                   name="category"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="font-medium">Category/Genre</FormLabel>
+                      <FormLabel className="font-medium">
+                        Category/Genre
+                      </FormLabel>
                       <FormControl>
                         <Input
                           {...field}
@@ -1222,7 +1256,9 @@ export function UploadThesisForm({
                 name="abstract"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="font-medium">Description/Summary</FormLabel>
+                    <FormLabel className="font-medium">
+                      Description/Summary
+                    </FormLabel>
                     <FormControl>
                       <Textarea
                         {...field}
@@ -1233,7 +1269,8 @@ export function UploadThesisForm({
                       />
                     </FormControl>
                     <FormDescription>
-                      Optional. Provide a brief description or summary of the book.
+                      Optional. Provide a brief description or summary of the
+                      book.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -1281,7 +1318,9 @@ export function UploadThesisForm({
                               // Validate file size (5MB max)
                               const maxSize = 5 * 1024 * 1024;
                               if (file.size > maxSize) {
-                                toast.error("Cover image size must be less than 5MB");
+                                toast.error(
+                                  "Cover image size must be less than 5MB"
+                                );
                                 return;
                               }
                               // Validate file type
@@ -1292,7 +1331,9 @@ export function UploadThesisForm({
                                 "image/webp",
                               ];
                               if (!allowedTypes.includes(file.type)) {
-                                toast.error("Please upload an image (JPEG, PNG, or WebP)");
+                                toast.error(
+                                  "Please upload an image (JPEG, PNG, or WebP)"
+                                );
                                 return;
                               }
                               onChange(file);
@@ -1311,7 +1352,9 @@ export function UploadThesisForm({
                             </div>
                             <div className="flex-1 text-sm text-muted-foreground">
                               <p className="font-medium">{value.name}</p>
-                              <p>{(value.size / (1024 * 1024)).toFixed(2)} MB</p>
+                              <p>
+                                {(value.size / (1024 * 1024)).toFixed(2)} MB
+                              </p>
                             </div>
                           </div>
                         )}
@@ -1332,7 +1375,8 @@ export function UploadThesisForm({
                       </div>
                     </FormControl>
                     <FormDescription>
-                      Optional. Upload a cover image for the book (JPEG, PNG, or WebP, max 5MB).
+                      Optional. Upload a cover image for the book (JPEG, PNG, or
+                      WebP, max 5MB).
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -1481,7 +1525,9 @@ export function UploadThesisForm({
                             "application/epub+zip",
                           ];
                           if (!allowedTypes.includes(file.type)) {
-                            toast.error("Please upload a PDF, DOC/DOCX, or EPUB file");
+                            toast.error(
+                              "Please upload a PDF, DOC/DOCX, or EPUB file"
+                            );
                             return;
                           }
                           onChange(file);

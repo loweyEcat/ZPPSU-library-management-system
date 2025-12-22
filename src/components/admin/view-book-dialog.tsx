@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { lib_books_status } from "../../../generated/prisma/enums";
 import { Separator } from "@/components/ui/separator";
 import { getBookById } from "@/app/admin/books/actions";
 import { toast } from "sonner";
@@ -39,21 +40,21 @@ interface ViewBookDialogProps {
   bookId: number | null;
 }
 
-function formatStatus(status: "Available" | "Not_Available" | "Lost" | "Damaged"): string {
+function formatStatus(status: lib_books_status): string {
   return status.replace(/_/g, " ");
 }
 
 function getStatusVariant(
-  status: "Available" | "Not_Available" | "Lost" | "Damaged"
+  status: lib_books_status
 ): "default" | "secondary" | "destructive" {
   if (status === "Available") return "default";
-  if (status === "Not_Available") return "secondary";
+  if (status === "Not Available") return "secondary";
   return "destructive";
 }
 
-function getStatusIcon(status: "Available" | "Not_Available" | "Lost" | "Damaged") {
+function getStatusIcon(status: lib_books_status) {
   if (status === "Available") return CheckCircle2;
-  if (status === "Not_Available") return XCircle;
+  if (status === "Not Available") return XCircle;
   return AlertCircle;
 }
 
@@ -117,7 +118,9 @@ export function ViewBookDialog({
           <div className="flex items-center justify-center py-12">
             <div className="text-center space-y-2">
               <BookOpen className="h-8 w-8 animate-pulse text-muted-foreground mx-auto" />
-              <p className="text-sm text-muted-foreground">Loading book details...</p>
+              <p className="text-sm text-muted-foreground">
+                Loading book details...
+              </p>
             </div>
           </div>
         ) : bookData ? (
@@ -125,7 +128,9 @@ export function ViewBookDialog({
             {/* Header Section with Status */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 bg-gradient-to-r from-primary/5 to-primary/10 rounded-lg border border-primary/20">
               <div className="flex-1">
-                <h2 className="text-2xl font-bold mb-2">{bookData.books_name}</h2>
+                <h2 className="text-2xl font-bold mb-2">
+                  {bookData.books_name}
+                </h2>
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <User className="h-4 w-4" />
                   <span className="text-base">{bookData.author_name}</span>
@@ -334,7 +339,8 @@ export function ViewBookDialog({
                     Borrowed Copies
                   </label>
                   <p className="text-2xl font-bold text-orange-600 dark:text-orange-400">
-                    {(bookData.total_copies ?? 0) - (bookData.available_copies ?? 0)}
+                    {(bookData.total_copies ?? 0) -
+                      (bookData.available_copies ?? 0)}
                   </p>
                 </div>
               </div>
@@ -390,4 +396,3 @@ export function ViewBookDialog({
     </Dialog>
   );
 }
-

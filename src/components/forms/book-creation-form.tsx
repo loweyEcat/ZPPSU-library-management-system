@@ -130,7 +130,7 @@ const bookCreationFormSchema = z.object({
         message: "Available copies must be a non-negative number",
       }
     ),
-  status: z.enum(["Available", "Not_Available", "Lost", "Damaged"]).optional(),
+  status: z.enum(["Available", "Not Available", "Lost", "Damaged"]).optional(),
 });
 
 type BookCreationFormValues = z.infer<typeof bookCreationFormSchema>;
@@ -614,7 +614,7 @@ export function BookCreationForm({ onSuccess }: BookCreationFormProps) {
                     </FormControl>
                     <SelectContent>
                       <SelectItem value="Available">Available</SelectItem>
-                      <SelectItem value="Not_Available">
+                      <SelectItem value="Not Available">
                         Not Available
                       </SelectItem>
                       <SelectItem value="Lost">Lost</SelectItem>

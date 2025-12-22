@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { lib_users_staff_category, lib_users_status } from "../../../generated/prisma/enums";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -46,9 +47,9 @@ interface AdminStaffMember {
   email: string;
   contact_number: string | null;
   profile_image: string | null;
-  staff_category: "Intern" | "Working_Student" | "Regular_Employee" | null;
+  staff_category: lib_users_staff_category | null;
   assigned_role: string | null;
-  status: "Active" | "Inactive" | "Suspended";
+  status: lib_users_status;
 }
 
 interface AdminStaffTableProps {
