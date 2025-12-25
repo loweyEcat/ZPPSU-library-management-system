@@ -326,3 +326,127 @@ export async function POST(
   );
 }
 
+export async function DELETE(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> | { id: string } }
+) {
+  try {
+    await requireSuperAdmin();
+  } catch {
+    return NextResponse.json(
+      {
+        message: "Unauthorized. Only Super Admin can delete users.",
+      },
+      { status: 403 }
+    );
+  }
+
+  const resolvedParams = await Promise.resolve(params);
+  const userId = parseInt(resolvedParams.id);
+  if (isNaN(userId)) {
+    return NextResponse.json(
+      {
+        message: "Invalid user ID.",
+      },
+      { status: 400 }
+    );
+  }
+
+  try {
+    // Check if user exists
+    const existingUser = await prisma.lib_users.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        user_role: true,
+        full_name: true,
+      },
+    });
+
+    if (!existingUser) {
+      return NextResponse.json(
+        {
+          message: "User not found.",
+        },
+        { status: 404 }
+      );
+    }
+
+    // Prevent deletion of Super Admin accounts (for safety)
+    if (existingUser.user_role === "Super_Admin") {
+      return NextResponse.json(
+        {
+          message: "Cannot delete Super Admin accounts for security reasons.",
+        },
+        { status: 403 }
+      );
+    }
+
+    // Delete all related data in a transaction to ensure data integrity
+    await prisma.$transaction(async (tx) => {
+      // Delete all sessions for this user
+      await tx.lib_sessions.deleteMany({
+        where: { user_id: userId },
+      });
+
+      // Delete book requests and related data for students
+      if (existingUser.user_role === "Student") {
+        // Get all book request IDs for this student
+        const bookRequests = await tx.lib_book_requests.findMany({
+          where: { student_id: userId },
+          select: { id: true },
+        });
+
+        const requestIds = bookRequests.map(req => req.id);
+
+        // Delete fines associated with these requests
+        if (requestIds.length > 0) {
+          await tx.lib_book_fines.deleteMany({
+            where: { request_id: { in: requestIds } },
+          });
+        }
+
+        // Delete book requests
+        await tx.lib_book_requests.deleteMany({
+          where: { student_id: userId },
+        });
+      }
+
+      // Delete thesis documents for students
+      if (existingUser.user_role === "Student") {
+        await tx.lib_thesis_documents.deleteMany({
+          where: { student_id: userId },
+        });
+      }
+
+      // Note: Notifications are generated dynamically from existing data
+      // and read status is stored in localStorage, so no database cleanup needed
+
+      // Finally, delete the user
+      await tx.lib_users.delete({
+        where: { id: userId },
+      });
+    });
+
+    return NextResponse.json(
+      {
+        message: `${existingUser.user_role} "${existingUser.full_name}" deleted successfully.`,
+      },
+      {
+        status: 200,
+        headers: {
+          "Cache-Control": "no-store",
+        },
+      }
+    );
+  } catch (error) {
+    console.error("Failed to delete user:", error);
+    return NextResponse.json(
+      {
+        message: "Failed to delete user. Please try again.",
+      },
+      { status: 500 }
+    );
+  }
+}
+

@@ -38,10 +38,22 @@ const studentRegistrationFormSchema = z
     email: z.string().email("Invalid email address"),
     contactNumber: z.string().min(1, "Contact number is required"),
     sex: z.enum(["Male", "Female", "Other"]),
-    studentId: z.string().min(1, "Student ID is required").max(50, "Student ID must not exceed 50 characters"),
-    section: z.string().min(1, "Section is required").max(50, "Section must not exceed 50 characters"),
-    department: z.string().min(1, "Department is required").max(100, "Department must not exceed 100 characters"),
-    yearLevel: z.string().min(1, "Year level is required").max(50, "Year level must not exceed 50 characters"),
+    studentId: z
+      .string()
+      .min(1, "Student ID is required")
+      .max(50, "Student ID must not exceed 50 characters"),
+    section: z
+      .string()
+      .min(1, "Section is required")
+      .max(50, "Section must not exceed 50 characters"),
+    department: z
+      .string()
+      .min(1, "Department is required")
+      .max(100, "Department must not exceed 100 characters"),
+    yearLevel: z
+      .string()
+      .min(1, "Year level is required")
+      .max(50, "Year level must not exceed 50 characters"),
     password: z
       .string()
       .min(8, "Password must be at least 8 characters")
@@ -58,7 +70,9 @@ const studentRegistrationFormSchema = z
     path: ["confirmPassword"],
   });
 
-type StudentRegistrationFormValues = z.infer<typeof studentRegistrationFormSchema>;
+type StudentRegistrationFormValues = z.infer<
+  typeof studentRegistrationFormSchema
+>;
 
 export function StudentRegistrationForm() {
   const router = useRouter();
@@ -110,7 +124,10 @@ export function StudentRegistrationForm() {
             const errorBody = await uploadResponse.json().catch(() => ({
               message: "Failed to upload school ID. Please try again.",
             }));
-            setError(errorBody.message ?? "Failed to upload school ID. Please try again.");
+            setError(
+              errorBody.message ??
+                "Failed to upload school ID. Please try again."
+            );
             setIsSubmitting(false);
             setUploadingFile(false);
             return;
@@ -147,7 +164,9 @@ export function StudentRegistrationForm() {
           const errorBody = await response.json().catch(() => ({
             message: "Failed to create account. Please try again.",
           }));
-          setError(errorBody.message ?? "Failed to create account. Please try again.");
+          setError(
+            errorBody.message ?? "Failed to create account. Please try again."
+          );
           setIsSubmitting(false);
           return;
         }
@@ -158,7 +177,9 @@ export function StudentRegistrationForm() {
           // Redirect to login page after successful registration
           router.push("/login?registered=true");
         } else {
-          setError("Registration completed but something went wrong. Please try logging in.");
+          setError(
+            "Registration completed but something went wrong. Please try logging in."
+          );
           setIsSubmitting(false);
         }
       } catch (cause) {
@@ -171,17 +192,16 @@ export function StudentRegistrationForm() {
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-6"
-      >
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <div className="grid gap-4 md:grid-cols-2">
           <FormField
             control={form.control}
             name="firstName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-white drop-shadow-md">First Name *</FormLabel>
+                <FormLabel className="text-white drop-shadow-md">
+                  First Name *
+                </FormLabel>
                 <FormControl>
                   <Input
                     {...field}
@@ -200,7 +220,9 @@ export function StudentRegistrationForm() {
             name="lastName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-white drop-shadow-md">Last Name *</FormLabel>
+                <FormLabel className="text-white drop-shadow-md">
+                  Last Name *
+                </FormLabel>
                 <FormControl>
                   <Input
                     {...field}
@@ -221,7 +243,9 @@ export function StudentRegistrationForm() {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-white drop-shadow-md">Email *</FormLabel>
+                <FormLabel className="text-white drop-shadow-md">
+                  Email *
+                </FormLabel>
                 <FormControl>
                   <Input
                     {...field}
@@ -242,7 +266,9 @@ export function StudentRegistrationForm() {
             name="contactNumber"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-white drop-shadow-md">Contact Number *</FormLabel>
+                <FormLabel className="text-white drop-shadow-md">
+                  Contact Number *
+                </FormLabel>
                 <FormControl>
                   <Input
                     {...field}
@@ -290,7 +316,9 @@ export function StudentRegistrationForm() {
           name="studentId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-white drop-shadow-md">Student ID *</FormLabel>
+              <FormLabel className="text-white drop-shadow-md">
+                Student ID *
+              </FormLabel>
               <FormControl>
                 <Input
                   {...field}
@@ -310,7 +338,9 @@ export function StudentRegistrationForm() {
             name="section"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-white drop-shadow-md">Section *</FormLabel>
+                <FormLabel className="text-white drop-shadow-md">
+                  Section *
+                </FormLabel>
                 <FormControl>
                   <Input
                     {...field}
@@ -329,7 +359,9 @@ export function StudentRegistrationForm() {
             name="department"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-white drop-shadow-md">Department *</FormLabel>
+                <FormLabel className="text-white drop-shadow-md">
+                  Department *
+                </FormLabel>
                 <FormControl>
                   <Input
                     {...field}
@@ -349,7 +381,9 @@ export function StudentRegistrationForm() {
           name="yearLevel"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-white drop-shadow-md">Year Level *</FormLabel>
+              <FormLabel className="text-white drop-shadow-md">
+                Year Level *
+              </FormLabel>
               <FormControl>
                 <Input
                   {...field}
@@ -363,7 +397,7 @@ export function StudentRegistrationForm() {
           )}
         />
 
-        <FormField
+        {/* <FormField
           control={form.control}
           name="schoolIdFile"
           render={({ field: { value, onChange, ...fieldProps } }) => (
@@ -394,14 +428,16 @@ export function StudentRegistrationForm() {
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
 
         <FormField
           control={form.control}
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-white drop-shadow-md">Password *</FormLabel>
+              <FormLabel className="text-white drop-shadow-md">
+                Password *
+              </FormLabel>
               <FormControl>
                 <div className="relative">
                   <Input
@@ -417,7 +453,9 @@ export function StudentRegistrationForm() {
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none disabled:opacity-50"
                     disabled={isSubmitting}
-                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    aria-label={
+                      showPassword ? "Hide password" : "Show password"
+                    }
                   >
                     {showPassword ? (
                       <EyeOff className="h-4 w-4" />
@@ -437,7 +475,9 @@ export function StudentRegistrationForm() {
           name="confirmPassword"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-white drop-shadow-md">Confirm Password *</FormLabel>
+              <FormLabel className="text-white drop-shadow-md">
+                Confirm Password *
+              </FormLabel>
               <FormControl>
                 <div className="relative">
                   <Input
@@ -453,7 +493,11 @@ export function StudentRegistrationForm() {
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none disabled:opacity-50"
                     disabled={isSubmitting}
-                    aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
+                    aria-label={
+                      showConfirmPassword
+                        ? "Hide confirm password"
+                        : "Show confirm password"
+                    }
                   >
                     {showConfirmPassword ? (
                       <EyeOff className="h-4 w-4" />
@@ -474,8 +518,12 @@ export function StudentRegistrationForm() {
           </p>
         )}
 
-        <Button type="submit" className="w-full" disabled={isSubmitting || uploadingFile}>
-          {(isSubmitting || uploadingFile) ? (
+        <Button
+          type="submit"
+          className="w-full"
+          disabled={isSubmitting || uploadingFile}
+        >
+          {isSubmitting || uploadingFile ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               {uploadingFile ? "Uploading..." : "Creating Account…"}
@@ -488,4 +536,3 @@ export function StudentRegistrationForm() {
     </Form>
   );
 }
-

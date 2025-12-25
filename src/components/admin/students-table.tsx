@@ -13,9 +13,17 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { MoreHorizontal, Pencil, Trash2, Search, UserCog, GraduationCap } from "lucide-react";
+import {
+  MoreHorizontal,
+  Pencil,
+  Trash2,
+  Search,
+  UserCog,
+  GraduationCap,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { EditUserDialog } from "@/components/admin/edit-user-dialog";
+import { DeleteStudentDialog } from "@/components/admin/delete-student-dialog";
 import { getUserById } from "@/app/admin/users/actions";
 import { toast } from "sonner";
 import {
@@ -71,7 +79,11 @@ function formatDate(dateString: string): string {
 
 const ITEMS_PER_PAGE = 15;
 
-export function StudentsTable({ students, onRefresh, isSuperAdmin = false }: StudentsTableProps) {
+export function StudentsTable({
+  students,
+  onRefresh,
+  isSuperAdmin = false,
+}: StudentsTableProps) {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = React.useState("");
   const [currentPage, setCurrentPage] = React.useState(1);
@@ -80,19 +92,28 @@ export function StudentsTable({ students, onRefresh, isSuperAdmin = false }: Stu
   const [editingUserId, setEditingUserId] = React.useState<number | null>(null);
   const [editingUserData, setEditingUserData] = React.useState<any>(null);
   const [isLoadingUser, setIsLoadingUser] = React.useState(false);
-  const [editingUserRole, setEditingUserRole] = React.useState<"Admin" | "Staff" | "Student">("Student");
+  const [editingUserRole, setEditingUserRole] = React.useState<
+    "Admin" | "Staff" | "Student"
+  >("Student");
+  const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
+  const [deletingUserId, setDeletingUserId] = React.useState<number | null>(
+    null
+  );
+  const [deletingUserName, setDeletingUserName] = React.useState<string>("");
 
   // Filter students based on search query
   const filteredStudents = React.useMemo(() => {
     if (!searchQuery.trim()) return students;
-    
+
     const query = searchQuery.toLowerCase();
     return students.filter((student) => {
       return (
         student.full_name.toLowerCase().includes(query) ||
-        (student.student_id && student.student_id.toLowerCase().includes(query)) ||
+        (student.student_id &&
+          student.student_id.toLowerCase().includes(query)) ||
         (student.section && student.section.toLowerCase().includes(query)) ||
-        (student.department && student.department.toLowerCase().includes(query)) ||
+        (student.department &&
+          student.department.toLowerCase().includes(query)) ||
         (student.year_level && student.year_level.toLowerCase().includes(query))
       );
     });
@@ -135,14 +156,20 @@ export function StudentsTable({ students, onRefresh, isSuperAdmin = false }: Stu
     }
   };
 
-  const handleDelete = (id: number) => {
-    // TODO: Implement delete functionality
-    console.log("Delete student:", id);
+  const handleDelete = (id: number, name: string) => {
+    if (!isSuperAdmin) {
+      toast.error("Only Super Admin can delete users.");
+      return;
+    }
+
+    setDeletingUserId(id);
+    setDeletingUserName(name);
+    setDeleteDialogOpen(true);
   };
 
   const handleImpersonate = async (id: number) => {
     if (isImpersonating) return;
-    
+
     setIsImpersonating(true);
     try {
       const response = await fetch("/api/library/impersonate", {
@@ -188,120 +215,148 @@ export function StudentsTable({ students, onRefresh, isSuperAdmin = false }: Stu
       <div className="rounded-lg border-2 overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <Table>
-          <TableHeader>
-            <TableRow className="bg-muted/50 hover:bg-muted/50">
-              <TableHead className="font-semibold">Profile</TableHead>
-              <TableHead className="font-semibold">Full Name</TableHead>
-              <TableHead className="font-semibold">Student ID</TableHead>
-              <TableHead className="font-semibold">Section</TableHead>
-              <TableHead className="font-semibold">Department</TableHead>
-              <TableHead className="font-semibold">Year Level</TableHead>
-              <TableHead className="font-semibold">Date Registered</TableHead>
-              <TableHead className="font-semibold">Status</TableHead>
-              <TableHead className="text-right font-semibold">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {paginatedStudents.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={9} className="text-center py-12">
-                  <div className="flex flex-col items-center gap-2">
-                    <GraduationCap className="h-12 w-12 text-muted-foreground/50" />
-                    <p className="text-muted-foreground font-medium">
-                      {searchQuery ? "No students found matching your search." : "No students found."}
-                    </p>
-                  </div>
-                </TableCell>
+            <TableHeader>
+              <TableRow className="bg-muted/50 hover:bg-muted/50">
+                <TableHead className="font-semibold">Profile</TableHead>
+                <TableHead className="font-semibold">Full Name</TableHead>
+                <TableHead className="font-semibold">Student ID</TableHead>
+                <TableHead className="font-semibold">Section</TableHead>
+                <TableHead className="font-semibold">Department</TableHead>
+                <TableHead className="font-semibold">Year Level</TableHead>
+                <TableHead className="font-semibold">Date Registered</TableHead>
+                <TableHead className="font-semibold">Status</TableHead>
+                <TableHead className="text-right font-semibold">
+                  Actions
+                </TableHead>
               </TableRow>
-            ) : (
-              paginatedStudents.map((student) => (
-                <TableRow 
-                  key={student.id}
-                  className="transition-colors hover:bg-muted/50 cursor-pointer"
-                >
-                  <TableCell>
-                    <Avatar className="h-10 w-10 ring-2 ring-background">
-                      {student.profile_image ? (
-                        <AvatarImage
-                          src={student.profile_image}
-                          alt={student.full_name}
-                          className="object-cover"
-                        />
-                      ) : null}
-                      <AvatarFallback className="bg-primary/10 text-primary font-semibold">
-                        {getInitials(student.full_name)}
-                      </AvatarFallback>
-                    </Avatar>
-                  </TableCell>
-                  <TableCell className="font-medium">{student.full_name}</TableCell>
-                  <TableCell>
-                    {student.student_id ? (
-                      <Badge variant="outline" className="font-mono">
-                        {student.student_id}
-                      </Badge>
-                    ) : (
-                      <span className="text-muted-foreground">N/A</span>
-                    )}
-                  </TableCell>
-                  <TableCell>{student.section || <span className="text-muted-foreground">N/A</span>}</TableCell>
-                  <TableCell>{student.department || <span className="text-muted-foreground">N/A</span>}</TableCell>
-                  <TableCell>{student.year_level || <span className="text-muted-foreground">N/A</span>}</TableCell>
-                  <TableCell className="text-muted-foreground">{formatDate(student.date_registered)}</TableCell>
-                  <TableCell>
-                    <Badge
-                      variant={
-                        student.status === "Active"
-                          ? "default"
-                          : student.status === "Inactive"
-                          ? "secondary"
-                          : "destructive"
-                      }
-                      className="font-medium"
-                    >
-                      {student.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-8 w-8">
-                          <MoreHorizontal className="h-4 w-4" />
-                          <span className="sr-only">Open menu</span>
-                        </Button>
-                      </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-48">
-                      {isSuperAdmin && (
-                        <DropdownMenuItem 
-                          onClick={() => handleImpersonate(student.id)} 
-                          disabled={isImpersonating}
-                          className="cursor-pointer"
-                        >
-                          <UserCog className="mr-2 h-4 w-4" />
-                          {isImpersonating ? "Impersonating..." : "Impersonate"}
-                        </DropdownMenuItem>
-                      )}
-                      <DropdownMenuItem 
-                        onClick={() => handleEdit(student.id)}
-                        className="cursor-pointer"
-                      >
-                        <Pencil className="mr-2 h-4 w-4" />
-                        Edit
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() => handleDelete(student.id)}
-                        className="text-destructive cursor-pointer focus:text-destructive"
-                      >
-                        <Trash2 className="mr-2 h-4 w-4" />
-                        Delete
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                    </DropdownMenu>
+            </TableHeader>
+            <TableBody>
+              {paginatedStudents.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={9} className="text-center py-12">
+                    <div className="flex flex-col items-center gap-2">
+                      <GraduationCap className="h-12 w-12 text-muted-foreground/50" />
+                      <p className="text-muted-foreground font-medium">
+                        {searchQuery
+                          ? "No students found matching your search."
+                          : "No students found."}
+                      </p>
+                    </div>
                   </TableCell>
                 </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
+              ) : (
+                paginatedStudents.map((student) => (
+                  <TableRow
+                    key={student.id}
+                    className="transition-colors hover:bg-muted/50 cursor-pointer"
+                  >
+                    <TableCell>
+                      <Avatar className="h-10 w-10 ring-2 ring-background">
+                        {student.profile_image ? (
+                          <AvatarImage
+                            src={student.profile_image}
+                            alt={student.full_name}
+                            className="object-cover"
+                          />
+                        ) : null}
+                        <AvatarFallback className="bg-primary/10 text-primary font-semibold">
+                          {getInitials(student.full_name)}
+                        </AvatarFallback>
+                      </Avatar>
+                    </TableCell>
+                    <TableCell className="font-medium">
+                      {student.full_name}
+                    </TableCell>
+                    <TableCell>
+                      {student.student_id ? (
+                        <Badge variant="outline" className="font-mono">
+                          {student.student_id}
+                        </Badge>
+                      ) : (
+                        <span className="text-muted-foreground">N/A</span>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {student.section || (
+                        <span className="text-muted-foreground">N/A</span>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {student.department || (
+                        <span className="text-muted-foreground">N/A</span>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {student.year_level || (
+                        <span className="text-muted-foreground">N/A</span>
+                      )}
+                    </TableCell>
+                    <TableCell className="text-muted-foreground">
+                      {formatDate(student.date_registered)}
+                    </TableCell>
+                    <TableCell>
+                      <Badge
+                        variant={
+                          student.status === "Active"
+                            ? "default"
+                            : student.status === "Inactive"
+                            ? "secondary"
+                            : "destructive"
+                        }
+                        className="font-medium"
+                      >
+                        {student.status}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                          >
+                            <MoreHorizontal className="h-4 w-4" />
+                            <span className="sr-only">Open menu</span>
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-48">
+                          {isSuperAdmin && (
+                            <DropdownMenuItem
+                              onClick={() => handleImpersonate(student.id)}
+                              disabled={isImpersonating}
+                              className="cursor-pointer"
+                            >
+                              <UserCog className="mr-2 h-4 w-4" />
+                              {isImpersonating
+                                ? "Impersonating..."
+                                : "Impersonate"}
+                            </DropdownMenuItem>
+                          )}
+                          <DropdownMenuItem
+                            onClick={() => handleEdit(student.id)}
+                            className="cursor-pointer"
+                          >
+                            <Pencil className="mr-2 h-4 w-4" />
+                            Edit
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() =>
+                              handleDelete(student.id, student.full_name)
+                            }
+                            className="text-destructive cursor-pointer focus:text-destructive"
+                          >
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
         </div>
       </div>
 
@@ -309,9 +364,19 @@ export function StudentsTable({ students, onRefresh, isSuperAdmin = false }: Stu
       {totalPages > 1 && (
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t">
           <div className="text-sm text-muted-foreground font-medium">
-            Showing <span className="font-semibold text-foreground">{startIndex + 1}</span> to{" "}
-            <span className="font-semibold text-foreground">{Math.min(endIndex, filteredStudents.length)}</span> of{" "}
-            <span className="font-semibold text-foreground">{filteredStudents.length}</span> students
+            Showing{" "}
+            <span className="font-semibold text-foreground">
+              {startIndex + 1}
+            </span>{" "}
+            to{" "}
+            <span className="font-semibold text-foreground">
+              {Math.min(endIndex, filteredStudents.length)}
+            </span>{" "}
+            of{" "}
+            <span className="font-semibold text-foreground">
+              {filteredStudents.length}
+            </span>{" "}
+            students
           </div>
           <Pagination>
             <PaginationContent>
@@ -322,32 +387,43 @@ export function StudentsTable({ students, onRefresh, isSuperAdmin = false }: Stu
                     e.preventDefault();
                     if (currentPage > 1) setCurrentPage(currentPage - 1);
                   }}
-                  className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                  className={
+                    currentPage === 1
+                      ? "pointer-events-none opacity-50"
+                      : "cursor-pointer"
+                  }
                 />
               </PaginationItem>
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                <PaginationItem key={page}>
-                  <PaginationLink
-                    href="#"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setCurrentPage(page);
-                    }}
-                    isActive={currentPage === page}
-                    className="cursor-pointer"
-                  >
-                    {page}
-                  </PaginationLink>
-                </PaginationItem>
-              ))}
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                (page) => (
+                  <PaginationItem key={page}>
+                    <PaginationLink
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setCurrentPage(page);
+                      }}
+                      isActive={currentPage === page}
+                      className="cursor-pointer"
+                    >
+                      {page}
+                    </PaginationLink>
+                  </PaginationItem>
+                )
+              )}
               <PaginationItem>
                 <PaginationNext
                   href="#"
                   onClick={(e) => {
                     e.preventDefault();
-                    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+                    if (currentPage < totalPages)
+                      setCurrentPage(currentPage + 1);
                   }}
-                  className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                  className={
+                    currentPage === totalPages
+                      ? "pointer-events-none opacity-50"
+                      : "cursor-pointer"
+                  }
                 />
               </PaginationItem>
             </PaginationContent>
@@ -363,7 +439,15 @@ export function StudentsTable({ students, onRefresh, isSuperAdmin = false }: Stu
         userRole={editingUserRole as "Student"}
         initialData={editingUserData}
       />
+
+      {/* Delete Student Dialog */}
+      <DeleteStudentDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        studentId={deletingUserId}
+        studentName={deletingUserName}
+        onDelete={onRefresh}
+      />
     </div>
   );
 }
-

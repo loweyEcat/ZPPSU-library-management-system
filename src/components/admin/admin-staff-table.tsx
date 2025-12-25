@@ -11,7 +11,10 @@ import {
 } from "@/components/ui/table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { lib_users_staff_category, lib_users_status } from "../../../generated/prisma/enums";
+import {
+  lib_users_staff_category,
+  lib_users_status,
+} from "../../../generated/prisma/enums";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -24,6 +27,7 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { EditUserDialog } from "@/components/admin/edit-user-dialog";
+import { DeleteStaffDialog } from "@/components/admin/delete-staff-dialog";
 import { getUserById } from "@/app/admin/users/actions";
 import { toast } from "sonner";
 import {
@@ -87,6 +91,11 @@ export function AdminStaffTable({
   const [editingUserId, setEditingUserId] = React.useState<number | null>(null);
   const [editingUserData, setEditingUserData] = React.useState<any>(null);
   const [isLoadingUser, setIsLoadingUser] = React.useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
+  const [deletingUserId, setDeletingUserId] = React.useState<number | null>(
+    null
+  );
+  const [deletingUserName, setDeletingUserName] = React.useState<string>("");
 
   // Filter staff based on search query
   const filteredStaff = React.useMemo(() => {
@@ -149,9 +158,15 @@ export function AdminStaffTable({
     }
   };
 
-  const handleDelete = (id: number) => {
-    // TODO: Implement delete functionality
-    console.log("Delete staff:", id);
+  const handleDelete = (id: number, name: string) => {
+    if (!isSuperAdmin) {
+      toast.error("Only Super Admin can delete users.");
+      return;
+    }
+
+    setDeletingUserId(id);
+    setDeletingUserName(name);
+    setDeleteDialogOpen(true);
   };
 
   const handleImpersonate = async (id: number) => {
@@ -322,7 +337,9 @@ export function AdminStaffTable({
                             Edit
                           </DropdownMenuItem>
                           <DropdownMenuItem
-                            onClick={() => handleDelete(member.id)}
+                            onClick={() =>
+                              handleDelete(member.id, member.full_name)
+                            }
                             className="text-destructive cursor-pointer focus:text-destructive"
                           >
                             <Trash2 className="mr-2 h-4 w-4" />
@@ -417,6 +434,15 @@ export function AdminStaffTable({
         userId={editingUserId}
         userRole={editingUserRole as "Admin" | "Staff"}
         initialData={editingUserData}
+      />
+
+      {/* Delete Staff Dialog */}
+      <DeleteStaffDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        staffId={deletingUserId}
+        staffName={deletingUserName}
+        onDelete={onRefresh}
       />
     </div>
   );

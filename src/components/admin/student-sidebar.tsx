@@ -36,11 +36,11 @@ const menuItems = [
     url: "/dashboard/student",
     icon: LayoutDashboard,
   },
-  {
-    title: "Notifications",
-    url: "/dashboard/student/notifications",
-    icon: Bell,
-  },
+  // {
+  //   title: "Notifications",
+  //   url: "/dashboard/student/notifications",
+  //   icon: Bell,
+  // },
   {
     title: "Upload Resources",
     url: "/dashboard/student/upload-documents",
@@ -51,11 +51,11 @@ const menuItems = [
   //   url: "/dashboard/student/thesis-archive",
   //   icon: Archive,
   // },
-  {
-    title: "Books",
-    url: "/dashboard/student/books",
-    icon: BookOpen,
-  },
+  // {
+  //   title: "Books",
+  //   url: "/dashboard/student/books",
+  //   icon: BookOpen,
+  // },
   {
     title: "Resources",
     url: "/dashboard/student/resources",
