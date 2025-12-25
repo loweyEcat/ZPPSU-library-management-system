@@ -72,14 +72,16 @@ export function DeleteStudentDialog({
         <AlertDialogHeader>
           <AlertDialogTitle>Are you sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete the student
+            This action cannot be undone. This will permanently delete the
+            student
             {studentName && (
               <>
                 {" "}
                 <span className="font-semibold">"{studentName}"</span>
               </>
             )}
-            . All associated thesis documents, book requests, fines, and notifications will also be deleted.
+            . All associated thesis documents, book requests, fines, and
+            notifications will also be deleted.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

@@ -56,11 +56,11 @@ const menuItems = [
     url: "/admin/resources",
     icon: Library,
   },
-  {
-    title: "Books",
-    url: "/admin/books",
-    icon: BookOpen,
-  },
+  // {
+  //   title: "Books",
+  //   url: "/admin/books",
+  //   icon: BookOpen,
+  // },
   {
     title: "Download Request Panel",
     url: "/admin/documents",
