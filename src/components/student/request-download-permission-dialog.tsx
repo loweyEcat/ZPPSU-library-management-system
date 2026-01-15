@@ -48,15 +48,20 @@ export function RequestDownloadPermissionDialog({
         documentId,
         reason.trim() || null
       );
-      
+
       if (result.success) {
-        toast.success(result.message || "Download permission request submitted successfully!");
+        toast.success(
+          result.message ||
+            "Download permission request submitted successfully!"
+        );
         onOpenChange(false);
         if (onSuccess) {
           onSuccess();
         }
       } else {
-        toast.error(result.error || "Failed to submit download permission request.");
+        toast.error(
+          result.error || "Failed to submit download permission request."
+        );
       }
     } catch (error) {
       console.error("Error requesting download permission:", error);
@@ -72,7 +77,7 @@ export function RequestDownloadPermissionDialog({
         <DialogHeader>
           <DialogTitle className="text-2xl font-semibold flex items-center gap-2">
             <Download className="h-6 w-6 text-primary" />
-            Request Download Permission
+            Request Preview Permission
           </DialogTitle>
           <DialogDescription>
             Request permission from the super admin to download this document.
@@ -99,7 +104,8 @@ export function RequestDownloadPermissionDialog({
               <div className="text-sm text-blue-900 dark:text-blue-100">
                 <p className="font-medium mb-1">Note</p>
                 <p>
-                  Your request will be sent to the super admin for review. You will be notified once your request is approved or rejected.
+                  Your request will be sent to the super admin for review. You
+                  will be notified once your request is approved or rejected.
                 </p>
               </div>
             </div>
@@ -107,9 +113,7 @@ export function RequestDownloadPermissionDialog({
 
           {/* Reason Input */}
           <div className="space-y-2">
-            <Label htmlFor="reason">
-              Reason (Optional)
-            </Label>
+            <Label htmlFor="reason">Reason (Optional)</Label>
             <Textarea
               id="reason"
               value={reason}
@@ -134,10 +138,7 @@ export function RequestDownloadPermissionDialog({
             >
               Cancel
             </Button>
-            <Button
-              onClick={handleSubmit}
-              disabled={isSubmitting}
-            >
+            <Button onClick={handleSubmit} disabled={isSubmitting}>
               {isSubmitting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -156,4 +157,3 @@ export function RequestDownloadPermissionDialog({
     </Dialog>
   );
 }
-

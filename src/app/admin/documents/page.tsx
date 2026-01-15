@@ -15,11 +15,11 @@ export default async function AdminDocumentsPage() {
           <div className="flex items-center gap-2">
             <Download className="h-8 w-8 text-primary" />
             <h2 className="text-3xl font-bold tracking-tight">
-              Download Request Panel
+              Viewing Request Panel
             </h2>
           </div>
           <p className="text-muted-foreground">
-            Review and manage student download permission requests for resources.
+            Review and manage student viewing permission requests for resources.
           </p>
         </div>
       </div>
@@ -31,4 +31,3 @@ export default async function AdminDocumentsPage() {
     </div>
   );
 }
-

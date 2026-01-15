@@ -57,21 +57,30 @@ function getStatusBadge(status: string): React.ReactElement {
   switch (status) {
     case "Pending":
       return (
-        <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200">
+        <Badge
+          variant="outline"
+          className="bg-yellow-50 text-yellow-700 border-yellow-200"
+        >
           <Clock className="h-3 w-3 mr-1" />
           Pending
         </Badge>
       );
     case "Approved":
       return (
-        <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+        <Badge
+          variant="outline"
+          className="bg-green-50 text-green-700 border-green-200"
+        >
           <CheckCircle className="h-3 w-3 mr-1" />
           Approved
         </Badge>
       );
     case "Rejected":
       return (
-        <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">
+        <Badge
+          variant="outline"
+          className="bg-red-50 text-red-700 border-red-200"
+        >
           <XCircle className="h-3 w-3 mr-1" />
           Rejected
         </Badge>
@@ -181,7 +190,9 @@ export function DownloadRequestTable({
         .toLowerCase()
         .includes(searchQuery.toLowerCase()) ||
       request.student.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      request.document.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      request.document.title
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
       (request.student.student_id &&
         request.student.student_id
           .toLowerCase()
@@ -203,7 +214,9 @@ export function DownloadRequestTable({
       <div className="grid gap-4 md:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pending Requests</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Pending Requests
+            </CardTitle>
             <Clock className="h-4 w-4 text-yellow-600" />
           </CardHeader>
           <CardContent>
@@ -236,9 +249,9 @@ export function DownloadRequestTable({
       {/* Filters */}
       <Card>
         <CardHeader>
-          <CardTitle>Download Permission Requests</CardTitle>
+          <CardTitle>Viewing Permission Requests</CardTitle>
           <CardDescription>
-            Review and manage student download requests for resources
+            Review and manage student view requests for resources
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -270,7 +283,7 @@ export function DownloadRequestTable({
             {filteredRequests.length === 0 ? (
               <div className="text-center py-12 text-muted-foreground">
                 <Download className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p>No download requests found</p>
+                <p>No viewing requests found</p>
               </div>
             ) : (
               filteredRequests.map((request) => (
@@ -283,7 +296,9 @@ export function DownloadRequestTable({
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-2">
                               {getStatusBadge(request.status)}
-                              {getDocumentTypeBadge(request.document.document_type)}
+                              {getDocumentTypeBadge(
+                                request.document.document_type
+                              )}
                             </div>
                             <h3 className="font-semibold text-lg mb-1">
                               {request.document.title}
@@ -297,7 +312,9 @@ export function DownloadRequestTable({
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                           <div className="flex items-center gap-2">
                             <User className="h-4 w-4 text-muted-foreground" />
-                            <span className="text-muted-foreground">Student: </span>
+                            <span className="text-muted-foreground">
+                              Student:{" "}
+                            </span>
                             <span className="font-medium">
                               {request.student.full_name}
                               {request.student.student_id &&
@@ -306,8 +323,12 @@ export function DownloadRequestTable({
                           </div>
                           <div className="flex items-center gap-2">
                             <FileText className="h-4 w-4 text-muted-foreground" />
-                            <span className="text-muted-foreground">Email: </span>
-                            <span className="font-medium">{request.student.email}</span>
+                            <span className="text-muted-foreground">
+                              Email:{" "}
+                            </span>
+                            <span className="font-medium">
+                              {request.student.email}
+                            </span>
                           </div>
                           <div className="flex items-center gap-2">
                             <Calendar className="h-4 w-4 text-muted-foreground" />
@@ -405,4 +426,3 @@ export function DownloadRequestTable({
     </div>
   );
 }
-
